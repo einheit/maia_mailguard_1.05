@@ -106,7 +106,8 @@
               "WHERE maia_viruses.id = maia_virus_aliases.virus_id " .
               "ORDER BY virus_alias ASC");
     $res = $sth->execute();
-    if (PEAR::isError($sth)) { 
+    // if (PEAR::isError($sth)) { 
+    if ((new PEAR)->isError($sth)) { 
         die($sth->getMessage()); 
     } 
     $smarty->assign('numrows', $res->numrows());
