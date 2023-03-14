@@ -150,7 +150,8 @@
               "FROM maia_sa_rules WHERE rule_count > 0 ORDER BY rule_count DESC, rule_name ASC LIMIT ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute($out['limit']);
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
 
@@ -168,7 +169,8 @@
 
         $sth = $dbh->prepare($select);
         $res = $sth->execute($sum);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($res->getMessage());
         }
         if($res->numRows()) {
