@@ -122,7 +122,8 @@
 
     $system_default = false;
     $res = $sth->execute(array($domain_id));
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     if ($row = $res->fetchRow()) {
@@ -236,7 +237,8 @@
     //get list of themes
     $sth = $dbh->prepare("SELECT id, name FROM maia_themes");
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
 
@@ -282,7 +284,8 @@
               "AND maia_domain_admins.domain_id = ? " .
               "ORDER BY maia_users.user_name ASC");
     $res = $sth->prepare(array($domain_id));
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     $admins = array();
@@ -304,7 +307,8 @@
               "WHERE maia_users.id = maia_domain_admins.admin_id " .
               "AND maia_domain_admins.domain_id = ?");
     $res = $sth->execute(array($domain_id));
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     $id_list = "";
@@ -327,7 +331,8 @@
     $select .= "ORDER BY user_name ASC";
     $sth->prepare($select);
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
 
