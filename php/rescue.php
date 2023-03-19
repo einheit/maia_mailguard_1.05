@@ -125,11 +125,13 @@
                   "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
                   "AND maia_mail_recipients.recipient_id = ?";
         $sth = $dbh->prepare($select);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth))
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
 	$res = $sth->execute(array($token, $euid));
-        if (PEAR::isError($res)) {
+        // if (PEAR::isError($res)) {
+        if ((new PEAR)->isError($res)) {
             die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
         while ($row = $res->fetchRow())
@@ -159,11 +161,13 @@
                   "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
                   "AND maia_mail_recipients.recipient_id = ?";
         $sth = $dbh->prepare($select);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
 	$res = $sth->execute(array($token, $euid));
-        if (PEAR::isError($res)) {
+        // if (PEAR::isError($res)) {
+        if ((new PEAR)->isError($res)) {
             die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
         while ($row = $res->fetchRow())
@@ -193,11 +197,13 @@
                   "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
                   "AND maia_mail_recipients.recipient_id = ?";
         $sth = $dbh->prepare($select);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
 	$res = $sth->execute(array($token, $euid));
-        if (PEAR::isError($res)) {
+        // if (PEAR::isError($res)) {
+        if ((new PEAR)->isError($res)) {
             die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
         while ($row = $res->fetchRow())
@@ -227,11 +233,13 @@
                   "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
                   "AND maia_mail_recipients.recipient_id = ?";
         $sth = $dbh->prepare($select);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
 	$res = $sth->execute(array($token, $euid));
-        if (PEAR::isError($res)) {
+        // if (PEAR::isError($res)) {
+        if ((new PEAR)->isError($res)) {
             die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
         while ($row = $res->fetchRow())
@@ -260,11 +268,13 @@
                   "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
                   "AND maia_mail_recipients.recipient_id = ?";
         $sth = $dbh->prepare($select);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
 	$res = $sth->execute(array($token, $euid));
-        if (PEAR::isError($res)) {
+        // if (PEAR::isError($res)) {
+        if ((new PEAR)->isError($res)) {
             die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
         }
         while ($row = $res->fetchRow())
