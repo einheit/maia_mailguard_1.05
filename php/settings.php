@@ -93,7 +93,8 @@
                      "enable_address_linking " .
               "FROM maia_config WHERE id = 0");
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     if ($row = $res->fetchrow()) {
@@ -254,7 +255,8 @@
                  "WHERE installed = 'Y' " .
                  "ORDER BY language_name ASC");
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $data = array();
@@ -293,7 +295,8 @@
         $sth = $dbh->prepare("SELECT enable_user_autocreation, routing_domain, transport " .
                    "FROM maia_domains " .
                    "WHERE maia_domains.id = ?");
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
         }
         $res = $sth->execute(array($domain_id));
@@ -329,7 +332,8 @@
               "WHERE maia_users.id = maia_domain_admins.admin_id " .
               "AND maia_domain_admins.domain_id = ?");
         $res = $sth->execute(array($domain_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $id_list = "";
@@ -351,7 +355,8 @@
         $select .= " ORDER BY user_name ASC";
         $sth = $dbh->prepare($select);
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -393,7 +398,8 @@
                   "AND users.id = ?");
 
         $res = $sth->execute(array($address_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         if ($row = $res->fetchRow()) {
