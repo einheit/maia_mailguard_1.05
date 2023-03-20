@@ -125,7 +125,8 @@
                   "AND id IN (" . implode(',',$formVars) . ")";
         $sth = $dbh->prepare($select);
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {  
+        // if (PEAR::isError($sth)) {  
+        if ((new PEAR)->isError($sth)) {  
             die($sth->getMessage());  
         } 
 
