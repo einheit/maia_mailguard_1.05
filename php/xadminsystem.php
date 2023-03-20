@@ -209,7 +209,8 @@
                                // strtolower($formVars["reporter_username"]),
                                // $formVars["reporter_password"]
                                ));
-    if (PEAR::isError($sthu)) {  
+    // if (PEAR::isError($sthu)) {  
+    if ((new PEAR)->isError($sthu)) {  
         die($sthu->getMessage());  
     } 
     $sthu->free();
@@ -220,7 +221,8 @@
                   "WHERE id = 0");
         $sthu->execute(array($formVars["internal_auth"],
                                    $formVars["newuser_template_file"]));
-        if (PEAR::isError($sthu)) {  
+        // if (PEAR::isError($sthu)) {  
+        if ((new PEAR)->isError($sthu)) {  
             die($sthu->getMessage());  
         }
         $sthu->free(); 
