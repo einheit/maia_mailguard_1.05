@@ -13,7 +13,8 @@
         // Delete any references to recipients
         $sth = $dbh->prepare("DELETE FROM maia_mail_recipients WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
         $res = $sth->execute(array($mail_ids));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -22,7 +23,8 @@
         // Delete any references to SpamAssassin rules
         $sth = $dbh->prepare("DELETE FROM maia_sa_rules_triggered WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
         $res = $sth->execute(array($mail_ids));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -31,7 +33,8 @@
         // Delete any references to viruses
         $sth = $dbh->prepare("DELETE FROM maia_viruses_detected WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
         $res = $sth->execute(array($mail_ids));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -40,7 +43,8 @@
         // Delete any references to banned file attachments
         $sth = $dbh->prepare("DELETE FROM maia_banned_attachments_found WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
         $res = $sth->execute(array($mail_ids));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -49,7 +53,8 @@
         // Delete the mail item itself
         $sth = $dbh->prepare("DELETE FROM maia_mail WHERE id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
         $res = $sth->execute(array($mail_ids));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -75,12 +80,14 @@
         $delete .= '?' . str_repeat(',?', count($mail_ids) - 1);
         $delete .= ")";
         $sth = $dbh->prepare($delete);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
         $res = $sth->execute(array_merge((array)$user_id, (array)$mail_ids));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -96,11 +103,13 @@
           "AND mail_id IS NULL";
         $sth2 = $dbh->prepare($select);
 
-        if (PEAR::isError($sth2)) {
+        // if (PEAR::isError($sth2)) {
+        if ((new PEAR)->isError($sth2)) {
             die($sth2->getMessage());
         }
         $res2 = $sth2->execute((array)$mail_ids);
-        if (PEAR::isError($res2)) {
+        // if (PEAR::isError($res2)) {
+        if ((new PEAR)->isError($res2)) {
             die($res2->getMessage());
         }
         $deletions = array();
@@ -126,7 +135,8 @@
         // might have.
         $sth = $dbh->prepare("SELECT mail_id FROM maia_mail_recipients WHERE recipient_id = ?");
         $res = $sth->execute(array($uid));
-        if (PEAR::isError($sth)) { 
+        // if (PEAR::isError($sth)) { 
+        if ((new PEAR)->isError($sth)) { 
             die($sth->getMessage()); 
         } 
 
@@ -147,7 +157,8 @@
 
         $sth = $dbh->prepare("SELECT id FROM users WHERE email LIKE ? AND email not like ?");
         $res = $sth->execute(array('%'.$domain, $domain));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -177,7 +188,8 @@
         $update .= ")";
         $sth = $dbh->prepare($update);
         $res = $sth->execute(array_merge((array)$message_type, (array)$user_id, (array)$mail_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -258,7 +270,8 @@
                   "AND maia_mail_recipients.recipient_id = ? " .
                   "AND maia_mail_recipients.mail_id = ?");
         $res = $sth->execute(array($user_id, $mail_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -289,7 +302,8 @@
                 $my_email_address = "";
                 foreach ($rlist as $rmail) {
                     $res2 = $sth2->execute(array($user_id, $rmail));
-                    if (PEAR::isError($sth2)) {
+                    // if (PEAR::isError($sth2)) {
+                    if ((new PEAR)->isError($sth2)) {
                         die($sth2->getMessage());
                     }
 
