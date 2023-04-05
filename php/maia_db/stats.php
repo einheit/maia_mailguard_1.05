@@ -90,7 +90,8 @@
                                                (isset($row["totalsize"]) ? $row["totalsize"] : 0),
                                                (isset($row["items"]) ? $row["items"] : 0),
                                                $user_id));
-                    if (PEAR::isError($sth)) { 
+                    // if (PEAR::isError($sth)) { 
+                    if ((new PEAR)->isError($sth)) {
                         die($sth->getMessage()); 
                     } 
                 }
@@ -113,7 +114,8 @@
           $sth = $dbh->prepare("SELECT received_date, size, score " .
                     "FROM maia_mail WHERE id = ?");
           $res = $sth->execute(array($mail_id));
-          if (PEAR::isError($sth)) {
+          // if (PEAR::isError($sth)) {
+          if ((new PEAR)->isError($sth)) {
               die($sth->getMessage());
           }
           if ($row = $res->fetchrow()) {
@@ -132,7 +134,8 @@
                                "total_" . $type . "_items " .
                         "FROM maia_stats WHERE user_id = ?");
               $res2 = $sth2->execute(array($euid));
-              if (PEAR::isError($sth2)) {
+              // if (PEAR::isError($sth2)) {
+              if ((new PEAR)->isError($sth2)) {
                   die($sth->getMessage());
               }
               if ($row2 = $res2->fetchrow()) {
@@ -199,7 +202,8 @@
                                              $total_size,
                                              $total_items,
                                              $euid));
-                 if (PEAR::isError($sthu)) {
+                 // if (PEAR::isError($sthu)) {
+                 if ((new PEAR)->isError($sthu)) {
                      die($sth->getMessage());
                  }
                  $sthu->free();
@@ -232,7 +236,8 @@
                                              $largest_size,
                                              $total_size,
                                              $euid));
-                  if (PEAR::isError($sth)) {
+                  // if (PEAR::isError($sth)) {
+                  if ((new PEAR)->isError($sth)) {
                       die($sth->getMessage());
                   }
                   $sthi->free();
@@ -300,7 +305,8 @@
                          "enable_bad_header_checking, enable_banned_files_checking " .
                   "FROM maia_config WHERE id = 0");
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
 
@@ -349,7 +355,8 @@
         } else {
             $res = $sth->execute();
         }
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
 
@@ -392,7 +399,8 @@
             $sth = $dbh->prepare("SELECT MIN(oldest_" . $type . "_date) AS mindate FROM maia_stats");
             $res = $sth->execute();
         }
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
 
@@ -434,7 +442,8 @@
                     "WHERE lowest_" . $type . "_score > -999");
           $res = $sth->execute();
       }
-      if (PEAR::isError($sth)) {
+      // if (PEAR::isError($sth)) {
+      if ((new PEAR)->isError($sth)) {
            die($sth->getMessage());
       }
 
@@ -474,7 +483,8 @@
                     "WHERE highest_" . $type . "_score < 999");
           $res = $sth->execute();
       }
-      if (PEAR::isError($sth)) {
+      // if (PEAR::isError($sth)) {
+      if ((new PEAR)->isError($sth)) {
            die($sth->getMessage());
       }
 
@@ -512,7 +522,8 @@
             $sth = $dbh->prepare("SELECT SUM(total_" . $type . "_score) AS score FROM maia_stats");
             $res = $sth->execute();
         }
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
 
@@ -557,7 +568,8 @@
                       "_size > 0");
             $res = $sth->execute();
         }
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
 
@@ -600,7 +612,8 @@
             $sth = $dbh->prepare("SELECT MAX(largest_" . $type . "_size) AS size FROM maia_stats");
             $res = $sth->execute();
         }
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
 
@@ -643,7 +656,8 @@
             $sth = $dbh->prepare("SELECT SUM(total_" . $type . "_size) AS size FROM maia_stats");
             $res = $sth->execute();
         }
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
 
@@ -681,13 +695,15 @@
         if ($user_id > 0) {
             $sth = $dbh->prepare("SELECT total_" . $type . "_items AS count FROM maia_stats WHERE user_id = ?");
             $res = $sth->execute(array($user_id));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
         } else {
             $sth = $dbh->prepare("SELECT SUM(total_" . $type . "_items) AS count FROM maia_stats");
             $res = $sth->execute();
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
         }
@@ -805,7 +821,8 @@
                       "FROM maia_stats");
             $res = $sth->execute();
         }
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $fp_pct = 0;
