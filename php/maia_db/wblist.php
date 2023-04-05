@@ -34,7 +34,8 @@
 
         $sth = $dbh->prepare("UPDATE wblist SET wb = ? WHERE rid = ? AND sid = ?");
         $sth->execute(array($wb, $user_id, $addr_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             $logger->err("Problem updating wblist: " . $sth->getMessage());
             return 'text_wblist_error';
         } else {
@@ -53,7 +54,8 @@
 
         $sth = $dbh->prepare("INSERT INTO wblist (rid, sid, wb) VALUES (?, ?, ?)");
         $sth->execute(array($user_id, $addr_id, $wb));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $sth->free();
@@ -69,7 +71,8 @@
 
         $sth = $dbh->prepare("DELETE FROM wblist WHERE rid = ? AND sid = ?");
         $sth->execute(array($user_id, $addr_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             $logger->err("Problem deleting wblist: " . $sth->getMessage());
             return $lang['text_wblist_error'];
         }
@@ -79,13 +82,15 @@
         // remove it from the mailaddr table as well.
         $sth2 = $dbh->prepare("SELECT wb FROM wblist WHERE sid = ?");
         $res = $sth2->execute(array($addr_id));
-        if (PEAR::isError($sth2)) {
+        // if (PEAR::isError($sth2)) {
+        if ((new PEAR)->isError($sth2)) {
              die($sth->getMessage());
         } 
         if (!$res->fetchRow()) {
             $sth3 = $dbh->prepare("DELETE FROM mailaddr WHERE id = ?");
             $sth3->execute(array($addr_id));
-            if (PEAR::isError($sth3)) {
+            // if (PEAR::isError($sth3)) {
+            if ((new PEAR)->isError($sth3)) {
                 $logger->err("Problem updating wblist: " . $sth3->getMessage());
                 return $lang['text_wblist_error'];
             }
@@ -107,7 +112,8 @@
                  "FROM wblist " .
                  "WHERE rid = ?");
         $res = $sth->execute(array($user_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
         while ($row = $res->fetchRow()) {
@@ -131,7 +137,8 @@
         $sth = $dbh->prepare("INSERT INTO mailaddr (priority, email) VALUES (?, ?)");
 
         $sth->execute(array($priority, $email));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
         $sth->free();
@@ -139,7 +146,8 @@
         $sth = $dbh->prepare("SELECT id FROM mailaddr WHERE email = ?");
 
         $res = $sth->execute(array($email));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         }
         if ($row = $res->fetchRow()) {
@@ -163,7 +171,8 @@
         
         $addr_id = 0;
         $res = $sth->execute(array($addr));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
              die($sth->getMessage());
         } 
         if ($row = $res->fetchRow()) {
