@@ -79,6 +79,10 @@
     require_once ("mailtools.php");
     require_once ("maia_db.php");
 
+require_once ("POP3.php");
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\POP3;
 
     /* Authenticate with external program declared as  $auth_external
      * in config.php
@@ -117,17 +121,19 @@
           $auth_pop3_port = 110;
         }
         
-
-        require_once ("Net/POP3.php");
-        $mbox = new Net_POP3();
-        
+        // require_once ("Net/POP3.php");
+        // $mbox = new Net_POP3();
+        $mbox = new POP3();
+	    
         $result = $mbox->connect($auth_pop3_host, $auth_pop3_port);
-         if (PEAR::isError($mbox)) {
+        // if (PEAR::isError($mbox)) {
+        if ((new PEAR)->isError($mbox)) {
               return $result;
         }
 
         $result = $mbox->login($user, $pass);
-        if (PEAR::isError($mbox)) {
+        // if (PEAR::isError($mbox)) {
+        if ((new PEAR)->isError($mbox)) {
               $mbox->disconnect();
               return $result;
         }
@@ -161,17 +167,19 @@
           $auth_imap_port = 143;
         }
         
-        require_once ("Net/IMAP.php");
+        // require_once ("Net/IMAP.php");
         $mbox = new Net_IMAP( $auth_imap_host, $auth_imap_port);
-
-        if (PEAR::isError($mbox)) {
+        
+        // if (PEAR::isError($mbox)) {
+        if ((new PEAR)->isError($mbox)) {
               //echo $mbox->toString();
               return $mbox;
         }
         
 
         $result = $mbox->login($user, $pass, false, false);     
-        if (PEAR::isError($result)) {
+        // if (PEAR::isError($result)) {
+        if ((new PEAR)->isError($result)) {
               //echo $result->toString();
               $mbox->disconnect();
               return $result;
@@ -321,7 +329,8 @@
         $email = "";
         $auth_sth = $auth_dbh->prepare($select);
         $auth_res = $auth_sth->execute(array($user));
-	if (PEAR::isError($auth_sth)) {
+	// if (PEAR::isError($auth_sth)) {
+	if ((new PEAR)->isError($auth_sth)) {
             die($auth_sth->getMessage());
         }
 
@@ -361,18 +370,22 @@
 	}
         global $dbh;
 
+        require_once('maia_db/scrypt.php');
+
         $email = "";
         $testpass = md5($pass);
         $sth = $dbh->prepare("SELECT users.email, maia_users.password " .
                   "FROM users, maia_users " .
                   "WHERE users.id = maia_users.primary_email_id " .
                   "AND maia_users.user_name = ? "); 
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
         $res = $sth->execute(array($user));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -393,6 +406,13 @@
                 return false;
             }
         }
+        // Only reached if scrypt password
+        if(Password::check($pass, $userpass)) {
+            return $email;
+        } else {
+            return false;
+        }
+
     }
 
 
