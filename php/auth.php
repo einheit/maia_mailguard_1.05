@@ -471,7 +471,8 @@ use PHPMailer\PHPMailer\POP3;
         } elseif ($auth_method == "sql") {
             if (!empty($user_name) && !empty($pwd)) {
                 $email = auth_sql($user_name, $pwd);
-		if (PEAR::isError($email)) {
+		// if (PEAR::isError($email)) {
+		if ((new PEAR)->isError($email)) {
 			$authenticated = false;
 		} else {
  	               $authenticated = (!($email === false));
