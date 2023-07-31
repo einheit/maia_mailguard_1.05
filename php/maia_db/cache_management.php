@@ -10,9 +10,11 @@
             return;                  # we should not do anything if the list is empty
         }
 
-        // Delete any references to recipients
-        $sth = $dbh->prepare("DELETE FROM maia_mail_recipients WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
-        $res = $sth->execute(array($mail_ids));
+        // Delete any references to recipients 
+        // corrected table name, references already deleted
+        // $sth = $dbh->prepare("DELETE FROM maia_mail_recipients WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
+        $sth = $dbh->prepare("DELETE FROM maia_mail WHERE id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
+        $res = $sth->execute($mail_ids);
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
@@ -22,7 +24,7 @@
 
         // Delete any references to SpamAssassin rules
         $sth = $dbh->prepare("DELETE FROM maia_sa_rules_triggered WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
-        $res = $sth->execute(array($mail_ids));
+        $res = $sth->execute($mail_ids);
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
@@ -32,7 +34,7 @@
 
         // Delete any references to viruses
         $sth = $dbh->prepare("DELETE FROM maia_viruses_detected WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
-        $res = $sth->execute(array($mail_ids));
+        $res = $sth->execute($mail_ids);
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
@@ -42,7 +44,7 @@
 
         // Delete any references to banned file attachments
         $sth = $dbh->prepare("DELETE FROM maia_banned_attachments_found WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
-        $res = $sth->execute(array($mail_ids));
+        $res = $sth->execute($mail_ids);
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
@@ -52,7 +54,7 @@
 
         // Delete the mail item itself
         $sth = $dbh->prepare("DELETE FROM maia_mail WHERE id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
-        $res = $sth->execute(array($mail_ids));
+        $res = $sth->execute($mail_ids);
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
@@ -118,6 +120,9 @@
         }
         $sth2->free();
         if (count($deletions) > 0) {
+          // consolidate array castes
+          $deletions = array_map('trim',$deletions);
+          $deletions = array_map('intval',$deletions);
           delete_mail($deletions);
         }
     }
