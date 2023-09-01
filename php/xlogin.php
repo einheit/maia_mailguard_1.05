@@ -140,7 +140,8 @@
        $email_id = 0;
        $sth = $dbh->prepare("SELECT users.id FROM users left join maia_users ON users.maia_user_id=maia_users.id WHERE maia_users.primary_email_id <> users.id and users.email = ?");
        $res = $sth->execute(array($email));
-       if (PEAR::isError($sth)) {
+       // if (PEAR::isError($sth)) {
+       if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
        }
 
@@ -170,7 +171,8 @@
 
           $sth = $dbh->prepare($select);
           $res = $sth->execute(array($euid,$token));
-          if (PEAR::isError($sth)) {
+          // if (PEAR::isError($sth)) {
+          if ((new PEAR)->isError($sth)) {
               die($sth->getMessage());
           }
 
@@ -182,8 +184,9 @@
 
               $sth = $dbh->prepare($select);
               $res = $sth->execute(array($maia_user_id,$user_token));
-              if (PEAR::isError($sth)) {
-                  die($sth->getMessage());
+              // if (PEAR::isError($sth)) {
+              if ((new PEAR)->isError($sth)) {
+                 die($sth->getMessage());
               }
               if ($row = $res->fetchrow()) {
                 $uid = $maia_user_id;
@@ -201,7 +204,8 @@
                     "AND token_system='digest'" ;
           $sth = $dbh->prepare($select);
           $res = $sth->execute(array($maia_user_id,$token));
-          if (PEAR::isError($sth)) {
+          // if (PEAR::isError($sth)) {
+          if ((new PEAR)->isError($sth)) {
               die($sth->getMessage());
           }
           if ($row = $res->fetchrow()) {
@@ -304,7 +308,8 @@
        $sid = "";
    }
 
-   if (PEAR::isError($authenticated)) {
+   // if (PEAR::isError($authenticated)) {
+   if ((new PEAR)->isError($authenticated)) {
     $message = $authenticated->getMessage();
    }
    

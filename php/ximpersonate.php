@@ -100,7 +100,8 @@
         $select = "SELECT email FROM users WHERE maia_user_id = ?";
         $sth = $dbh->prepare($select);
         $res = $sth->execute($id);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 

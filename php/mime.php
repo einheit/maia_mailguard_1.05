@@ -79,8 +79,8 @@
    require_once ("Mail/mimeDecode.php");  // PEAR::Mail::mimeDecode.php
    // edit jjs 2020-03-26
    // require_once 'HTMLPurifier.auto.php';
-   require_once ("/var/htmlpurifier/library/HTMLPurifier.auto.php");
-
+   // require_once ("/var/htmlpurifier/library/HTMLPurifier.auto.php");
+   require_once 'HTMLPurifier.auto.php';
 
    /*
     * display_parts(): Recursively decode and display the contents of
@@ -103,8 +103,9 @@
       switch ($primary) {
 
          case "multipart":
-            if (!array_key_exists('parts', $structure)) {
-                  $ret = "[" . $lang['text_invalid'] . "]<br>";
+            // if (!array_key_exists('parts', $structure)) {
+            if (!array_key_exists('parts', (array)$structure)) {
+		    $ret = "[" . $lang['text_invalid'] . "]<br>";
                   break;
             }
             // Recursively decode each of the sub-parts of this

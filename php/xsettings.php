@@ -97,7 +97,8 @@
 
     $sth = $dbh->prepare($select);
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
 
@@ -153,7 +154,8 @@
         $sth = $dbh->prepare("SELECT policy_id, email, maia_user_id FROM users
                    WHERE users.maia_user_id = ? AND users.id = ?");
         $res = $sth->execute(array($euid, $address_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         if ($res->numRows() == 0 ) {
@@ -195,7 +197,8 @@
                         "spam_kill_level " .
                  "FROM policy WHERE id = ?");
         $res = $sth->execute(array($policy_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         if ($row = $res->fetchRow()) {
@@ -351,7 +354,8 @@
                                            $spam_tag2_level,
                                            $spam_kill_level,
                                            $row["policy_id"]));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
             }
@@ -374,7 +378,8 @@
                                        $spam_tag2_level,
                                        $spam_kill_level,
                                        $policy_id));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
         }
@@ -395,7 +400,8 @@
                 $update = "UPDATE maia_users SET reminders = ? WHERE id = ?";
                 $sth = $dbh->prepare($update);
                 $res = $sth->execute(array($reminder, $euid));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
             }
@@ -406,7 +412,8 @@
                 $update = "UPDATE maia_users SET charts = ? WHERE id = ?";
                 $sth = $dbh->prepare($update);
                 $res = $sth->execute(array($charts, $euid));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
             }
@@ -417,7 +424,8 @@
                 $update = "UPDATE maia_users SET spamtrap = ? WHERE id = ?";
                 $sth = $dbh->prepare($update);
                 $res = $sth->execute(array($spamtrap, $euid));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
             }
@@ -427,7 +435,8 @@
             $update = "UPDATE maia_users SET auto_whitelist = ? WHERE id = ?";
             $sth = $dbh->prepare($update);
             $res = $sth->execute(array($auto_whitelist, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
         }
@@ -436,7 +445,8 @@
             $update = "UPDATE maia_users SET items_per_page = ? WHERE id = ?";
             $sth = $dbh->prepare($update);
             $res = $sth->execute(array($items_per_page, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
         }
@@ -444,7 +454,8 @@
             $quarantine_digest_interval = intval($_POST["digest_interval"]) * 60; //adjust from hours displayed to minutes in database
             $sth = $dbh->prepare("UPDATE maia_users SET quarantine_digest_interval = ? WHERE id = ?");
             $sth->execute(array($quarantine_digest_interval, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -453,7 +464,8 @@
             $language = trim($_POST["language"]);
             $sth = $dbh->prepare("UPDATE maia_users SET language = ? WHERE id = ?");
             $sth->execute(array($language, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             if ($uid == $euid) {
@@ -465,7 +477,8 @@
             $theme_id = (trim($_POST["theme_id"]));
             $sth = $dbh->prepare("UPDATE maia_users SET theme_id = ? WHERE id = ?");
             $sth->execute(array($theme_id, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -474,7 +487,8 @@
             $truncate_subject = (trim($_POST["truncate_subject"]));
             $sth = $dbh->prepare("UPDATE maia_users SET truncate_subject = ? WHERE id = ?");
             $sth->execute(array($truncate_subject, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -483,7 +497,8 @@
             $truncate_email = (trim($_POST["truncate_email"]));
             $sth = $dbh->prepare("UPDATE maia_users SET truncate_email = ? WHERE id = ?");
             $sth->execute(array($truncate_email, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -492,7 +507,8 @@
             $discard_ham = (trim($_POST["discard_ham"]));
             $sth = $dbh->prepare("UPDATE maia_users SET discard_ham = ? WHERE id = ?");
             $sth->execute(array($discard_ham, $euid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -502,7 +518,8 @@
             $domain_id = $_POST['domain_id'];
             $sth = $dbh->prepare("UPDATE maia_domains SET enable_user_autocreation = ? WHERE id = ?");
             $sth->execute(array($enable_user_autocreation, $domain_id));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -559,7 +576,8 @@
             $message = sprintf($lang['text_address_added'], $email);
         } else {
             $message = sprintf($lang['text_login_failed'], $login);
-            if (PEAR::isError($authenticated)) {
+            // if (PEAR::isError($authenticated)) {
+            if ((new PEAR)->isError($authenticated)) {
               $message .= "<br>" . $authenticated->getMessage();
             }
         }
@@ -598,7 +616,8 @@
         } else {
             $sth = $dbh->prepare("SELECT id FROM maia_users WHERE user_name = ?");
             $res = $sth->execute(array($new_login));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             if ($row = $res->fetchrow()) {
@@ -637,7 +656,8 @@
                   "AND users.id <> maia_users.primary_email_id " .
                   "AND users.maia_user_id = ?");
         $res = $sth->execute(array($user_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         while ($row = $res->fetchrow()) {
@@ -646,7 +666,8 @@
             if (isset($_POST["make_primary_" . $email_id])) {
                 $sth2 = $dbh->prepare("UPDATE maia_users SET primary_email_id = ? WHERE id = ?");
                 $res = $sth2->execute(array($email_id, $user_id));
-                if (PEAR::isError($res)) {
+                // if (PEAR::isError($res)) {
+                if ((new PEAR)->isError($res)) {
                     die($res->getMessage());
                 }
                 $sth2->free();
@@ -671,7 +692,8 @@
             $routing_domain = $_POST["routing_domain"];
             $sth = $dbh->prepare("UPDATE maia_domains set transport=?, routing_domain=? WHERE id=?");
             $res = $sth->execute(array($transport, $routing_domain, $domain_id));
-            if (PEAR::isError($sth)) { 
+            // if (PEAR::isError($sth)) { 
+            if ((new PEAR)->isError($sth)) { 
                 die($sth->getMessage()); 
             } 
           } else {
@@ -681,7 +703,8 @@
             $res = $sth->execute(array($transport, $domain_id));
           }
 
-          if (PEAR::isError($res)) {
+          // if (PEAR::isError($res)) {
+          if ((new PEAR)->isError($res)) {
             $message =  sprintf($lang['text_transport_error'], $res->getMessage());
           } else {
             $message = $lang['text_transport_set'];
@@ -709,7 +732,8 @@
                 // Link the administrator to this domain
                 $sth = $dbh->prepare("INSERT INTO maia_domain_admins (admin_id, domain_id) VALUES (?, ?)");
                 $sth->execute(array($admin_id, $domain_id));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
                 $sth->free();
@@ -717,7 +741,8 @@
                 // Change the user's privilege level to Domain (A)dministrator
                 $sth = $dbh->prepare("UPDATE maia_users SET user_level = 'A' WHERE id = ?");
                 $sth->execute(array($admin_id));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
                 $sth->free();
@@ -742,7 +767,8 @@
         foreach($rids as $key => $rid) {
             $sth = $dbh->perpare("DELETE FROM maia_domain_admins WHERE domain_id = ? AND admin_id = ?");
             $sth->execute(array($domain_id, $rid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -751,13 +777,15 @@
             // demote him to a regular (U)ser.
             $sth2 = $dbh->prepare("SELECT domain_id FROM maia_domain_admins WHERE admin_id = ?");
             $res2 = $sth2->execute(array($rid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             if (!$sth2->fetchrow()) {
                 $sth3 = $dbh->prepare("UPDATE maia_users SET user_level = 'U' WHERE id = ?");
                 $sth3->execute(array($rid));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
                 $sth3->free();

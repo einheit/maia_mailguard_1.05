@@ -169,7 +169,8 @@ function get_user_wb_rows($dbh, $user_id) {
               "ORDER BY mailaddr.email ASC");
 
     $res = $sth->execute(array($user_id));
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     $rows = array();
@@ -217,7 +218,8 @@ EOQ;
 
   $sth = $dbh->prepare($query);
   $res = $sth->execute(array($maia_user_id));
-   if (PEAR::isError($sth)) {
+   // if (PEAR::isError($sth)) {
+   if ((new PEAR)->isError($sth)) {
      $logger->err("Error getting domain wblist: " . $sth->getMessage() . " Query: " . $query . "User: " . $maia_user_id );
      return $rows;
    }
@@ -246,7 +248,8 @@ EOQ;
 
     $sth = $dbh->prepare($select);
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
          die($sth->getMessage());
     }
     $rows = array();

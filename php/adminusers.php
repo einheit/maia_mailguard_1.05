@@ -119,7 +119,8 @@
         //$sth = $dbh->query($select, array($uid));
         $sth = $dbh->prepare($select);
         $res = $sth->execute($uid);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         while ($row = $res->fetchrow()) {
@@ -141,7 +142,8 @@
                       "ORDER BY users.email ASC";
             $sth = $dbh->prepare($select);
             $res = $sth->execute($uid);
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
 
@@ -168,7 +170,8 @@
                       "ORDER BY user_name ASC";
             $sth = $dbh->prepare($select);
             $res = $sth->execute($uid);
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             while ($row = $res->fetchrow()) {
@@ -188,7 +191,8 @@
                   "ORDER BY email ASC";
         $sth = $dbh->prepare($select);
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -204,7 +208,8 @@
                   "ORDER BY user_name ASC";
         $sth = $dbh->prepare($select);
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $user = array();
@@ -240,7 +245,8 @@
                       "ORDER BY users.email ASC";
             $sth = $dbh->prepare($select);
             $res = $sth->execute();
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             while ($row = $res->fetchrow()) {
@@ -258,7 +264,8 @@
                   "ORDER BY email ASC";
         $sth = $dbh->prepare($select);
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $delete_address = array();
@@ -287,7 +294,8 @@
                       "ORDER BY user_name ASC";
             $sth = $dbh->prepare($select);
             $res = $sth->execute();
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             while ($row = $res->fetchrow()) {
@@ -306,7 +314,8 @@
                   "ORDER BY user_name ASC";
         $sth = $dbh->prepare($select);
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $del_user = array();

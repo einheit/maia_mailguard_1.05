@@ -140,7 +140,8 @@
                           "AND maia_domains.domain = ?";
                 $sth = $dbh->prepare($select);
                 $res = $sth->execute(array($uid, $domain));
-                if (PEAR::isError($sth)) { 
+                // if (PEAR::isError($sth)) { 
+                if ((new PEAR)->isError($sth)) { 
                     die($sth->getMessage()); 
                 } 
 
@@ -153,7 +154,8 @@
                 // Only add the new address if it doesn't already exist.
                 $sth = $dbh->prepare("SELECT maia_user_id FROM users WHERE email = ?");
                 $res = $sth->execute(array($new_email));
-                if (PEAR::isError($sth)) { 
+                // if (PEAR::isError($sth)) { 
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage()); 
                 } 
 
@@ -166,8 +168,10 @@
                         list($password, $digest) = generate_random_password();
                         $sthu = $dbh->prepare("UPDATE maia_users SET password = ? WHERE id = ?");
                         $sthu->execute(array($digest, $new_user_id));
-                        if (PEAR::isError($sth)) { 
-                            die($sth->getMessage()); 
+                        // if (PEAR::isError($sth)) { 
+                        // typo ? die($sth->getMessage()); 
+                        if ((new PEAR)->isError($sthu)) { 
+                            die($sthu->getMessage()); 
                         } 
                         $sthu->free();
 
@@ -305,7 +309,8 @@
                           "AND maia_domain_admins.admin_id = ? " .
                           "ORDER BY domain ASC");
                 $res = $sth->execute(array($uid));
-                if (PEAR::isError($sth)) { 
+                // if (PEAR::isError($sth)) { 
+                if ((new PEAR)->isError($sth)) { 
                     die($sth->getMessage()); 
                 } 
 
@@ -325,7 +330,8 @@
                               "AND users.email LIKE '%" . $dname . "' " .
                               "ORDER BY user_name ASC");
                     $res = $sth->execute();
-                    if (PEAR::isError($sth)) { 
+                    // if (PEAR::isError($sth)) { 
+                    if ((new PEAR)->isError($sth)) { 
                         die($sth->getMessage()); 
                     } 
 
@@ -351,8 +357,10 @@
                           "FROM maia_users " .
                           "ORDER BY user_name ASC");
                $res = $ssth->execute();
-               if (PEAR::isError($ssth)) { 
-                   die($sth->getMessage()); 
+               // if (PEAR::isError($ssth)) { 
+               // typo ? die($sth->getMessage()); 
+               if ((new PEAR)->isError($ssth)) { 
+                   die($ssth->getMessage()); 
                } 
                while ($row = $res->fetchrow()) {
                     if (preg_match($lookup, $row["user_name"])) {
@@ -379,7 +387,8 @@
 
             foreach( $user as $key => $value ) {
               $result = $sth->execute(array($value['maia_user_id']));
-              if (PEAR::isError($sth)) { 
+              // if (PEAR::isError($sth)) { 
+              if ((new PEAR)->isError($sth)) { 
                   die($sth->getMessage()); 
               } 
               while ($row = $result->fetchrow()) {

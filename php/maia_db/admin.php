@@ -56,7 +56,8 @@
             $sth = $dbh->prepare("UPDATE maia_users SET user_level = 'S' " .
                       "WHERE id = ?");
             $sth->execute(array($uid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();
@@ -80,7 +81,8 @@
             $sth = $dbh->prepare("UPDATE maia_users SET user_level = 'U' " .
                       "WHERE id = ?");
             $sth->execute(array($uid));
-            if (PEAR::isError($sth)) {
+            // if (PEAR::isError($sth)) {
+            if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
             }
             $sth->free();

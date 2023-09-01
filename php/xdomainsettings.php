@@ -110,7 +110,8 @@
                          "enable_spamtraps " .
                   "FROM maia_config WHERE id = 0");
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         if ($row = $res->fetchrow()) {
@@ -144,7 +145,8 @@
     	                 "spam_kill_level " .
     	          "FROM policy WHERE id = ?");
     	$res = $sth->execute(array($policy_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
     	if ($row = $res->fetchRow()) {
@@ -171,7 +173,8 @@
   	                   "WHERE maia_domains.domain = maia_users.user_name " .
   	                   "AND maia_domains.id = ?");
   	$res = $sth->execute(array($domain_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
   	if ($row = $res->fetchrow()) {
@@ -326,20 +329,24 @@
                                    $spam_tag2_level,
                                    $spam_kill_level,
                                    $policy_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $sth->free();
 
         $sth = $dbh->prepare("UPDATE maia_users SET discard_ham = ?, theme_id = ? WHERE id = ?");
         $sth->execute(array($discard_ham, $theme_id, $domain_user_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $sth->free();
 
 	$sth = $dbh->prepare("UPDATE maia_domains SET enable_user_autocreation = ? WHERE id = ?");
-  	$sth->execute(array($enable_user_autocreation, $domain_id));	                if (PEAR::isError($sth)) {
+  	$sth->execute(array($enable_user_autocreation, $domain_id));
+	// if (PEAR::isError($sth)) {
+	if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         $sth->free();
@@ -359,7 +366,8 @@
                   "WHERE maia_users.id = maia_domain_admins.admin_id " .
                   "AND maia_domain_admins.domain_id = ?");
         $res = $sth->execute(array($domain_id));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -376,22 +384,26 @@
             	// Remove the link between this administrator and this domain
                 $sth2 = $dbh->prepare("DELETE FROM maia_domain_admins WHERE domain_id = ? AND admin_id = ?");
                 $sth2->execute(array($domain_id, $admin_id));
-                if (PEAR::isError($sth2)) {
+                // if (PEAR::isError($sth2)) {
+                if ((new PEAR)->isError($sth2)) {
                     die($sth2->getMessage());
                 }
-                $sth2->free9();
+                // $sth2->free9();
+                $sth2->free();
 
                 // If this administrator doesn't control any remaining domains,
                 // demote him to a regular (U)ser.
                 $sth2 = $dbh->prepare("SELECT domain_id FROM maia_domain_admins WHERE admin_id = ?");
                 $res2 = $sth2->execute(array($admin_id));
-                if (PEAR::isError($sth2)) {
+                // if (PEAR::isError($sth2)) {
+                if ((new PEAR)->isError($sth2)) {
                     die($sth2->getMessage());
                 }
                 if (!$res2->fetchrow()) {
          	    $sth3 = $dbh->prepare("UPDATE maia_users SET user_level = 'U' WHERE id = ?");
         	    $sth3->execute(array($admin_id));
-                    if (PEAR::isError($sth)) {
+                    // if (PEAR::isError($sth)) {
+                    if ((new PEAR)->isError($sth)) {
                         die($sth->getMessage());
                     }
                     $sth3->free();
@@ -415,7 +427,8 @@
             	// Link the administrator to this domain
             	$sth = $dbh->prepare("INSERT INTO maia_domain_admins (admin_id, domain_id) VALUES (?, ?)");
             	$sth->execute(array($admin_id, $domain_id));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                    die($sth->getMessage());
                 }
                 $sth->free();
@@ -423,7 +436,8 @@
             	// Change the user's privilege level to Domain (A)dministrator
             	$sth = $dbh->prepare("UPDATE maia_users SET user_level = 'A' WHERE id = ?");
             	$sth->execute(array($admin_id));
-                if (PEAR::isError($sth)) {
+                // if (PEAR::isError($sth)) {
+                if ((new PEAR)->isError($sth)) {
                     die($sth->getMessage());
                 }
                 $sth->free();

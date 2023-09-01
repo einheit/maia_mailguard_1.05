@@ -171,7 +171,8 @@
        global $dbh;
        $rows = array();
        
-       if (PEAR::isError($dbh)) { 
+       // if (PEAR::isError($dbh)) { 
+       if ((new PEAR)->isError($dbh)) {
             return $dbh; 
        }
 
@@ -181,11 +182,13 @@
                  "WHERE maia_sa_rules.id = maia_sa_rules_triggered.rule_id " .
                  "AND maia_sa_rules_triggered.mail_id = ? " .
                  "ORDER BY maia_sa_rules_triggered.rule_score DESC");
-       if (PEAR::isError($sth)) { 
+       // if (PEAR::isError($sth)) { 
+       if ((new PEAR)->isError($sth)) { 
             die($sth . "and " . $mail_id); 
        }
        $res = $sth->execute(array($mail_id));
-       if (PEAR::isError($res)) { 
+       // if (PEAR::isError($res)) { 
+       if ((new PEAR)->isError($res)) { 
             return $res; 
        }
 
