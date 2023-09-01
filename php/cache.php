@@ -89,7 +89,8 @@ class MessageCache {
     var $rescued = 0;
     var $resent = 0;
     
-    function MessageCache($type, & $dbh, $dbtype, & $smarty) {
+    // function MessageCache($type, & $dbh, $dbtype, & $smarty) {
+    function __construct($type, & $dbh, $dbtype, & $smarty) {
         $this->smarty =& $smarty;
         $this->dbh =& $dbh;
         $this->dbtype = $dbtype;
@@ -154,7 +155,8 @@ class MessageCache {
                      if ($sort[1] == "A" || $sort[1] == "D") {
                          $sth = $dbh->prepare("UPDATE maia_users SET ". $field ." = ? WHERE id = ?");
                          $sth->execute(array($sort, $euid));
-                         if (PEAR::isError($sth)) {
+                         // if (PEAR::isError($sth)) {
+                         if ((new PEAR)->isError($sth)) {
                              die($sth->getMessage());
                          }
                          header("Location: list-cache.php" . $msid. "cache_type=". $this->type);
@@ -401,7 +403,8 @@ class MessageCache {
     
     function render($euid) {
         global $lang, $sid, $msid, $offset, $message;
-        $magic_quotes = get_magic_quotes_gpc();
+        // get_magic_quotes_gpc deprecated php8
+	// $magic_quotes = get_magic_quotes_gpc();
         $nothing_to_show = true;
         $offset = 0;
         $this->smarty->assign("msid", $msid);
@@ -456,7 +459,8 @@ class MessageCache {
 
         $sth3 = $this->dbh->prepare($this->select_count);
         $res3 = $sth3->execute(array($euid));
-        if (PEAR::isError($sth3)) {
+        // if (PEAR::isError($sth3)) {
+        if ((new PEAR)->isError($sth3)) {
             die($sth3->getMessage());
         }
         $numRows = $res3->fetchRow();
@@ -466,7 +470,8 @@ class MessageCache {
         {
             $sth2 = $this->dbh->prepare("SELECT email FROM users WHERE maia_user_id = ?");
             $res2 = $sth2->execute(array($euid));
-            if (PEAR::isError($sth2)) {
+            // if (PEAR::isError($sth2)) {
+            if ((new PEAR)->isError($sth2)) {
                 die($sth2->getMessage());
             }
             while ($row2 = $res2->fetchrow()) {
@@ -496,7 +501,8 @@ class MessageCache {
             //$paged_data['data'];  //paged data
             //$paged_data['links']; //xhtml links for page navigation
             //$paged_data['page_numbers']; //array('current', 'total');
-            if (PEAR::isError($paged_data)) {
+            // if (PEAR::isError($paged_data)) {
+            if ((new PEAR)->isError($paged_data)) {
                 $_SESSION["message"] = $paged_data->getMessage();
                 header("Location: welcome.php" . $sid);
                 exit;
@@ -547,7 +553,8 @@ class MessageCache {
                    }
                 }
                 $rows[$count]['received_date'] = $row["received_date"];
-                $rows[$count]['sender_email'] = $magic_quotes ? stripslashes($row["sender_email"]) : $row["sender_email"];
+                // $rows[$count]['sender_email'] = $magic_quotes ? stripslashes($row["sender_email"]) : $row["sender_email"];
+		$rows[$count]['sender_email'] = $row["sender_email"];
                 $rows[$count]['score'] = $row['score'];
  
                     $to_list = explode(" ", $row["envelope_to"]);
@@ -559,7 +566,8 @@ class MessageCache {
                     }
                     $rows[$count]['recipient_email'] = $rectmp;
 
-           $subject = $magic_quotes ? stripslashes($row['subject']) : $row['subject'];
+           // $subject = $magic_quotes ? stripslashes($row['subject']) : $row['subject'];
+	   $subject = $row['subject'];
            if ($subject == "") {
               $subject = "(" . $lang['text_no_subject'] . ")";
            }else{

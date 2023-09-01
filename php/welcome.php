@@ -110,7 +110,8 @@
                 "AND mail_id <= ?");
 
       $res = $sth->execute(array($euid, $maxitemid));
-      if (PEAR::isError($sth)) {
+      // if (PEAR::isError($sth)) {
+      if ((new PEAR)->isError($sth)) {
           die($sth->getMessage());
       }
       while ($row = $res->fetchRow())
@@ -125,7 +126,8 @@
    if (isset($_POST['change_protection']) && isset($_POST['protection_level'])) {
     $sth = $dbh->prepare("SELECT policy_id FROM users WHERE maia_user_id = ?"); 
     $res = $sth->execute($euid);
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
  
@@ -150,7 +152,8 @@
                   
     while ($row = $res->fetchrow()) {
       	$sth2->execute(array_merge($protection[$protection_level], array($row['policy_id'])));
-        if (PEAR::isError($sth2)) {
+        // if (PEAR::isError($sth2)) {
+        if ((new PEAR)->isError($sth2)) {
             die($sth2->getMessage());
         }
     	
@@ -218,7 +221,8 @@
              "FROM users LEFT JOIN policy ON users.policy_id=policy.id ".
              "WHERE users.maia_user_id = ?"); 
     $res = $sth->execute(array($euid));
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     

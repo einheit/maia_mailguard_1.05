@@ -14,7 +14,8 @@
 
         $sth = $dbh->prepare("SELECT " . $key . " FROM maia_config WHERE id = 0");
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -69,7 +70,8 @@
                   "FROM maia_config WHERE id=0");
 
         $res = $sth->execute();
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
 
@@ -93,12 +95,14 @@
             //  be smart and try to guess the total number of records
             if ($countQuery = rewriteCountQuery($query)) {
                 $totalItems = $db->getOne($countQuery, $dbparams);
-                if (PEAR::isError($totalItems)) {
+                // if (PEAR::isError($totalItems)) {
+                if ((new PEAR)->isError($totalItems)) {
                     return $totalItems;
                 }
             } else {
                 $res =& $db->query($query, $dbparams);
-                if (PEAR::isError($res)) {
+                // if (PEAR::isError($res)) {
+                if ((new PEAR)->isError($res)) {
                     return $res;
                 }
                 $totalItems = (int)$res->numRows();
@@ -124,7 +128,8 @@
         }
         $sth = $db->prepare($query);
         $res = $sth->execute($dbparams);
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
          
@@ -146,7 +151,8 @@
 
     function sql_check($res, $function, $text="") {
         global $logger;
-        if (PEAR::isError($res)) {
+        // if (PEAR::isError($res)) {
+        if ((new PEAR)->isError($res)) {
             $logger->err("$function  " . $res->getMessage() . " " . $text);
         }
     }
@@ -172,7 +178,8 @@
         global $dbh;
         $sth = $dbh->prepare("SELECT theme_id FROM maia_users WHERE user_name=?");
         $res = $sth->execute(array('@.'));
-        if (PEAR::isError($sth)) {
+        // if (PEAR::isError($sth)) {
+        if ((new PEAR)->isError($sth)) {
             die($sth->getMessage());
         }
         if ($row=$res->fetchrow()) {

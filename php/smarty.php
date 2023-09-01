@@ -85,7 +85,8 @@
     class ThemeSmarty extends Smarty {
         var $_basedir = '';
         
-        function ThemeSmarty($theme = 'default', $spath = '') {
+        // function ThemeSmarty($theme = 'default', $spath = '') {
+        function __construct($theme = 'default', $spath = '') {
             parent::__construct();
             $this->_basedir = dirname(__FILE__).'/themes/'.$theme.'/';
             $this->template_dir = $this->_basedir.'templates/';
@@ -104,6 +105,9 @@
         function getBaseDir() {
            return $this->_basedir;
         }
+	function gettemplate_dir() {
+           return $this->template_dir;
+        }
     }
     
     $select = "SELECT banner_title, use_logo, use_icons, logo_file, logo_url, logo_alt_text, " .
@@ -112,7 +116,8 @@
 
     $sth = $dbh->prepare($select);
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     if ($row = $res->fetchrow()) {
@@ -163,7 +168,8 @@
               "WHERE maia_users.id = ? OR maia_users.user_name = '@.' ".
               "ORDER BY maia_users.id DESC");
     $res = $sth->execute(array($uid));
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {
         die($sth->getMessage());
     }
     if ($row = $res->fetchrow()) {

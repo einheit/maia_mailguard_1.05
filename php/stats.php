@@ -101,7 +101,8 @@
               "FROM maia_config WHERE id = 0";
     $sth = $dbh->prepare($select);
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {  
+    // if (PEAR::isError($sth)) {  
+    if ((new PEAR)->isError($sth)) {  
         die($sth->getMessage());  
     } 
 
@@ -120,7 +121,8 @@
       $select = "SELECT charts FROM maia_users WHERE id=?";
       $sth = $dbh->prepare($select);
       $res = $sth->execute($euid);
-      if (PEAR::isError($sth)) {  
+      // if (PEAR::isError($sth)) {  
+      if ((new PEAR)->isError($sth)) {  
           die($sth->getMessage());  
       } 
 

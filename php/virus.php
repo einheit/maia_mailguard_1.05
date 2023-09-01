@@ -219,7 +219,8 @@
       $select = "SELECT virus_lookup, virus_info_url FROM maia_config WHERE id = 0";
       $sth = $dbh->prepare($select);
       $res = $sth->execute();
-      if (PEAR::isError($sth)) {
+      // if (PEAR::isError($sth)) {
+      if ((new PEAR)->isError($sth)) {
          die($sth->getMessage());
       }
       if ($row = $res->fetchrow()) {

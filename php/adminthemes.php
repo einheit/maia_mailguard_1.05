@@ -133,7 +133,8 @@
 	$select = "SELECT id,name,path from maia_themes";
     $sth = $dbh->prepare($select);
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
+    // if (PEAR::isError($sth)) {
+    if ((new PEAR)->isError($sth)) {    
         die($sth->getMessage());
     }
 	$smarty->assign('rowcount', $res->numrows());

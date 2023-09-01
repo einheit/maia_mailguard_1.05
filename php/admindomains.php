@@ -123,7 +123,8 @@
 ENDSELECT;
         $sth = $dbh->prepare($select);
         $res = $sth->execute();
-        if (PEAR::isError($sth)) { 
+        // if (PEAR::isError($sth)) { 
+        if ((new PEAR)->isError($sth)) {             
             die($sth->getMessage()); 
         }
     } else {
@@ -140,7 +141,8 @@ ENDSELECT;
 ENDSELECT;
         $sth = $dbh->prepare($select);
         $res = $sth->execute(array($uid));
-        if (PEAR::isError($sth)) { 
+        // if (PEAR::isError($sth)) { 
+        if ((new PEAR)->isError($sth)) { 
             die($sth->getMessage()); 
         }
     }
