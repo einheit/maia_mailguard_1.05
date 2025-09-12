@@ -76,10 +76,10 @@
 
     // These names may be misleading, but for now...
     //Possible levels:  LOG_DEBUG, LOG_INFO, LOG_NOTICE, LOG_WARNING, LOG_ERR ...
-    $loglevel = PEAR_LOG_DEBUG;            // messages >= this level are sent to php log
+    $loglevel = 7;			// messages >= this level are sent to php log
     
-    $debug_popup = false;                   // allow a debug popup to be shown
-    $debuglevel = PEAR_LOG_DEBUG;            // messages >= this level are displayed in popup window
+    $debug_popup = false;		// allow a debug popup to be shown
+    $debuglevel = 7;			// messages >= this level are displayed in popup window
 
 
     // Language to use for text display (en, fr, ja, de, etc.).

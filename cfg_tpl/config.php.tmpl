@@ -76,10 +76,10 @@
 
     // These names may be misleading, but for now...
     //Possible levels:  LOG_DEBUG, LOG_INFO, LOG_NOTICE, LOG_WARNING, LOG_ERR ...
-    $loglevel = PEAR_LOG_DEBUG;            // messages >= this level are sent to php log
+    $loglevel = 7;			// messages >= this level are sent to php log
     
-    $debug_popup = false;                   // allow a debug popup to be shown
-    $debuglevel = PEAR_LOG_DEBUG;            // messages >= this level are displayed in popup window
+    $debug_popup = false;		// allow a debug popup to be shown
+    $debuglevel = 7;			// messages >= this level are displayed in popup window
 
 
     // Language to use for text display (en, fr, ja, de, etc.).
@@ -127,10 +127,10 @@
     // For more detailed information on the DSN syntax, see
     // http://pear.php.net/manual/en/package.database.db.intro-dsn.php
 
-    //$maia_sql_dsn = "dbtype://dbuser:passwd@tcp(hostname:port)/dbname";
-    //$maia_sql_dsn = "dbtype://dbuser:passwd@unix(/var/tmp/mysql.sock)/dbname";
+    // $maia_sql_dsn = "dbtype://dbuser:passwd@tcp(hostname:port)/dbname";
+    // $maia_sql_dsn = "dbtype://dbuser:passwd@unix(/var/tmp/mysql.sock)/dbname";
     // e.g.
-    //$maia_sql_dsn = "mysqli://maia:password@tcp(dbhost:3306)/maia";
+    // $maia_sql_dsn = "mysqli://maia:password@tcp(dbhost:3306)/maia";
     
     $maia_sql_dsn = "mysqli://maia:__PASSWORD__@tcp(__DBHOST__:3306)/__DBNAME__";
 
@@ -173,7 +173,7 @@
   // seems to pick a default font.
 	
 	$chart_font = '';
-	//$chart_font = 'coolveti';
+	// $chart_font = 'coolveti';
 	
 	// Optional Smarty include path.  The usual location for Smarty template libs is in the "Smarty/" folder
 	// under the default include path or in libs/Smarty/, but some distros such as Debian 
@@ -199,7 +199,7 @@
     //       used as the "user" portion of a user@domain address, with
     //       the main or ISP's domain indicating where the mail traffic
     //       should be directed.
-   //
+    //
     //    2: user_virtualdomain@routingdomain (e.g. joe_example_com@myisp.net)
     //       Similar to (1), except with underscores instead of periods.
     //
