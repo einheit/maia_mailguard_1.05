@@ -1,5 +1,7 @@
 ![maia web interface](https://github.com/einheit/maia-screenshots/blob/master/01-maia-login-screen.png "maia web interface")
 
+NOTE - as of Sept 12th, 2025, this is a non-working work in progress. We've just begun the tedious process of replacing the obsolete PEAR::MDB2 libraries with the php native PDO. 
+
 This repo was forked off from the the maia_mailguard_1.04a repo
 
 The branch retains the goals of maia_mailguard_1.04a but adds compatibility with php 8.
