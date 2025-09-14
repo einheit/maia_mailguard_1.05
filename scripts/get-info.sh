@@ -27,6 +27,10 @@ if [ $localdb -eq 0 ]; then
   [ "${dbname}X" == "X" ] && dbname="maia"
 fi
 
+echo
+echo "### note that the maia db user is maia ###"
+dbuser=maia
+
 # get the maia password
 echo
 echo -n "Enter the maia db password: "
@@ -60,9 +64,11 @@ echo "the fully qualified hostname is $fqdn"
 echo
 echo "the domain seems to be $domain"
 echo
-echo "mysql database name: $dbname"
+echo "database user: $dbuser"
 echo
-echo "mysql password for maia: $mydbpass"
+echo "database name: $dbname"
+echo
+echo "password for maia db: $mydbpass"
 
 if [ $needsmarthost == 1 ]; then
   echo "SMTP smarthost: $smarthost"
@@ -81,6 +87,7 @@ echo "HOST=$shost" > installer.tmpl
 echo "FQDN=$fqdn" >> installer.tmpl
 echo "DOMAIN=$domain" >> installer.tmpl
 echo "DBSERVER=$dbserver" >> installer.tmpl
+echo "DBUSER=$dbuser" >> installer.tmpl
 echo "DBNAME=$dbname" >> installer.tmpl
 echo "MAIAPASS=$mydbpass" >> installer.tmpl
 echo "WEBSRV=$fqdn" >> installer.tmpl
@@ -91,8 +98,7 @@ echo "WEBSRV=$fqdn" >> installer.tmpl
 echo "installation parameters:"
 cat installer.tmpl
 echo 
-echo "Verify the following parameters are correct:"
-echo
+echo "Verify the parameters above are correct"
 echo
 echo "If there are any incorrect parameters, open a new terminal"
 echo "and edit installer.tmpl to correct any errors"

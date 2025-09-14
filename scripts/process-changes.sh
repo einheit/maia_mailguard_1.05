@@ -11,6 +11,7 @@ HOST=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 FQDN=`grep FQDN installer.tmpl | awk -F\= '{ print $2 }'`
 DOMAIN=`grep DOMA installer.tmpl | awk -F\= '{ print $2 }'`
 dbhost=`grep DBSERVER installer.tmpl | awk -F\= '{ print $2 }'`
+dbuser=`grep DBUSER installer.tmpl | awk -F\= '{ print $2 }'`
 dbname=`grep DBNAME installer.tmpl | awk -F\= '{ print $2 }'`
 passwd=`grep MAIAPASS installer.tmpl | awk -F\= '{ print $2 }'`
 websrv=`grep WEBSRV installer.tmpl | awk -F\= '{ print $2 }'`
@@ -29,6 +30,8 @@ for i in config.php maia.conf maiad.conf
 do
  echo "editing DBHOST"
  inline-edit.sh __DBHOST__  $dbhost $i
+ echo "editing DBUSER"
+ inline-edit.sh __DBUSER__  $dbuser $i
  echo "editing DBNAME"
  inline-edit.sh __DBNAME__  $dbname $i
  echo "editing PASSWORD/${passwd}"
