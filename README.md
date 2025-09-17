@@ -8,7 +8,9 @@
 
 ![maia stats page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_stats.png "maia stats page")
 
-NOTE - as of Sept 12th, 2025, this is a non-working work in progress. We've just begun the tedious process of replacing the obsolete PEAR::MDB2 libraries with the php native PDO. 
+![maia wblist page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_wblist.png "maia wblist page")
+
+NOTE - as of Sept 12th, 2025, this is a work in progress. We've just begun the tedious process of replacing the obsolete PEAR::MDB2 libraries with the php native PDO. 
 
 This repo was forked from the the technion/maia_mailguard repo
 
