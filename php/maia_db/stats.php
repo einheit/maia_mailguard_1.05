@@ -39,14 +39,14 @@ function update_mail_stats($user_id, $type)
         $res = $sth->execute(array($user_id));
         sql_check($sth, "update_mail_stats", $res);
 
-        if ($row = $res->fetchrow()) {
+        if ($row = $sth->fetch()) {
 
             $sth2 = $dbh->prepare("SELECT user_id FROM maia_stats WHERE user_id = ?");
-            $res2 = $sth2->execute(array($user_id));
+            $sth2->execute(array($user_id));
             sql_check($sth2, "update_mail_stats", $sth2);
 
             // User already has a stats record, update it.
-            if ($res2->fetchrow()) {
+            if ($sth2->fetch()) {
                 $updatesth = $dbh->prepare(
                     "UPDATE maia_stats SET oldest_" . $type . "_date = ?, " .
                                                   "newest_" . $type . "_date = ?, " .
@@ -59,7 +59,7 @@ function update_mail_stats($user_id, $type)
                                                   "total_" . $type . "_items = ? " .
                             "WHERE user_id = ?"
                 );
-                $res = $updatesth->execute(
+                $updatesth->execute(
                     array($row["mindate"],
                                              $row["maxdate"],
                                              (isset($row["minscore"]) ? $row["minscore"] : 0),
@@ -71,7 +71,7 @@ function update_mail_stats($user_id, $type)
                                              (isset($row["items"]) ? $row["items"] : 0),
                                              $user_id)
                 );
-                  sql_check($res, "update_mail_stats", $updatesth);
+                  sql_check($sth, "update_mail_stats", $updatesth);
 
                 // User doesn't have a stats record yet, create a new one for him.
             } else {
@@ -88,7 +88,7 @@ function update_mail_stats($user_id, $type)
                                                   "user_id) " .
                           "VALUES (?,?,?,?,?,?,?,?,?,?)"
                 );
-                $res = $insertsth->execute(
+                $insertsth->execute(
                     array($row["mindate"],
                                            $row["maxdate"],
                                            (isset($row["minscore"]) ? $row["minscore"] : 0),
@@ -100,14 +100,8 @@ function update_mail_stats($user_id, $type)
                                            (isset($row["items"]) ? $row["items"] : 0),
                                            $user_id)
                 );
-                // if (PEAR::isError($sth)) { 
-                if ((new PEAR)->isError($sth)) {
-                    die($sth->getMessage()); 
-                } 
             }
-            $sth2->free();
         }
-        $sth->free();
     }
 }
 
@@ -291,14 +285,13 @@ function count_cache_items($euid)
                    WHERE recipient_id = ?
                    GROUP BY type"
     );
-    $res = $sth->execute(array($euid));
+    $sth->execute(array($euid));
     static $results = array();
     if (empty($results)) {  // cached if called multiple times in one page load.
-        while ($row = $res->fetchRow()) {
+        while ($row = $sth->fetch()) {
             $results[$row['type']] = array('count' => $row['qcount'],
                                            'max'   => $row['maxid']);
         }
-        $sth->free();
     }
 
     if (array_key_exists('P', $results)) { //need to combine/transfer to type  'S'
@@ -330,20 +323,15 @@ function count_total_mail($user_id)
                      "enable_bad_header_checking, enable_banned_files_checking " .
               "FROM maia_config WHERE id = 0"
     );
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    }
+    $sth->execute();
 
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $enable_false_negative_management = ($row["enable_false_negative_management"] == 'Y');
         $enable_virus_scanning = ($row["enable_virus_scanning"] == 'Y');
         $enable_spam_filtering = ($row["enable_spam_filtering"] == 'Y');
         $enable_bad_header_checking = ($row["enable_bad_header_checking"] == 'Y');
         $enable_banned_files_checking = ($row["enable_banned_files_checking"] == 'Y');
     }
-    $sth->free();
 
     if ($user_id > 0) {
         $prefix = "SELECT (";
@@ -377,20 +365,14 @@ function count_total_mail($user_id)
         $sth = $dbh->prepare($select);
 
     if ($user_id > 0) {
-        $res = $sth->execute(array($user_id));
+        $sth->execute(array($user_id));
     } else {
-        $res = $sth->execute();
+        $sth->execute();
     }
-        // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    }
-
         $count = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $count = $row["count"];
     }
-        $sth->free();
 
         return $count;
 }
@@ -423,20 +405,15 @@ function count_item_days($user_id, $type)
         $res = $sth->execute(array($user_id));
     } else {
         $sth = $dbh->prepare("SELECT MIN(oldest_" . $type . "_date) AS mindate FROM maia_stats");
-        $res = $sth->execute();
-    }
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
+        $sth->execute();
     }
 
     $days = 0.0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         sscanf($row["mindate"], "%d-%d-%d %d:%d:%d", $year, $mon, $day, $hour, $min, $sec);
         $tstamp = mktime($hour, $min, $sec, $mon, $day, $year);
         $days = ((time() - $tstamp) / (24 * 60 * 60));
     }
-    $sth->free();
 
     return $days;
 }
@@ -470,18 +447,13 @@ function lowest_item_score($user_id, $type)
             "SELECT MIN(lowest_" . $type . "_score) AS score FROM maia_stats " .
                 "WHERE lowest_" . $type . "_score > -999"
         );
-        $res = $sth->execute();
-    }
-        // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
+        $sth->execute();
     }
 
         $score = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $score = $row["score"];
     }
-        $sth->free();
 
         return $score;
 }
@@ -515,18 +487,13 @@ function highest_item_score($user_id, $type)
             "SELECT MAX(highest_" . $type . "_score) AS score FROM maia_stats " .
                 "WHERE highest_" . $type . "_score < 999"
         );
-        $res = $sth->execute();
-    }
-        // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
+        $sth->execute();
     }
 
         $score = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $score = $row["score"];
     }
-        $sth->free();
 
         return $score;
 }
@@ -551,21 +518,16 @@ function total_item_score($user_id, $type)
 
     if ($user_id > 0) {
         $sth = $dbh->prepare("SELECT total_" . $type . "_score AS score FROM maia_stats WHERE user_id = ?");
-        $res = $sth->execute(array($user_id));
+        $sth->execute(array($user_id));
     } else {
         $sth = $dbh->prepare("SELECT SUM(total_" . $type . "_score) AS score FROM maia_stats");
-        $res = $sth->execute();
-    }
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
+        $sth->execute();
     }
 
     $score = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $score = $row["score"];
     }
-    $sth->free();
 
     return $score;
 }
@@ -604,18 +566,13 @@ function smallest_item_size($user_id, $type)
             "SELECT MIN(smallest_" . $type . "_size) AS size FROM maia_stats WHERE smallest_" . $type .
                   "_size > 0"
         );
-        $res = $sth->execute();
-    }
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
+        $sth->execute();
     }
 
     $size = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $size = $row["size"];
     }
-    $sth->free();
 
     return $size;
 }
@@ -645,21 +602,16 @@ function largest_item_size($user_id, $type)
 
     if ($user_id > 0) {
         $sth = $dbh->prepare("SELECT largest_" . $type . "_size AS size FROM maia_stats WHERE user_id = ?");
-        $res = $sth->execute(array($user_id));
+        $sth->execute(array($user_id));
     } else {
         $sth = $dbh->prepare("SELECT MAX(largest_" . $type . "_size) AS size FROM maia_stats");
-        $res = $sth->execute();
-    }
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
+        $sth->execute();
     }
 
     $size = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $size = $row["size"];
     }
-    $sth->free();
 
     return $size;
 }
@@ -689,21 +641,16 @@ function total_item_size($user_id, $type)
 
     if ($user_id > 0) {
         $sth = $dbh->prepare("SELECT total_" . $type . "_size AS size FROM maia_stats WHERE user_id = ?");
-        $res = $sth->execute(array($user_id));
+        $sth->execute(array($user_id));
     } else {
         $sth = $dbh->prepare("SELECT SUM(total_" . $type . "_size) AS size FROM maia_stats");
-        $res = $sth->execute();
-    }
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
+        $sth->execute();
     }
 
     $size = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $size = $row["size"];
     }
-    $sth->free();
 
     return $size;
 }
@@ -739,18 +686,13 @@ function count_items($user_id, $type)
         }
     } else {
         $sth = $dbh->prepare("SELECT SUM(total_" . $type . "_items) AS count FROM maia_stats");
-        $res = $sth->execute();
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
+        $sth->execute();
     }
 
     $count = 0;
-    if ($row = $res->fetchRow()) {
+    if ($row = $sth->fetch()) {
         $count = $row["count"];
     }
-    $sth->free();
 
     return $count;
 }
@@ -861,12 +803,9 @@ function get_filter_stats($user_id)
                          "SUM(total_fn_items) AS total_fn " .
                   "FROM maia_stats"
         );
-        $res = $sth->execute();
+        $sth->execute();
     }
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+
     $fp_pct = 0;
     $fn_pct = 0;
     $ppv_pct = 0;
@@ -874,7 +813,7 @@ function get_filter_stats($user_id)
     $sensitivity_pct = 0;
     $specificity_pct = 0;
     $efficiency_pct = 0;
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $ham = $row["total_ham"];
         $spam = $row["total_spam"];
         $fp = $row["total_fp"];
@@ -904,7 +843,6 @@ function get_filter_stats($user_id)
                     $fn_pct = 0;
         }
     }
-    $sth->free();
 
     return array($ppv_pct, $npv_pct, $sensitivity_pct, $specificity_pct,
                       $efficiency_pct, $fp_pct, $fn_pct);
