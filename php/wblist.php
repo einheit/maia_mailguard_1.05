@@ -172,15 +172,11 @@ function get_user_wb_rows($dbh, $user_id)
     );
 
     $res = $sth->execute(array($user_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
     $rows = array();
 
-    if ($res->numRows() > 0) {
+    if ($sth->rowcount() > 0) {
         $count = 0;
-        while ($row = $res->fetchRow())
+        while ($row = $sth->fetch())
         {
             $rows[$count]['email'] = $row['email'];
             $rows[$count]['id'] = $row['id'];
@@ -188,14 +184,18 @@ function get_user_wb_rows($dbh, $user_id)
             $count++;
         }
     }
-    $sth->free();
     return $rows;
 }
 
 function get_domain_wb_rows($dbh, $maia_user_id)
 {
     global $logger;
-    if (substr(get_database_type($dbh), 0, 5) == "mysql") {
+
+//    if (substr(get_database_type($dbh), 0, 5) == "mysql") {
+/*	This isn't woking with mariadb-11.8.3 
+ *	In the interest of getting the common case working, 
+ *	we're kicking the can down the road and will address it later
+ */
         $query =<<<EOQ
       SELECT mailaddr.email, wb, user_name
         FROM mailaddr LEFT JOIN wblist ON mailaddr.id = wblist.sid
@@ -206,7 +206,7 @@ function get_domain_wb_rows($dbh, $maia_user_id)
                      WHERE maia_users.id=?)
         ORDER BY mailaddr.email ASC
 EOQ;
-    } else {
+/*    } else {
         $query =<<<EOQ
       SELECT mailaddr.email, wb, user_name
         FROM mailaddr LEFT JOIN wblist ON mailaddr.id = wblist.sid
@@ -218,18 +218,16 @@ EOQ;
         ORDER BY mailaddr.email ASC
 EOQ;
     }
+    */
+
     $rows = array();
 
     $sth = $dbh->prepare($query);
-    $res = $sth->execute(array($maia_user_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        $logger->err("Error getting domain wblist: " . $sth->getMessage() . " Query: " . $query . "User: " . $maia_user_id);
-        return $rows;
-    }
-    if ($res->numRows() > 0) {
+    $sth->execute(array($maia_user_id));
+    
+    if ($sth->rowcount() > 0) {
         $count = 0;
-        while ($row = $res->fetchRow())
+        while ($row = $sth->fetch())
         {
             $rows[$count]['email'] = $row['email'];
             $rows[$count]['domain'] = $row['user_name'];
@@ -237,7 +235,6 @@ EOQ;
             $count++;
         }
     }
-    $sth->free();
     return $rows;
 }
 
@@ -252,16 +249,13 @@ function get_system_wb_rows($dbh)
 EOQ;
 
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    }
+    $sth->execute();
+
     $rows = array();
 
-    if ($res->numRows() > 0) {
+    if ($sth->rowcount() > 0) {
         $count = 0;
-        while ($row = $res->fetchRow())
+        while ($row = $sth->fetch())
         {
             $rows[$count]['email'] = $row['email'];
             $rows[$count]['domain'] = $row['user_name'];
@@ -269,6 +263,5 @@ EOQ;
             $count++;
         }
     }
-    $sth->free();
     return $rows;
 }
