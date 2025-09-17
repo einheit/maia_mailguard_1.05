@@ -94,19 +94,14 @@
                      "enable_address_linking " .
         "FROM maia_config WHERE id = 0"
     );
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+    $sth->execute();
+    if ($row = $sth->fetch()) {
         $enable_charts = ($row["enable_charts"] == 'Y');
         $reminder_threshold_count = $row["reminder_threshold_count"];
         $enable_spamtraps = ($row["enable_spamtraps"] == 'Y');
         $enable_username_changes = ($row["enable_username_changes"] == 'Y');
         $enable_address_linking = ($row["enable_address_linking"] == 'Y');
     }
-    $sth->free();
     $super = is_superadmin($uid);
     
     require_once "smarty.php";
@@ -177,9 +172,9 @@
 
         // get the rest of the addresses
         $sth = $dbh->prepare("SELECT id, email FROM users WHERE maia_user_id = ? AND email NOT LIKE '@%' AND id <> ?");
-        $res = $sth->execute(array($euid, $primary_email_id));
+        $sth->execute(array($euid, $primary_email_id));
         $user_addr = array();
-        while ($row = $res->fetchRow()) {
+        while ($row = $sth->fetch()) {
             $smarty->assign('atleastone', true);
             $user_addr[] = array(
               'addid' =>  $row["id"],
@@ -187,7 +182,6 @@
             );
         }
         $smarty->assign('user_addr', $user_addr);
-        $sth->free();
 
         if ($auth_method == "internal") {
             $smarty->assign('user_name', get_user_name($euid));
@@ -196,9 +190,9 @@
 
     if ($address_id == 0 || $domain_user) {  // run this unless only displaying only the address info, ie, one non domain address
         $sth = $dbh->prepare("SELECT id, name FROM maia_themes");
-        $res = $sth->execute();
+        $sth->execute();
         $themes = array();
-        while ($row = $res->fetchrow()) {
+        while ($row = $sth->fetch()) {
             $themes[$row['id']] = $row['name'];
         }
         $smarty->assign("themes", $themes);
@@ -207,8 +201,8 @@
             "SELECT charts, reminders, language, spamtrap, auto_whitelist, items_per_page, quarantine_digest_interval, discard_ham, theme_id, truncate_subject, truncate_email " .
             "FROM maia_users WHERE maia_users.id = ?"
         );
-        $res = $sth->execute(array($euid));
-        if ($row = $res->fetchRow()) {
+        $sth->execute(array($euid));
+        if ($row = $sth->fetch()) {
             if ($row["charts"] == 'Y') {
                 $smarty->assign('ch_y_checked', "checked");
                 $smarty->assign('ch_n_checked', "");
@@ -254,7 +248,6 @@
             $smarty->assign("truncate_subject", $row["truncate_subject"]);
             $smarty->assign("truncate_email", $row["truncate_email"]);
         }
-        $sth->free();
         $smarty->assign('atleastone', false);
 
 
@@ -263,18 +256,14 @@
                  "WHERE installed = 'Y' " .
             "ORDER BY language_name ASC"
         );
-        $res = $sth->execute();
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
+        $sth->execute();
+        
         $data = array();
         $opt_lang = array();
-        while ($row = $res->fetchrow()) {
+        while ($row = $sth->fetch()) {
             $opt_lang[$row['abbreviation']] = $row['language_name'];
         }
         $smarty->assign('opt_lang', $opt_lang);
-        $sth->free();
     }
 
 
@@ -291,15 +280,14 @@
                              "user_bad_header_checking " .
                 "FROM maia_config WHERE id = 0"
             );
-            $res = $sth->execute();
+            $sth->execute();
 
-        if ($row = $res->fetchrow()) {
+        if ($row = $sth->fetch()) {
             $smarty->assign('user_virus_scanning', ($row["user_virus_scanning"] == 'Y'));
             $smarty->assign('user_spam_filtering', ($row["user_spam_filtering"] == 'Y'));
             $smarty->assign('user_banned_files_checking', ($row["user_banned_files_checking"] == 'Y'));
             $smarty->assign('user_bad_header_checking', ($row["user_bad_header_checking"] == 'Y'));
         }
-            $sth->free();
     }
 
     if ($domain_user) {   // the following settings apply only to domain users
@@ -308,17 +296,13 @@
                    "FROM maia_domains " .
             "WHERE maia_domains.id = ?"
         );
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-                die($sth->getMessage());
-        }
-        $res = $sth->execute(array($domain_id));
-        if ($row = $res->fetchrow()) {
+
+        $sth->execute(array($domain_id));
+        if ($row = $sth->fetch()) {
             $smarty->assign('enable_user_autocreation', $row["enable_user_autocreation"]);
             $smarty->assign('routing_domain', $row["routing_domain"]);
             $smarty->assign('transport', $row["transport"]);
         }
-        $sth->free();
 
         $sth = $dbh->prepare(
             "SELECT maia_users.user_name, maia_users.id " .
@@ -327,10 +311,10 @@
               "AND maia_domain_admins.domain_id = ? " .
             "ORDER BY maia_users.user_name ASC"
         );
-        $res = $sth->execute(array($domain_id));
+        $sth->execute(array($domain_id));
         $admins = array();
-        if (($rowcount = $res->numrows()) > 0) {
-            while ($row = $res->fetchrow()) {
+        if (($rowcount = $sth->rowcount()) > 0) {
+            while ($row = $sth->fetch()) {
                 $admins[] = array(
                     'id' => $row["id"],
                     'name' => $row["user_name"],
@@ -340,7 +324,6 @@
         }
         $smarty->assign('admins', $admins);
 
-        $sth->free();
 
         $sth = $dbh->prepare(
             "SELECT maia_users.id " .
@@ -348,13 +331,10 @@
               "WHERE maia_users.id = maia_domain_admins.admin_id " .
             "AND maia_domain_admins.domain_id = ?"
         );
-        $res = $sth->execute(array($domain_id));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
+        $sth->execute(array($domain_id));
+
         $id_list = "";
-        while($row = $res->fetchrow()) {
+        while($row = $sth->fetch()) {
             if (!empty($id_list)) {
                 $id_list .= "," . $row["id"];
             } else {
@@ -371,15 +351,11 @@
         }
         $select .= " ORDER BY user_name ASC";
         $sth = $dbh->prepare($select);
-        $res = $sth->execute();
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-
-        if ($res->numrows()) {
+        $sth->execute();
+        
+        if ($sth->rowcount()) {
             $add_admins = array();
-            while ($row = $res->fetchrow()) {
+            while ($row = $sth->fetch()) {
                 $add_admins[] = array(
                     'id' => $row["id"],
                     'name' => $row["user_name"]
@@ -387,7 +363,6 @@
             }
             $smarty->assign('add_admins', $add_admins);
         }
-        $sth->free();
     }
 
     // domain users or individual addresses, this is for the thresholds tab
@@ -416,12 +391,9 @@
             "AND users.id = ?"
         );
 
-        $res = $sth->execute(array($address_id));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        if ($row = $res->fetchRow()) {
+        sth->execute(array($address_id));
+        
+        if ($row = $sth->fetch()) {
             $smarty->assign('address', $row["email"]);
             $smarty->assign('policy_id', $row["policy_id"]);
             $smarty->assign('level1', $row["spam_tag_level"]);
@@ -519,8 +491,8 @@
                 $smarty->assign('sms_n_checked', "checked");
             }
         }
-        $sth->free();
     }
 
     $smarty->display('settings.tpl');
     ?>
+
