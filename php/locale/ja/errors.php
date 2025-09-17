@@ -1,7 +1,7 @@
 <?php
 /*
  * Fri Jul 22 2016 YAMAMOTO Takashi <yamachan@piwikjapan.org>
- * - Checked for version 1.0.4
+ * - Checked for version 1.0.5
  */
 
 $lang['error_link_login_failed'] = "リンクされたログインアカウント %s は拒絶されました。プライマリアカウントを使用してください。";

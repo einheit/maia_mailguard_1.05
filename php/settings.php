@@ -74,24 +74,26 @@
      *
      */
 
-    require_once ("core.php");
-    require_once ("authcheck.php");
-	require_once ("auth.php");
-    require_once ("display.php");
-    require_once ("maia_db.php");
+    require_once "core.php";
+    require_once "authcheck.php";
+    require_once "auth.php";
+    require_once "display.php";
+    require_once "maia_db.php";
     $display_language = get_display_language($euid);
-    require_once ("./locale/$display_language/display.php");
-    require_once ("./locale/$display_language/db.php");
-    require_once ("./locale/$display_language/settings.php");
-    require_once ("./locale/$display_language/domainsettings.php");
+    require_once "./locale/$display_language/display.php";
+    require_once "./locale/$display_language/db.php";
+    require_once "./locale/$display_language/settings.php";
+    require_once "./locale/$display_language/domainsettings.php";
 
     $message = ""; //initialize variable
 
     // get some system config items - these control whether or not to show certain options
-    $sth = $dbh->prepare("SELECT enable_charts, reminder_threshold_count, " .
+    $sth = $dbh->prepare(
+        "SELECT enable_charts, reminder_threshold_count, " .
                      "enable_spamtraps, enable_username_changes, " .
                      "enable_address_linking " .
-              "FROM maia_config WHERE id = 0");
+        "FROM maia_config WHERE id = 0"
+    );
     $res = $sth->execute();
     // if (PEAR::isError($sth)) {
     if ((new PEAR)->isError($sth)) {
@@ -107,7 +109,7 @@
     $sth->free();
     $super = is_superadmin($uid);
     
-    require_once ("smarty.php");
+    require_once "smarty.php";
     $smarty->assign('enable_charts', $enable_charts);
     $smarty->assign('reminder_threshold_count', $reminder_threshold_count);
     $smarty->assign('enable_spamtraps', $enable_spamtraps);
@@ -136,16 +138,16 @@
 
     //verify that the supplied address is valid for the current user
     if (isset($_GET["addid"])) {
-       $address_id = trim($_GET["addid"]);
-       if (get_email_address_owner($address_id) != $euid) {
-           header("Location: index.php$sid");
-           exit;
-       }
+        $address_id = trim($_GET["addid"]);
+        if (get_email_address_owner($address_id) != $euid) {
+            header("Location: index.php$sid");
+            exit;
+        }
     } else {
         if ($domain_user) {
-           $address_id = get_primary_email_id($euid);
+            $address_id = get_primary_email_id($euid);
         } else {
-           $address_id = 0;
+            $address_id = 0;
         }
     }
     $smarty->assign('address_id', $address_id);
@@ -158,10 +160,11 @@
 
     if ($address_id == 0) {  // for user addresslist display only - domains now have this set nonzero, ie, this also means domain_user == false
         $smarty->assign("auth_method", $auth_method);
-        if (($auth_method == "pop3" && !empty($routing_domain)) ||
-            $auth_method == "ldap" || $auth_method == "exchange" ||
-            $auth_method == "sql" || $auth_method == "internal" || 
-            $auth_method == "external") {
+        if (($auth_method == "pop3" && !empty($routing_domain)) 
+            || $auth_method == "ldap" || $auth_method == "exchange" 
+            || $auth_method == "sql" || $auth_method == "internal"  
+            || $auth_method == "external"
+        ) {
             $smarty->assign('login', $lang['text_username']);
         } else {
             $smarty->assign('login', $lang['text_email_address']);
@@ -200,8 +203,10 @@
         }
         $smarty->assign("themes", $themes);
    
-        $sth = $dbh->prepare("SELECT charts, reminders, language, spamtrap, auto_whitelist, items_per_page, quarantine_digest_interval, discard_ham, theme_id, truncate_subject, truncate_email " .
-                  "FROM maia_users WHERE maia_users.id = ?");
+        $sth = $dbh->prepare(
+            "SELECT charts, reminders, language, spamtrap, auto_whitelist, items_per_page, quarantine_digest_interval, discard_ham, theme_id, truncate_subject, truncate_email " .
+            "FROM maia_users WHERE maia_users.id = ?"
+        );
         $res = $sth->execute(array($euid));
         if ($row = $res->fetchRow()) {
             if ($row["charts"] == 'Y') {
@@ -236,12 +241,14 @@
             $smarty->assign('items_per_page', $row["items_per_page"]);
             $quarantine_digest_interval = intval($row["quarantine_digest_interval"]);
             if ($quarantine_digest_interval > 0 && $quarantine_digest_interval < 60) {  //adjusting from minutes to hours.
-              $quarantine_digest_interval = 1;   // if less than an hour, make it one hour.
+                $quarantine_digest_interval = 1;   // if less than an hour, make it one hour.
             } else if ($quarantine_digest_interval > 1) {
-              $quarantine_digest_interval = intval($quarantine_digest_interval / 60); //otherwise round down to the nearest hour.
+                $quarantine_digest_interval = intval($quarantine_digest_interval / 60); //otherwise round down to the nearest hour.
             }
-            $smarty->assign('quarantine_digest_interval',
-                             $quarantine_digest_interval);
+            $smarty->assign(
+                'quarantine_digest_interval',
+                $quarantine_digest_interval
+            );
             $smarty->assign('theme_id', $row["theme_id"]);
             $smarty->assign('discard_ham', $row['discard_ham']);
             $smarty->assign("truncate_subject", $row["truncate_subject"]);
@@ -251,9 +258,11 @@
         $smarty->assign('atleastone', false);
 
 
-        $sth = $dbh->prepare("SELECT language_name, abbreviation FROM maia_languages " .
+        $sth = $dbh->prepare(
+            "SELECT language_name, abbreviation FROM maia_languages " .
                  "WHERE installed = 'Y' " .
-                 "ORDER BY language_name ASC");
+            "ORDER BY language_name ASC"
+        );
         $res = $sth->execute();
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
@@ -275,26 +284,30 @@
             $smarty->assign('user_banned_files_checking', true);
             $smarty->assign('user_bad_header_checking', true);
     } else {  // but everyone else is subject to the system config
-            $sth = $dbh->prepare("SELECT user_virus_scanning, " .
+            $sth = $dbh->prepare(
+                "SELECT user_virus_scanning, " .
                              "user_spam_filtering, " .
                              "user_banned_files_checking, " .
                              "user_bad_header_checking " .
-                             "FROM maia_config WHERE id = 0");
+                "FROM maia_config WHERE id = 0"
+            );
             $res = $sth->execute();
 
-            if ($row = $res->fetchrow()) {
-                $smarty->assign('user_virus_scanning', ($row["user_virus_scanning"] == 'Y'));
-                $smarty->assign('user_spam_filtering', ($row["user_spam_filtering"] == 'Y'));
-                $smarty->assign('user_banned_files_checking', ($row["user_banned_files_checking"] == 'Y'));
-                $smarty->assign('user_bad_header_checking', ($row["user_bad_header_checking"] == 'Y'));
-            }
+        if ($row = $res->fetchrow()) {
+            $smarty->assign('user_virus_scanning', ($row["user_virus_scanning"] == 'Y'));
+            $smarty->assign('user_spam_filtering', ($row["user_spam_filtering"] == 'Y'));
+            $smarty->assign('user_banned_files_checking', ($row["user_banned_files_checking"] == 'Y'));
+            $smarty->assign('user_bad_header_checking', ($row["user_bad_header_checking"] == 'Y'));
+        }
             $sth->free();
     }
 
     if ($domain_user) {   // the following settings apply only to domain users
-        $sth = $dbh->prepare("SELECT enable_user_autocreation, routing_domain, transport " .
+        $sth = $dbh->prepare(
+            "SELECT enable_user_autocreation, routing_domain, transport " .
                    "FROM maia_domains " .
-                   "WHERE maia_domains.id = ?");
+            "WHERE maia_domains.id = ?"
+        );
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
                 die($sth->getMessage());
@@ -307,11 +320,13 @@
         }
         $sth->free();
 
-        $sth = $dbh->prepare("SELECT maia_users.user_name, maia_users.id " .
+        $sth = $dbh->prepare(
+            "SELECT maia_users.user_name, maia_users.id " .
               "FROM maia_users, maia_domain_admins " .
               "WHERE maia_users.id = maia_domain_admins.admin_id " .
               "AND maia_domain_admins.domain_id = ? " .
-              "ORDER BY maia_users.user_name ASC");
+            "ORDER BY maia_users.user_name ASC"
+        );
         $res = $sth->execute(array($domain_id));
         $admins = array();
         if (($rowcount = $res->numrows()) > 0) {
@@ -327,10 +342,12 @@
 
         $sth->free();
 
-        $sth = $dbh->prepare("SELECT maia_users.id " .
+        $sth = $dbh->prepare(
+            "SELECT maia_users.id " .
               "FROM maia_users, maia_domain_admins " .
               "WHERE maia_users.id = maia_domain_admins.admin_id " .
-              "AND maia_domain_admins.domain_id = ?");
+            "AND maia_domain_admins.domain_id = ?"
+        );
         $res = $sth->execute(array($domain_id));
         // if (PEAR::isError($sth)) {
         if ((new PEAR)->isError($sth)) {
@@ -375,7 +392,8 @@
 
     // domain users or individual addresses, this is for the thresholds tab
     if ($address_id != 0) {
-        $sth = $dbh->prepare("SELECT virus_lover, " .
+        $sth = $dbh->prepare(
+            "SELECT virus_lover, " .
                          "spam_lover, " .
                          "banned_files_lover, " .
                          "bad_header_lover, " .
@@ -395,7 +413,8 @@
                          "policy_id " .
                   "FROM users, policy " .
                   "WHERE users.policy_id = policy.id " .
-                  "AND users.id = ?");
+            "AND users.id = ?"
+        );
 
         $res = $sth->execute(array($address_id));
         // if (PEAR::isError($sth)) {
@@ -504,4 +523,4 @@
     }
 
     $smarty->display('settings.tpl');
-?>
+    ?>

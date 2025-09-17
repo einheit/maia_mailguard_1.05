@@ -10,7 +10,7 @@
      * All rights reserved.
      *
      * Fri Jul 22 2016 YAMAMOTO Takashi <yamachan@piwikjapan.org>
-     * - Checked for version 1.0.4
+     * - Checked for version 1.0.5
      * 
      * PREAMBLE
      *
@@ -97,4 +97,4 @@
                "bf"     => "危険添付ファイル",
                "os"     => "サイズ超過"    
                );
-?>
+    ?>

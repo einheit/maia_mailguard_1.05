@@ -10,7 +10,7 @@
      * All rights reserved.
      *
      * Fri Jul 22 2016 YAMAMOTO Takashi <yamachan@piwikjapan.org>
-     * - Checked for version 1.0.4
+     * - Checked for version 1.0.5
      * 
      * PREAMBLE
      *
@@ -113,10 +113,10 @@
     $lang['button_change_protection'] = "レベルを変更する";
     
     $lang['radio_protection'] = array(  'off' => "オフ",
-		 								'low' => "低レベル",
-     									'medium' => "中レベル",
-										'high' => "高レベル",
-										'custom' => "カスタム");
+                                         'low' => "低レベル",
+                                         'medium' => "中レベル",
+                                        'high' => "高レベル",
+                                        'custom' => "カスタム");
     
     $lang['banner_subtitle'] = "隔離エリアのサマリー";
     
@@ -131,4 +131,4 @@
     $lang['action_virus_cache'] = "破棄と救出";
     $lang['action_banned_cache'] = "破棄・救出";
     $lang['action_header_cache'] = "破棄・救出";
-?>
+    ?>

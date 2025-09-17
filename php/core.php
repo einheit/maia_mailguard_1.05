@@ -72,44 +72,48 @@
      * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
      * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      *
+     *
+     *
+     * core.php is to become home of all functions that need to be loaded for every page.
+     *
+     * First, set up some constants to describe our environment
+     *   Thanks to Andrew Moore on stackoverflow.com
      */
 
-     /* core.php is to become home of all functions that need to be loaded for every page.
-     */
-
-      /* First, set up some constants to describe our environment
-         Thanks to Andrew Moore on stackoverflow.com
-      */
       define('ABSPATH', str_replace('\\', '/', dirname(__FILE__)) . '/');
 
       $tempPath1 = explode('/', str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])));
       $tempPath2 = explode('/', substr(ABSPATH, 0, -1));
       $tempPath3 = explode('/', str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])));
 
-      for ($i = count($tempPath2); $i < count($tempPath1); $i++)
-          array_pop ($tempPath3);
+for ($i = count($tempPath2); $i < count($tempPath1); $i++) {
+    array_pop($tempPath3);
+}
 
       $urladdr = $_SERVER['HTTP_HOST'] . implode('/', $tempPath3);
 
-      // if ($urladdr{strlen($urladdr) - 1}== '/')
-      if ($urladdr[strlen($urladdr) - 1]== '/')
-          define('URLADDR', 'http://' . $urladdr);
-      else
-          define('URLADDR', 'http://' . $urladdr . '/');
+      // if ($urladdr[strlen($urladdr) - 1]== '/')
+if ($urladdr[strlen($urladdr) - 1]== '/') {
+    define('URLADDR', 'http://' . $urladdr);
+} else {
+    define('URLADDR', 'http://' . $urladdr . '/');
+}
 
       unset($tempPath1, $tempPath2, $tempPath3, $urladdr);
       /*  Now ABSPATH and URLADDR are set.  */
 
-     ini_set('include_path',ini_get('include_path').':./libs:');  
-     require_once('Log.php');
-     require_once("config.php");
+     ini_set('include_path', ini_get('include_path').':./libs:');  
+     require_once 'Log.php';
+     require_once "config.php";
 
-     require_once ("constants.php");
-     require_once ("maia_log.php");
+     require_once "constants.php";
+     require_once "maia_log.php";
 
      session_name(MAIA_SESSION);
-     session_set_cookie_params  ( 0,
-                                      dirname($_SERVER['PHP_SELF']),
-                                      strpos($_SERVER['SERVER_NAME'], '.') ? $_SERVER['SERVER_NAME'] : false,
-                                      !empty($_SERVER['HTTPS']));
-?>
+    session_set_cookie_params(
+        0,
+        dirname($_SERVER['PHP_SELF']),
+        strpos($_SERVER['SERVER_NAME'], '.') ? $_SERVER['SERVER_NAME'] : false,
+        !empty($_SERVER['HTTPS'])
+    );
+    ?>

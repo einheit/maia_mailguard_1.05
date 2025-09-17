@@ -128,7 +128,7 @@
     // http://pear.php.net/manual/en/package.database.db.intro-dsn.php
 
     //$maia_sql_dsn = "dbtype://dbuser:passwd@tcp(hostname:port)/maia";
-    $maia_sql_dsn = "mysqli://maia:passwd@tcp(localhost:3306)/maia";
+    // $maia_sql_dsn = "mysqli://maia:passwd@tcp(localhost:3306)/maia";
     //$maia_sql_dsn = "mysqli://dbuser:passwd@unix(/var/tmp/mysql.sock)/maia";
     //$maia_sql_dsn = "mysqli://dbuser:passwd/maia";
     
@@ -137,6 +137,20 @@
     // http://pear.php.net/manual/en/package.database.db.db-common.setoption.php
     // $maia_sql_connect_options = array();
     // $maia_sql_connect_options = array('persistent' => true);  // For persistent connections
+
+    // maia_1.04 syntax (MDB2)
+    // $maia_sql_dsn = "mysqli://maia:__PASSWORD__@tcp(__DBHOST__:3306)/__DBNAME__";
+
+    // maia_1.05 syntax (PDO)
+    $maia_sql_dsn = 'mysql:host=__DBHOST__;dbname=__DBNAME__;charset=utf8mb4';
+
+    $maia_dbuser = '__DBUSER__';
+    $maia_dbuser_pass = '__PASSWORD__';
+    $maia_sql_connect_options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false, // Important for true prepared statements
+    ];
 
     // To improve performace with the html purifier, set purifier_cache to a directory the web server can write to.
     $purifier_cache = '/var/www/cache';

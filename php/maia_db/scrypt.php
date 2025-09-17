@@ -35,7 +35,7 @@ abstract class Password
      *
      * @var int The key length
      */
-    private static $_keyLength = 32;
+private static $_keyLength = 32;
 
     /**
      * Get the byte-length of the given string
@@ -44,20 +44,21 @@ abstract class Password
      *
      * @return int
      */
-    protected static function strlen( $str ) {
-        static $isShadowed = null;
+protected static function strlen( $str )
+{
+    static $isShadowed = null;
 
-        if ($isShadowed === null) {
-            $isShadowed = extension_loaded('mbstring') &&
-                ini_get('mbstring.func_overload') & 2;
-        }
-
-        if ($isShadowed) {
-            return mb_strlen($str, '8bit');
-        } else {
-            return strlen($str);
-        }
+    if ($isShadowed === null) {
+        $isShadowed = extension_loaded('mbstring') &&
+            ini_get('mbstring.func_overload') & 2;
     }
+
+    if ($isShadowed) {
+        return mb_strlen($str, '8bit');
+    } else {
+        return strlen($str);
+    }
+}
 
     /**
      * Generates a random salt

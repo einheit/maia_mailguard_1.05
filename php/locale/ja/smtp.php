@@ -3,7 +3,7 @@
      * $Id: smtp.php,v 1.1.1.1.4.2 2004/09/07 17:34:55 jleaver Exp $
      *
      * Fri Jul 22 2016 YAMAMOTO Takashi <yamachan@piwikjapan.org>
-     * - Checked for version 1.0.4
+     * - Checked for version 1.0.5
      * 
      * MAIA MAILGUARD LICENSE v.1.0
      *
