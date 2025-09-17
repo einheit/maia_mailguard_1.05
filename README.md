@@ -1,3 +1,5 @@
+![maia configtest page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_configtest.png "maia configtest page")
+
 ![maia login page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_login.png "maia login page")
 
 ![maia welcome page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_welcome.png "maia welcome page")
