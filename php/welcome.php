@@ -110,27 +110,18 @@ if (isset($_POST['delete_all_items'])) {
              "AND mail_id <= ?"
     );
 
-    $res = $sth->execute(array($euid, $maxitemid));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    while ($row = $res->fetchRow())
-    {
+    $sth->execute(array($euid, $maxitemid));
+
+    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
          array_push($del_list, $row["mail_id"]);
     }
-       $sth->free();
        delete_mail_reference($euid, $del_list);
 }
    
    
 if (isset($_POST['change_protection']) && isset($_POST['protection_level'])) {
     $sth = $dbh->prepare("SELECT policy_id FROM users WHERE maia_user_id = ?"); 
-    $res = $sth->execute($euid);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+    $sth->execute($euid);
  
     $sth2 = $dbh->prepare(
         "UPDATE policy SET virus_lover = ?, " .
@@ -153,18 +144,11 @@ if (isset($_POST['change_protection']) && isset($_POST['protection_level'])) {
     );
     $protection_level = $_POST["protection_level"];
                   
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+
         $sth2->execute(array_merge($protection[$protection_level], array($row['policy_id'])));
-        // if (PEAR::isError($sth2)) {
-        if ((new PEAR)->isError($sth2)) {
-            die($sth2->getMessage());
-        }
         
     }
-    $sth->free();
-    $sth2->free();
-    
-    
 }
     
     update_mail_stats($id, "suspected_ham");
@@ -225,19 +209,12 @@ $sth = $dbh->prepare(
              "FROM users LEFT JOIN policy ON users.policy_id=policy.id ".
     "WHERE users.maia_user_id = ?"
 ); 
-    $res = $sth->execute(array($euid));
-    // if (PEAR::isError($sth)) {
-if ((new PEAR)->isError($sth)) {
-    die($sth->getMessage());
-}
+    $sth->execute(array($euid));
     
-    
-    
-    
-if ($res->numRows() > 1) { 
+if ($sth->fetchcolumn() > 1) {
     $protection_mode = "custom";
-} elseif ($res->numrows() ==1) {
-    $result = $res->fetchrow();    
+} elseif ($sth->fetchcolumn() == 1) {
+    $result = $sth->fetchcolumn();
     if (implode(',', $result) == implode(',', $protection['off'])) {
         $protection_mode = 'off';        
     } elseif (implode(',', $result) == implode(',', $protection['low'])) {
