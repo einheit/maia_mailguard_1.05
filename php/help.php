@@ -108,12 +108,8 @@
                      "ham_cache_expiry_period " .
               "FROM maia_config WHERE id = 0";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-if ((new PEAR)->isError($sth)) {
-    die($sth->getMessage());
-}
-if ($row = $res->fetchrow()) {
+    $sth->execute();
+if ($row = $sth->fetch()) {
     $admin_email = $row["admin_email"];
     $enable_virus_scanning = ($row["enable_virus_scanning"] == 'Y');
     $enable_spam_filtering = ($row["enable_spam_filtering"] == 'Y');
@@ -131,7 +127,6 @@ if ($row = $res->fetchrow()) {
     $size_limit = $row["size_limit"];
     $oversize_policy = $row["oversize_policy"];
 }
-    $sth->free();
 
     $mail_viewer_url = "help.php#mail_viewer" . $sid;
 
