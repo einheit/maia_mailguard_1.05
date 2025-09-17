@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# debian 11 installer
+# debian 13 installer
 #
 
 echo 
