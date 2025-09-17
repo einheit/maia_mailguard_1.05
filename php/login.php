@@ -110,10 +110,6 @@ if (isset($_GET["lang"]) && strlen($_GET["lang"]) == 2 ) {
    $msid = "";
    $sid = ""; 
    
-   
-
-
-
    // Determine the server's clock time, in seconds since 1970-01-01 00:00:00
    // This will be compared with the client's clock to determine the offset
    $server_timestamp = getdate();
@@ -144,17 +140,16 @@ $sth = $dbh->prepare(
     "SELECT abbreviation, language_name FROM maia_languages " .
     "WHERE abbreviation <> ? AND installed = 'Y' ORDER BY language_name ASC"
 );
-   $res = $sth->execute(array($display_language));
+   $sth->execute(array($display_language));
    
    $languages = array(); 
    
-if ($res->numrows() > 0) {
-    while ($row = $res->fetchrow()) {
+if ($sth->rowcount() > 0) {
+    while ($row = $sth->fetch()) {
         $languages[$row["abbreviation"]] = $row["language_name"];
     }
 } 
    
-   $sth->free();
    $smarty->assign("languages", $languages);
    $smarty->assign("display_language", $display_language);
    $smarty->assign("display_language_is_default", $display_language_is_default);
