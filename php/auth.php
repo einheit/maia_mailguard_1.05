@@ -75,14 +75,15 @@
      */
 
     require_once "core.php";
-    // require_once "MDB2.php";  // PEAR::DB
     require_once "mailtools.php";
     require_once "maia_db.php";
 
-require_once "POP3.php";
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\POP3;
+    /*
+    require_once "POP3.php";
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+    use PHPMailer\PHPMailer\POP3;
+    */
 
     /* Authenticate with external program declared as  $auth_external
      * in config.php
@@ -132,12 +133,7 @@ function auth_pop3($user, $pass)
     }
 
     $result = $mbox->login($user, $pass);
-    // if (PEAR::isError($mbox)) {
-    if ((new PEAR)->isError($mbox)) {
-          $mbox->disconnect();
-          return $result;
-    }
-        
+
     if ($result === true) {
         $mbox->disconnect();
         return true;
@@ -300,66 +296,71 @@ function auth_exchange($user, $pass, $domain, $alias)
     /*
      * auth_sql(): Authenticate against an SQL database.
      */
-function auth_sql($user, $pass)
-{
-    if ($user == "") {  // Don't bother authenticating an empty username
-        return false;      // ticket #335
-    }
-    global $dbh;
-    global $lang;
-    global $auth_sql_dsn;
-    global $auth_sql_table;
-    global $auth_sql_username_column;
-    global $auth_sql_password_column;
-    global $auth_sql_email_column;
-    global $auth_sql_password_type;
-    global $auth_sql_connect_array;
 
-    if (! isset($auth_sql_connect_array)) {
-        $auth_sql_connect_array = array();
-    }
-
-    $auth_dbh = MDB2::connect($auth_sql_dsn, $auth_sql_connect_array);
-    if (MDB2::isError($auth_dbh)) {
-        return $auth_dbh; //return error for xlogin to process
-    }
-    $auth_dbh->setFetchMode(MDB2_FETCHMODE_ASSOC);
-
-    $select = "SELECT " . $auth_sql_password_column . ", " . $auth_sql_email_column . " FROM " .
-              $auth_sql_table . " WHERE " . $auth_sql_username_column . " = ?";
-
-    $email = "";
-    $auth_sth = $auth_dbh->prepare($select);
-    $auth_res = $auth_sth->execute(array($user));
-    // if (PEAR::isError($auth_sth)) {
-    if ((new PEAR)->isError($auth_sth)) {
-            die($auth_sth->getMessage());
-    }
-
-    if ($row = $auth_res->fetchRow()) {
-        $dbpass = $row[$auth_sql_password_column];
-        $email = $row[$auth_sql_email_column];
-    }
-    $auth_sth->free();
-
-    if (!empty($email) && !empty($dbpass)) {
-        if ($auth_sql_password_type == "md5") {
-            if (substr(md5($pass), 0, strlen($dbpass)) == $dbpass) {
-                return $email;
-            }
-        } elseif ($auth_sql_password_type == "crypt") {
-            if (($dbpass == "**" . $pass) || (crypt($pass, $dbpass) == $dbpass)) {
-                return $email;
-            }
-        } else { // plaintext
-            if ($dbpass == $pass) {
-                return $email;
-            }
-        }
-    }
-    return false;
-}
-
+/* auth_sql will need to be reworked
+*function auth_sql($user, $pass)
+*{
+*   if ($user == "") {  // Don't bother authenticating an empty username
+*       return false;      // ticket #335
+*   }
+*
+*    global $dbh;
+*    global $lang;
+*    global $auth_sql_dsn;
+*    global $auth_sql_table;
+*    global $auth_sql_username_column;
+*    global $auth_sql_password_column;
+*    global $auth_sql_email_column;
+*    global $auth_sql_password_type;
+*    global $auth_sql_connect_array;
+*
+*    if (! isset($auth_sql_connect_array)) {
+*        $auth_sql_connect_array = array();
+*    }
+*
+*    $auth_dbh = MDB2::connect($auth_sql_dsn, $auth_sql_connect_array);
+*    if (MDB2::isError($auth_dbh)) {
+*        return $auth_dbh; //return error for xlogin to process
+*    }
+*
+*    $auth_dbh = MDB2::connect($auth_sql_dsn, $auth_sql_connect_array);
+*    if (MDB2::isError($auth_dbh)) {
+*        return $auth_dbh; //return error for xlogin to process
+*    }
+*
+*    $auth_dbh->setFetchMode(MDB2_FETCHMODE_ASSOC);
+*
+*    $select = "SELECT " . $auth_sql_password_column . ", " . $auth_sql_email_column . " FROM " .
+*              $auth_sql_table . " WHERE " . $auth_sql_username_column . " = ?";
+*
+*    $email = "";
+*    $auth_sth = $auth_dbh->prepare($select);
+*    res = $auth_sth->execute(array($user));
+*
+*    if ($row = $auth_sth->fetch()) {
+*        $dbpass = $row[$auth_sql_password_column];
+*        $email = $row[$auth_sql_email_column];
+*    }
+*
+*    if (!empty($email) && !empty($dbpass)) {
+*        if ($auth_sql_password_type == "md5") {
+*            if (substr(md5($pass), 0, strlen($dbpass)) == $dbpass) {
+*                return $email;
+*            }
+*        } elseif ($auth_sql_password_type == "crypt") {
+*            if (($dbpass == "**" . $pass) || (crypt($pass, $dbpass) == $dbpass)) {
+*                return $email;
+*            }
+*        } else { // plaintext
+*
+*            if ($dbpass == $pass) {
+*                return $email;
+*            }
+*        }
+*    }
+*    return false;
+*}
+*/
 
     /*
      * auth_internal(): Authenticate against Maia's internal SQL database.
@@ -371,7 +372,7 @@ function auth_internal($user, $pass)
     }
     global $dbh;
 
-    include_once 'maia_db/scrypt.php';
+//    include_once 'maia_db/scrypt.php';
 
     $email = "";
     $testpass = md5($pass);
@@ -381,22 +382,13 @@ function auth_internal($user, $pass)
               "WHERE users.id = maia_users.primary_email_id " .
               "AND maia_users.user_name = ? "
     ); 
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    $res = $sth->execute(array($user));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+    $sth->execute(array($user));
 
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $email = $row["email"];
         $userpass = $row["password"];
     }
-    $sth->free();
 
     if (empty($email)) {
         return false;
@@ -417,7 +409,6 @@ function auth_internal($user, $pass)
     }
 
 }
-
 
     /*
      * auth(): Main authentication routine.
@@ -495,4 +486,5 @@ function auth($user_name, $pwd, $email, $nt_domain)
 
     return array($authenticated, $email);
 }
+
 ?>

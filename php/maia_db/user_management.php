@@ -59,19 +59,15 @@ function ok_to_impersonate($euid, $uid)
                 } else if (!is_superadmin($euid)) {
 
                     $sth = $dbh->prepare("SELECT email FROM users WHERE maia_user_id = ?");
-                    $res = $sth->execute(array($euid));
-                    // if (PEAR::isError($sth)) {
-                    if ((new PEAR)->isError($sth)) {
-                        die($sth->getMessage());
-                    }
-                    while ($row = $res->fetchRow()) {
+                    $sth->execute(array($euid));
+
+		    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
                         $domain_id = get_domain_id("@" . get_domain_from_email($row["email"]));
                         if (is_admin_for_domain($uid, $domain_id)) {
-                              $sth->free();
                               return true;
                         }
                     }
-                    $sth->free();
+
                     return false;
 
                 } else {
@@ -99,15 +95,11 @@ function get_user_name($uid)
 
     $user_name = "Unknown";
     $sth = $dbh->prepare("SELECT user_name FROM maia_users WHERE id = ?");
-    $res = $sth->execute(array($uid));
-    // if (PEAR::isError($sth)) { 
-    if ((new PEAR)->isError($sth)) { 
-        die($sth->getMessage()); 
-    }
-    if ($row = $res->fetchRow()) {
+    $sth->execute([$uid]);
+
+    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
         $user_name = $row["user_name"];
     }
-    $sth->free();
 
     return $user_name;
 }
@@ -127,13 +119,12 @@ function get_user_id($user_name, $email)
         "SELECT id FROM maia_users " .
               "WHERE user_name = ?"
     );
-    $res = $sth->execute(array($user_name));
+    $sth->execute(array($user_name));
 
     // Try to look the user up by name first.
-    if ($row = $res->fetchRow()) {
+    if ($row = $sth->fetch()) {
 
         $uid = $row["id"];
-        $sth->free();
 
     } else {
 
@@ -156,10 +147,6 @@ function get_user_id($user_name, $email)
                      "WHERE id = ?"
             );
             $sth->execute(array($user_name, $uid));
-            // if (PEAR::isError($sth)) {
-            if ((new PEAR)->isError($sth)) {
-                die($sth->getMessage());
-            }
 
         } else {
 
@@ -169,7 +156,6 @@ function get_user_id($user_name, $email)
         }
     }
 
-    $sth->free();
     return $uid;
 }
 
@@ -190,16 +176,13 @@ function get_user_level($uid)
         "SELECT user_level FROM maia_users " .
               "WHERE id = ?"
     );
-    $res = $sth->execute(array($uid));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+
+    $sth->execute(array($uid));
+
     $user_level = "U";
-    if ($row = $res->fetchRow()) {
+    if ($row = $sth->fetch()) {
         $user_level = $row["user_level"];
     }
-    $sth->free();
 
     return $user_level;
 }
@@ -1212,11 +1195,10 @@ function get_primary_email_id($user_id)
 
     $email_id = 0;
     $sth = $dbh->prepare("SELECT primary_email_id FROM maia_users WHERE id = ?");
-    $res = $sth->execute(array($user_id));
-    if ($row = $res->fetchrow()) {
+    $sth->execute(array($user_id));
+    if ($row = $sth->fetch()) {
         $email_id = $row["primary_email_id"];
     }
-    $sth->free();
 
     return $email_id;
 }
@@ -1257,14 +1239,14 @@ function get_display_language($user_id)
         $display_language = trim($_SESSION["display_language"]);
     } else {
         $sth = $dbh->prepare("SELECT language FROM maia_users WHERE id = ?");
-        $res = $sth->execute(array($user_id));
-        if ($row = $res->fetchrow()) {
+        $sth->execute(array($user_id));
+
+        if ($row = $sth->fetch()) {
                $display_language = strtolower($row["language"]);
                $_SESSION["display_language"] = $display_language;
         } else {
             $display_language = $default_display_language;
         }
-            $sth->free();
     }
 
     return $display_language;

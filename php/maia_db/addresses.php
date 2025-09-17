@@ -9,15 +9,11 @@ function get_email_address_by_id($address_id)
 
     $email = "";
     $sth = $dbh->prepare("SELECT email FROM users WHERE id = ?");
-    $res = $sth->execute(array($address_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+    $sth->execute(array($address_id));
+
+    if ($row = $sth->fetch()) {
         $email = $row["email"];
     }
-    $sth->free();
 
     return $email;
 }
@@ -32,15 +28,11 @@ function get_email_address_id($address)
 
     $address_id = 0;
     $sth = $dbh->prepare("SELECT id FROM users WHERE email = ?");
-    $res = $sth->execute(array($address));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchRow()) {
+    $sth->execute(array($address));
+    
+    if ($row = $sth->fetch()) {
         $address_id = $row["id"];
     }
-    $sth->free();
 
     return $address_id;
 }
@@ -56,15 +48,12 @@ function get_email_address_owner($address_id)
 
     $owner_id = 0;
     $sth = $dbh->prepare("SELECT maia_user_id FROM users WHERE id = ?");
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $res = $sth->execute(array($address_id));
-    if ($row = $res->fetchRow()) {
+    
+    $sth->execute(array($address_id));
+
+    if ($row = $sth->fetch()) {
         $owner_id = $row["maia_user_id"];
     }
-    $sth->free();
 
     return $owner_id;
 }
