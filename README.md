@@ -1,12 +1,14 @@
-![maia web interface](https://github.com/einheit/maia-screenshots/blob/master/maia_105_login.png "maia web interface")
+![maia login page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_login.png "maia login page")
+
+![maia welcome page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_welcome.png "maia welcome page")
 
 NOTE - as of Sept 12th, 2025, this is a non-working work in progress. We've just begun the tedious process of replacing the obsolete PEAR::MDB2 libraries with the php native PDO. 
 
-This repo was forked off from the the maia_mailguard_1.04a repo
+This repo was forked from the the technion/maia_mailguard repo
 
 The branch retains the goals of maia_mailguard_1.04a but adds compatibility with php 8.
 
-Compatibility with php 7 and below is unknown at this point, but for that case, maia_mailguard 1.04a is recommended.
+Compatibility with php 7 and below is unknown at this point, but for that use case, maia_mailguard 1.04a is perfectly usable. 
 
 Maia is flexible and scalable. It can be deployed in a number of configurations, from everything on a single container, VM or physical instance, to banks of MTAs, banks of maiad/spamassasin servers, dedicated clamav and database instances, dedicated web server instances for the management interface.
 
@@ -16,9 +18,6 @@ The install scripts are perhaps something of a kludge, but they save time and th
 
 Contributed scripts for additional distros/platforms are welcome.
 
-Updated Centos spamassassin rpms - https://github.com/einheit/maia-packages
-
-More Screenshots - https://github.com/einheit/maia-screenshots
 
 -- 
 
