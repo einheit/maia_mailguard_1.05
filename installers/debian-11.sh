@@ -191,11 +191,11 @@ echo "stage 1 install complete"
 # set up and start clamd
 cp /etc/clamav/clamd.conf /etc/clamav/clamd.conf_debian_orig-$$
 cp contrib/clamd-debian-maia-tcp.conf /etc/clamav/clamd.conf 
-/etc/init.d/clamav-daemon start
-/etc/init.d/clamav-freshclam start
+systemctl start clamav-daemon
+systemctl start clamav-freshclam
 
 # start maiad 
-/etc/init.d/maiad start
+systemctl start maiad
 
 # load the spamassassin rulesets -
 #
@@ -267,7 +267,8 @@ echo "stage 2 complete"
 systemctl enable postfix
 systemctl start postfix
 postfix-setup.sh
-/etc/init.d/postfix restart
+systemctl restart postfix
+
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 
