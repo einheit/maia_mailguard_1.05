@@ -140,26 +140,17 @@ if (isset($_POST["button_add"])) {
                       "AND maia_domains.domain = ?";
             $sth = $dbh->prepare($select);
             $res = $sth->execute(array($uid, $domain));
-            // if (PEAR::isError($sth)) { 
-            if ((new PEAR)->isError($sth)) { 
-                die($sth->getMessage()); 
-            } 
 
-            $bad_domain = !$res->fetchrow();
+            $bad_domain = !$sth->fetch();
             $smarty->assign("bad_domain", $bad_domain);
-            $sth->free();
         }
 
         if (($super || !$bad_domain) && !$bad_user) {
             // Only add the new address if it doesn't already exist.
             $sth = $dbh->prepare("SELECT maia_user_id FROM users WHERE email = ?");
             $res = $sth->execute(array($new_email));
-            // if (PEAR::isError($sth)) { 
-            if ((new PEAR)->isError($sth)) {
-                die($sth->getMessage()); 
-            } 
 
-            if (!$res->fetchrow()) {
+            if (!$sth->fetch()) {
                 $new_user_id = add_user($username, $new_email);
                 if ($new_user_id) {  // If there was an error, hopefully it was logged in the apache error log...
                     $succeeded = true;
@@ -168,24 +159,19 @@ if (isset($_POST["button_add"])) {
                         list($password, $digest) = generate_random_password();
                         $sthu = $dbh->prepare("UPDATE maia_users SET password = ? WHERE id = ?");
                         $sthu->execute(array($digest, $new_user_id));
-                        // if (PEAR::isError($sth)) { 
-                        // typo ? die($sth->getMessage()); 
-                        if ((new PEAR)->isError($sthu)) { 
-                            die($sthu->getMessage()); 
-                        } 
-                        $sthu->free();
+
 
                         // Expand the newuser.tpl template to e-mail the new user his
                         // temporary login credentials.
                             $sth2 = $dbh->prepare("SELECT admin_email, newuser_template_file, reminder_login_url, internal_auth FROM maia_config WHERE id = 0");
                             $res2 = $sth2->execute();
-                        if ($row = $res2->fetchrow()) {
+                        if ($row = $sth2->fetch()) {
                             $admin_email = $row["admin_email"];
                             $template_file = $row["newuser_template_file"];
                             $login_url = $row["reminder_login_url"];
                             $issue_password = ($row["internal_auth"] == "Y");
                         }
-                            $sth2->free();
+
                         if ($issue_password) {
                             $fh = fopen($template_file, "r");
                             $body = fread($fh, filesize($template_file));
@@ -206,7 +192,7 @@ if (isset($_POST["button_add"])) {
             } else {
                 $succeeded = false;
             }
-            $sth->free();
+
             if ($succeeded) {
                 $lang['text_address_added'] = sprintf($lang['text_address_added'], $new_email);
             } else {
@@ -311,15 +297,11 @@ if (isset($_POST["button_add"])) {
                       "ORDER BY domain ASC"
             );
             $res = $sth->execute(array($uid));
-            // if (PEAR::isError($sth)) { 
-            if ((new PEAR)->isError($sth)) { 
-                die($sth->getMessage()); 
-            } 
-
-            while ($row = $res->fetchrow()) {
+   
+            while ($row = $sth->fetch()) {
                 $domain_name[] = strtolower($row["domain"]);
             }
-            $sth->free();
+
 
             foreach ($domain_name as $dname) {
 
@@ -334,12 +316,8 @@ if (isset($_POST["button_add"])) {
                           "ORDER BY user_name ASC"
                 );
                 $res = $sth->execute();
-                // if (PEAR::isError($sth)) { 
-                if ((new PEAR)->isError($sth)) { 
-                    die($sth->getMessage()); 
-                } 
 
-                while ($row = $res->fetchrow()) {
+                while ($row = $sth->fetch()) {
                     if (preg_match($lookup, $row["user_name"])) {
                             $user[$row["user_name"]] = array(
                                 'maia_user_id' => $row["id"],
@@ -352,7 +330,7 @@ if (isset($_POST["button_add"])) {
                             );
                     }
                 }
-                $sth->free();
+
             }
 
         } else {
@@ -363,12 +341,8 @@ if (isset($_POST["button_add"])) {
                       "ORDER BY user_name ASC"
             );
             $res = $ssth->execute();
-            // if (PEAR::isError($ssth)) { 
-            // typo ? die($sth->getMessage()); 
-            if ((new PEAR)->isError($ssth)) { 
-                   die($ssth->getMessage()); 
-            } 
-            while ($row = $res->fetchrow()) {
+
+            while ($row = $ssth->fetch()) {
                 if (preg_match($lookup, $row["user_name"])) {
                     $user[$row["user_name"]] = array(
                         'maia_user_id' => $row["id"],
@@ -380,7 +354,6 @@ if (isset($_POST["button_add"])) {
                     );
                 }
             }
-                $sth->free();
 
         }
         // add cache stats to the $user array
@@ -395,11 +368,8 @@ if (isset($_POST["button_add"])) {
 
         foreach( $user as $key => $value ) {
             $result = $sth->execute(array($value['maia_user_id']));
-            // if (PEAR::isError($sth)) { 
-            if ((new PEAR)->isError($sth)) { 
-                die($sth->getMessage()); 
-            } 
-            while ($row = $result->fetchrow()) {
+
+            while ($row = $sth->fetch()) {
                 if ($row['type'] == "H") {
                     $user[$key]['ham'] = $row['items'];
                 } elseif ($row['type'] == "S" || $row['type'] == "P") {
@@ -413,7 +383,7 @@ if (isset($_POST["button_add"])) {
                 }
             }
         }
-        $sth->free();
+
         ksort($user);
         $smarty->assign('user', $user);
         if (count($user) > 0) {
