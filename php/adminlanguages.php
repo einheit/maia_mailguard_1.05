@@ -107,14 +107,11 @@ if ($uid != $euid) {
               "WHERE installed = 'Y' " .
         "ORDER BY language_name ASC"
     );
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) { 
-    if ((new PEAR)->isError($sth)) { 
-        die($sth->getMessage()); 
-    } 
-    $smarty->assign('rowcount', $res->numrows());
+    $sth->execute();
+
+    $smarty->assign('rowcount', $sth->rowcount());
     $languages = array();
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         $languages[] = array(
             'language_name' => $row["language_name"],
             'language_abbrev' => strtolower($row["abbreviation"]),
@@ -122,7 +119,6 @@ if ($uid != $euid) {
         );
     }
     $smarty->assign('languages', $languages);
-    $sth->free();
 
     $lang_dir = "locale";
     $d = dir($lang_dir);
@@ -154,17 +150,15 @@ if ($uid != $euid) {
                   "WHERE installed = 'N' AND abbreviation IN (" . implode(',', $phlist) . ") " .
             "ORDER BY language_name ASC"
         );
-        $res = $sth->execute(array_keys($dirlist));
-        if (PEAR::isError($sth)) { 
-            die($sth->getMessage()); 
-        } 
-        while ($row = $res->fetchrow()) {
+        $sth->execute(array_keys($dirlist));
+
+        while ($row = $sth->fetch()) {
             $dirlist[$row["abbreviation"]] = array(
                 'language_name' => $row["language_name"],
                 'language_abbrev' => strtolower($row["abbreviation"]),
             );
         }
-        $sth->free();
+
         // Don't offer languages that aren't physically installed yet
         $sth = $dbh->prepare(
             "SELECT language_name, abbreviation, id " .
@@ -172,17 +166,14 @@ if ($uid != $euid) {
                   "WHERE installed = 'Y' AND abbreviation IN (" . implode(',', $phlist) . ") " .
             "ORDER BY language_name ASC"
         );
-        $res = $sth->execute(array_keys($dirlist));
-        // if (PEAR::isError($sth)) { 
-        if ((new PEAR)->isError($sth)) { 
-            die($sth->getMessage()); 
-        } 
+        $sth->execute(array_keys($dirlist));
+
 
         //$languages2 = array();
-        while ($row = $res->fetchrow()) {
+        while ($row = $sth->fetch()) {
             unset($dirlist[$row['abbreviation']]);
         }
-        $sth->free();
+
         ksort($dirlist);
         $smarty->assign('dirlist', $dirlist);
     }

@@ -165,7 +165,7 @@ if ($uid != $euid) {
                      "reporter_password " .
               "FROM maia_config WHERE id = 0";
     $sth = $dbh->query($select);
-if ($row = $sth->fetchrow()) {
+if ($row = $sth->fetch()) {
     $smarty->assign('enable_user_autocreation', ($row["enable_user_autocreation"] == 'Y'));
     $smarty->assign('enable_false_negative_management', ($row["enable_false_negative_management"] == 'Y'));
     $smarty->assign('enable_stats_tracking', ($row["enable_stats_tracking"] == 'Y'));
@@ -228,7 +228,6 @@ if ($row = $sth->fetchrow()) {
     $smarty->assign('reporter_username', strtolower($row["reporter_username"]));
     $smarty->assign('reporter_password', $row["reporter_password"]);
 }
-    $sth->free();
 
     $smarty->display('adminsystem.tpl');
     

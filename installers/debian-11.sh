@@ -240,6 +240,7 @@ pear list
 # install html purifier separately -
 tar -C /var -xvf files/htmlpurifier-4.12.0.tar.gz
 ln -s /var/htmlpurifier-4.12.0 /var/htmlpurifier
+chown -R root:root /var/htmlpurifier*
 
 echo
 echo "preparing php directory"

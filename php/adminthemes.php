@@ -132,13 +132,10 @@ while (($f = $d->read()) !== false) {
     //get list of themes listed in database
     $select = "SELECT id,name,path from maia_themes";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-if ((new PEAR)->isError($sth)) {    
-    die($sth->getMessage());
-}
-    $smarty->assign('rowcount', $res->numrows());
-while ($row = $res->fetchrow()) {
+    $sth->execute();
+
+    $smarty->assign('rowcount', $sth->rowcount());
+while ($row = $sth->fetch()) {
        $installed_themes[] = array('name' => $row['name'], 'path'=>$row['path'], 'id'=>$row['id']);
        unset($dirlist[$row['path']]);
 }

@@ -122,11 +122,8 @@ if ($super) {
         ORDER BY domain ASC
 ENDSELECT;
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) { 
-    if ((new PEAR)->isError($sth)) {             
-        die($sth->getMessage()); 
-    }
+    $sth->execute();
+    
 } else {
     $select = <<<ENDSELECT
         SELECT maia_domains.domain, maia_domains.id as domain_id, maia_users.id as maia_user_id,
@@ -139,18 +136,16 @@ ENDSELECT;
         GROUP BY maia_domains.domain, maia_mail_recipients.type, maia_domains.id, maia_users.id
         ORDER BY domain ASC
 ENDSELECT;
+
     $sth = $dbh->prepare($select);
-    $res = $sth->execute(array($uid));
-    // if (PEAR::isError($sth)) { 
-    if ((new PEAR)->isError($sth)) { 
-        die($sth->getMessage()); 
-    }
+    $sth->execute(array($uid));
+    
 }
 
     $atleastone = false;
     $domains = array();
-if ($res->numrows() > 0) {
-    while ($row = $res->fetchrow()) {
+if ($sth->rowcount() > 0) {
+    while ($row = $sth->fetch()) {
         $name = strtolower($row["domain"]);
         if (!isset($domains[$name])) {
             $domains[$name] = array (
@@ -182,9 +177,6 @@ if ($res->numrows() > 0) {
     $smarty->assign("domains", $domains);
     $smarty->assign("atleastone", $atleastone);
 
-    
-    $sth->free();
-    
     $smarty->display('admindomains.tpl');
     
 ?>
