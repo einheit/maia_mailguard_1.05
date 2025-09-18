@@ -107,25 +107,23 @@ if ($uid != $euid) {
               "WHERE maia_viruses.id = maia_virus_aliases.virus_id " .
         "ORDER BY virus_alias ASC"
     );
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) { 
-    if ((new PEAR)->isError($sth)) { 
-        die($sth->getMessage()); 
-    } 
-    $smarty->assign('numrows', $res->numrows());
+    $sth->execute();
+    
+    $smarty->assign('numrows', $sth->rowcount());
     $viruses = array();
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         $viruses[] = array(
             'virus_name' => $row["virus_name"],
             'virus_alias' => $row["virus_alias"],
             'virus_id' => $row["virus_id"]
         );
     }
-    $sth->free();
+
     $smarty->assign('viruses', $viruses);
 
     $select = "SELECT virus_name, id FROM maia_viruses ORDER BY virus_name ASC";
-    $smarty->assign('rows', $dbh->queryall($select));
+    $sth->execute();
+    $smarty->assign('rows', $sth->fetchAll(PDO::FETCH_ASSOC));
 
     $smarty->display('adminviruses.tpl');
     
