@@ -15,52 +15,23 @@ function delete_mail($mail_ids)
     // $sth = $dbh->prepare("DELETE FROM maia_mail_recipients WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
     $sth = $dbh->prepare("DELETE FROM maia_mail WHERE id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
     $res = $sth->execute($mail_ids);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-
-    $sth->free();
 
     // Delete any references to SpamAssassin rules
     $sth = $dbh->prepare("DELETE FROM maia_sa_rules_triggered WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
     $res = $sth->execute($mail_ids);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-
-    $sth->free();
 
     // Delete any references to viruses
     $sth = $dbh->prepare("DELETE FROM maia_viruses_detected WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
     $res = $sth->execute($mail_ids);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-
-    $sth->free();
 
     // Delete any references to banned file attachments
     $sth = $dbh->prepare("DELETE FROM maia_banned_attachments_found WHERE mail_id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
     $res = $sth->execute($mail_ids);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-
-    $sth->free();
 
     // Delete the mail item itself
     $sth = $dbh->prepare("DELETE FROM maia_mail WHERE id IN (?" . str_repeat(',?', count($mail_ids) - 1) . ")");
     $res = $sth->execute($mail_ids);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    $sth->free();
 }
 
 
@@ -82,18 +53,8 @@ function delete_mail_reference($user_id, $mail_ids)
     $delete .= '?' . str_repeat(',?', count($mail_ids) - 1);
     $delete .= ")";
     $sth = $dbh->prepare($delete);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
     $res = $sth->execute(array_merge((array)$user_id, (array)$mail_ids));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-
-    $sth->free();
 
     // If there are no other recipients referenced by each mail item,
     // delete it.
@@ -105,20 +66,12 @@ function delete_mail_reference($user_id, $mail_ids)
       "AND mail_id IS NULL";
     $sth2 = $dbh->prepare($select);
 
-    // if (PEAR::isError($sth2)) {
-    if ((new PEAR)->isError($sth2)) {
-        die($sth2->getMessage());
-    }
     $res2 = $sth2->execute((array)$mail_ids);
-    // if (PEAR::isError($res2)) {
-    if ((new PEAR)->isError($res2)) {
-        die($res2->getMessage());
-    }
+
     $deletions = array();
-    while ($row = $res2->fetchrow() ) {
+    while ($row = $sth2->fetch() ) {
         array_push($deletions, $row['id']);
     }
-    $sth2->free();
     if (count($deletions) > 0) {
         // consolidate array castes
         $deletions = array_map('trim', $deletions);
@@ -140,15 +93,10 @@ function delete_user_mail_references($uid)
     // might have.
     $sth = $dbh->prepare("SELECT mail_id FROM maia_mail_recipients WHERE recipient_id = ?");
     $res = $sth->execute(array($uid));
-    // if (PEAR::isError($sth)) { 
-    if ((new PEAR)->isError($sth)) { 
-        die($sth->getMessage()); 
-    } 
 
-    while ($row = $res->fetchRow()) {
+    while ($row = $sth->fetch()) {
         delete_mail_reference($uid, $row["mail_id"]);
     }
-    $sth->free();
 }
 
     /* delete_domain_addresses()
@@ -162,12 +110,8 @@ function delete_domain_addresses($domain)
 
     $sth = $dbh->prepare("SELECT id FROM users WHERE email LIKE ? AND email not like ?");
     $res = $sth->execute(array('%'.$domain, $domain));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         $return = smart_delete_email_address($row['id']);
         if (!$return) {
             $complete_success = false;
@@ -195,12 +139,9 @@ function set_item_confirmations($message_type, $user_id, $mail_id)
     $update .= '?' . str_repeat(',?', count((array)$mail_id) - 1);
 
     $update .= ")";
+
     $sth = $dbh->prepare($update);
     $res = $sth->execute(array_merge((array)$message_type, (array)$user_id, (array)$mail_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
 }
 
@@ -281,12 +222,8 @@ function rescue_item($user_id, $mail_id, $resend=false)
               "AND maia_mail_recipients.mail_id = ?"
     );
     $res = $sth->execute(array($user_id, $mail_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $sender_email = $row["sender_email"];
         $body = $row["contents"];
         $type = $row["type"];
@@ -315,17 +252,12 @@ function rescue_item($user_id, $mail_id, $resend=false)
             $my_email_address = "";
             foreach ($rlist as $rmail) {
                 $res2 = $sth2->execute(array($user_id, $rmail));
-                // if (PEAR::isError($sth2)) {
-                if ((new PEAR)->isError($sth2)) {
-                    die($sth2->getMessage());
-                }
 
-                if ($row2 = $res2->fetchrow()) {
+                if ($row2 = $sth2->fetch()) {
                     $my_email_address = $row2["email"];
                     break;
                 }
             }
-            $sth2->free();
 
         }
         if (!empty($my_email_address)) {
@@ -353,7 +285,6 @@ function rescue_item($user_id, $mail_id, $resend=false)
     } else {
         $smtp_result = $lang['text_rescue_error'] . "(MessageNotFound)"; // code really shouldn't be here.
     }
-    $sth->free();
     $logger->info($smtp_result);
     return $smtp_result;
 }
