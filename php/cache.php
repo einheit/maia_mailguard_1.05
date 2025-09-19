@@ -161,10 +161,7 @@ class MessageCache
                 if ($sort[1] == "A" || $sort[1] == "D") {
                         $sth = $dbh->prepare("UPDATE maia_users SET ". $field ." = ? WHERE id = ?");
                         $sth->execute(array($sort, $euid));
-                        // if (PEAR::isError($sth)) {
-                    if ((new PEAR)->isError($sth)) {
-                        die($sth->getMessage());
-                    }
+
                         header("Location: list-cache.php" . $msid. "cache_type=". $this->type);
                         exit;
                 }
@@ -237,7 +234,7 @@ class MessageCache
              $this->smarty->assign("sortby", $this->sortby);
              $this->smarty->assign("sort_order", $this->sort_order);
     }
-    
+
     function set_select()
     {
         $this->select_count = "SELECT COUNT(maia_mail.id) as CNT " .
@@ -248,29 +245,26 @@ class MessageCache
               "AND maia_mail_recipients.recipient_id = ? ";
 
         $this->select_stmt = "SELECT maia_mail.id, ";
+
         if (substr($this->dbtype, 0, 5) == "mysql") {
-
             $this->select_stmt .= "DATE_ADD(maia_mail.received_date, INTERVAL " . $_SESSION["clock_offset"] . " SECOND) AS received_date, ";
-
         } elseif ($this->dbtype == "pgsql") {
-
             $this->select_stmt .= "date_trunc('second', maia_mail.received_date + INTERVAL '" . $_SESSION["clock_offset"] . " SECOND') AS received_date, ";
-
         }
+
         $this->select_stmt .= "maia_mail.score, maia_mail.sender_email, maia_mail.subject, maia_mail.envelope_to " .
-                              "FROM maia_mail_recipients " .
-                              "LEFT JOIN maia_mail " .
-                              "ON maia_mail.id = maia_mail_recipients.mail_id " .
-                              "WHERE " . $this->get_sort_stmt() .
-                              "AND maia_mail_recipients.recipient_id = ? " .
-                              " ORDER BY maia_mail." . $this->sortby['column'] . " " . $this->sort_order;
+        "FROM maia_mail_recipients " .
+        "LEFT JOIN maia_mail " .
+        "ON maia_mail.id = maia_mail_recipients.mail_id " .
+        "WHERE " . $this->get_sort_stmt() .
+        "AND maia_mail_recipients.recipient_id = ? " .
+        " ORDER BY maia_mail." . $this->sortby['column'] . " " . $this->sort_order;
     }
     
     function confirm_cache($euid)
     {    
         $message = "";
 
-      
         $ham_list = array();
         $spam_list = array();
         $delete_list = array();
@@ -473,26 +467,19 @@ class MessageCache
         }
 
         $sth3 = $this->dbh->prepare($this->select_count);
-        $res3 = $sth3->execute(array($euid));
-        // if (PEAR::isError($sth3)) {
-        if ((new PEAR)->isError($sth3)) {
-            die($sth3->getMessage());
-        }
-        $numRows = $res3->fetchRow();
-        $sth3->free();
+        $sth3->execute(array($euid));
 
-        if ($numRows['cnt'] > 0) {
+        $numRows = $sth3->fetch();
+
+        if ($numRows > 0) {
             $sth2 = $this->dbh->prepare("SELECT email FROM users WHERE maia_user_id = ?");
-            $res2 = $sth2->execute(array($euid));
-            // if (PEAR::isError($sth2)) {
-            if ((new PEAR)->isError($sth2)) {
-                die($sth2->getMessage());
-            }
-            while ($row2 = $res2->fetchrow()) {
+            $sth2->execute(array($euid));
+
+            while ($row2 = $sth2->fetch()) {
                 $personal_addresses[] = $row2["email"];
             }
-            $sth2->free();
-            $personal_addresses = array_flip($personal_addresses);
+            
+	    $personal_addresses = array_flip($personal_addresses);
             $domain_default = is_a_domain_default_user($euid);
             
             $need_to = (count($personal_addresses) > 1 || $domain_default);
@@ -511,7 +498,7 @@ class MessageCache
                                    'totalItems' => $numRows['cnt'],
                                    );
 
-            $paged_data = Pager_Wrapper_DB($this->dbh, $this->select_stmt, $pagerOptions, null, MDB2_FETCHMODE_ASSOC, array($euid));
+            $paged_data = Pager_Wrapper_DB($this->dbh, $this->select_stmt, $pagerOptions, null, PDO::FETCH_ASSOC, array($euid));
             //$paged_data['data'];  //paged data
             //$paged_data['links']; //xhtml links for page navigation
             //$paged_data['page_numbers']; //array('current', 'total');
@@ -621,7 +608,7 @@ class MessageCache
 
         $result = $vsth->execute(array($mail_id));
         $ret = array();
-        while ($row = $result->fetchrow()) {
+        while ($row = $vsth->fetch()) {
             array_push($ret, $row['virus_name']);
         }
         return $ret;
@@ -639,7 +626,7 @@ class MessageCache
 
         $result = $bsth->execute(array($mail_id));
         $ret = array();
-        while ($row = $result->fetchrow()) {
+        while ($row = $bsth->fetch()) {
             array_push($ret, $row['file_name'] . " (" . $row['file_type'] . ")");
         }
         return $ret;

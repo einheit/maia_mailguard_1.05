@@ -87,31 +87,18 @@ function get_chart_colors()
     return $value;
 }
 
-
-// UNDER_CONSTRUCTION
-// This function needs some work to convert to PDO - jjs 20250918
-function Pager_Wrapper_DB(&$db, $query, $pager_options = array(), $disabled = false, $fetchMode = PDO::FETCH_ASSOC, $dbparams = null)
+// This function has been roughly and clumsily converted to PDO - jjs 20250919
+function Pager_Wrapper_DB(&$db, $query, $pager_options = array(), $disabled = false, $fetchMode = null,     $dbparams = null)
 {
-//    TODO - make sure fetchmod is set corerctly for the query
-//    The setFetchMode method was removed in newer versions of PHP
-//    $db->setFetchMode($fetchMode);
     if (!array_key_exists('totalItems', $pager_options)) {
-        //  be smart and try to guess the total number of records
-        if ($countQuery = rewriteCountQuery($query)) {
-            $totalItems = $db->getOne($countQuery, $dbparams);
 
-            // if (PEAR::isError($totalItems)) {
-            if ((new PEAR)->isError($totalItems)) {
-                return $totalItems;
-            }
+        $res =& $db->execute($query, $dbparams);
 
-        } else {
-            $res =& $db->query($query, $dbparams);
+        $totalItems = (int)$res->rowcount();
 
-            $totalItems = (int)$res->numRows();
-        }
         $pager_options['totalItems'] = $totalItems;
     }
+
     $pager_options['delta'] = 3;
     include_once 'Pager/Pager.php';
     $pager =& Pager::factory($pager_options);
@@ -132,9 +119,15 @@ function Pager_Wrapper_DB(&$db, $query, $pager_options = array(), $disabled = fa
            $db->setLimit($pager_options['perPage'], $page['from']-1);
     }
     */
-    $sth = $db->prepare($query);
+
+    try {
+      $sth = $db->prepare($query);
+        } catch (PDOException $e) {
+           die("Action failed: " . $e->getMessage());
+    }
+
     $sth->execute($dbparams);
-    
+
     $page['data'] = array();
 
     while($row = $sth->fetch()) {
@@ -150,6 +143,7 @@ function Pager_Wrapper_DB(&$db, $query, $pager_options = array(), $disabled = fa
 
     return $page;
 }
+
 
 function sql_check($res, $function, $text="")
 {
