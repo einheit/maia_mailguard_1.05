@@ -77,20 +77,20 @@
     
 function get_database_type($dbh)
 {
-    return $dbh->phptype;
+try {
+    $driverName = $dbh->getAttribute(PDO::ATTR_DRIVER_NAME);
+    }  catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+    }
+    return $driverName;
 }
 
 
 function table_exists($dbh, $table_name)
 {
     $select = "SELECT * FROM " . $table_name . " LIMIT 1";
-    $sth = $dbh->query($select);
-    if (DB::isError($sth)) {
-        return false;
-    } else {
-        $sth->free();
-        return true;
-    }
+    $sth = $dbh->execute($select);
+
 }
 
 
@@ -190,6 +190,7 @@ function drop_column($dbh, $table_name, $column_name)
 }
 
 
+// We may have trouble with this - mariadb seems to fall through the cracks
 function index_exists($dbh, $table_name, $index_name)
 {
     $db_type = get_database_type($dbh);
@@ -197,18 +198,14 @@ function index_exists($dbh, $table_name, $index_name)
 
         $select = "SHOW INDEX FROM " . $table_name;
         $sth = $dbh->query($select);
-        if (DB::isError($sth)) {
-            return false;
-        } else {
+
             $found = false;
-            while ($row = $sth->fetchRow()) {
+            while ($row = $sth->fetch()) {
                 if ($row[2] == $index_name) {
                     $found = true;
                 }
             }
-            $sth->free();
             return $found;
-        }
 
     } else if ($db_type == "pgsql") {
 
@@ -219,20 +216,15 @@ function index_exists($dbh, $table_name, $index_name)
                   "AND (i.relname = ?) " .
                   "AND (c.relname = ?))";
         $sth = $dbh->query($select, array($index_name, $table_name));
-        if (DB::isError($sth)) {
-            return false;
-        } else {
+
             $found = false;
-            if ($row = $sth->fetchRow()) {
+            if ($row = $sth->fetch()) {
                 $found = true;
             }
-            $sth->free();
             return $found;
-        }
 
     }
 }
-
 
 function create_index($dbh, $table_name, $index_columns, $type)
 {
@@ -250,7 +242,7 @@ function create_index($dbh, $table_name, $index_columns, $type)
         
     $create .= "(" . implode(', ', $index_columns) . ")";
     //echo $create . "<br>";
-    return $dbh->query($create); 
+    return $dbh->execute($create); 
 }
 
 
@@ -348,17 +340,10 @@ function create_table($dbh, $table_name, $table_schema)
         
     //print $create;    
     $db_result = $dbh->query($create);
-    if (DB::isError($db_result)) {
-         $msg .= "error on create: $table_name " . $db_result->getMessage() . "<br>";
-    } else {
-          $msg .= "Added table: $table_name<br>";
-    }
+
     foreach ($table_schema['indexes'] as $index => $def) {
         $db_result = create_index($dbh, $table_name, $def['rows'], $def['type']);
-        if (DB::isError($db_result)) {
-            $msg .= "error on index: $index " . $db_result->getMessage() . "<br>";
-        } else {
-            $msg .= "Added index: $index<br>";
+
         }
     }
         
@@ -374,18 +359,13 @@ function create_table($dbh, $table_name, $table_schema)
                 }
                 $insert .= join(", ", $cols);
                     
-                $db_result = $dbh->query($insert);
-                if (DB::isError($db_result)) {
-                     $msg .= "error on insert: $index " . $db_result->getMessage() . "<br>";
-                } else {
-                    $msg .= "inserted default data: $insert<br>";
-                }
+                $db_result = $dbh->execute($insert);
+
             }
                
         }
             
         
-    }
         return $msg;
 }
     
@@ -398,6 +378,6 @@ function insert_data($dbh, $table, $fields)
     }
     $insert .= implode(", ", $sets);
     print $select;
-    return $dbh->query($insert);
+    return $dbh->execute($insert);
 }
 ?>

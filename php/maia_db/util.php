@@ -13,23 +13,25 @@ function get_config_value($key)
     global $dbh;
 
     $sth = $dbh->prepare("SELECT " . $key . " FROM maia_config WHERE id = 0");
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    if ($row = $res->fetchrow()) {
+    $sth->execute();
+    
+    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
         $value = $row[$key];
     }
-    $sth->free();
+
     return $value;
 }
 
 
 function get_database_type($dbh)
 {
-    return $dbh->phptype;
+try {
+    $driverName = $dbh->getAttribute(PDO::ATTR_DRIVER_NAME);
+    }  catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+    }
+    return $driverName;
 }
 
     /*
@@ -72,16 +74,11 @@ function get_chart_colors()
               "FROM maia_config WHERE id=0"
     );
 
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-
-    if ($row = $res->fetchrow()) {
+    $sth->execute();
+    
+    if ($row = $sth->fetch()) {
         $value = $row;
     }
-    $sth->free();
 
     $value["bf"] = "#C9BBFF";
     $value["bh"] = "#FFCC79";
@@ -91,25 +88,27 @@ function get_chart_colors()
 }
 
 
-function Pager_Wrapper_DB(&$db, $query, $pager_options = array(), $disabled = false, $fetchMode = MDB2_FETCHMODE_ASSOC, $dbparams = null)
+// UNDER_CONSTRUCTION
+// This function needs some work to convert to PDO - jjs 20250918
+function Pager_Wrapper_DB(&$db, $query, $pager_options = array(), $disabled = false, $fetchMode = PDO::FETCH_ASSOC, $dbparams = null)
 {
-    $db->setFetchMode($fetchMode);
+//    TODO - make sure fetchmod is set corerctly for the query
+//    The setFetchMode method was removed in newer versions of PHP
+//    $db->setFetchMode($fetchMode);
     if (!array_key_exists('totalItems', $pager_options)) {
         //  be smart and try to guess the total number of records
         if ($countQuery = rewriteCountQuery($query)) {
             $totalItems = $db->getOne($countQuery, $dbparams);
+
             // if (PEAR::isError($totalItems)) {
             if ((new PEAR)->isError($totalItems)) {
                 return $totalItems;
             }
+
         } else {
             $res =& $db->query($query, $dbparams);
-            // if (PEAR::isError($res)) {
-            if ((new PEAR)->isError($res)) {
-                return $res;
-            }
+
             $totalItems = (int)$res->numRows();
-            $res->free();
         }
         $pager_options['totalItems'] = $totalItems;
     }
@@ -126,19 +125,19 @@ function Pager_Wrapper_DB(&$db, $query, $pager_options = array(), $disabled = fa
     );
     list($page['from'], $page['to']) = $pager->getOffsetByPageId();
 
+    // TODO - implement this correctly in the query
+    // PDO does not have a setLimit() method.
+    /*
     if (!$disabled) {
            $db->setLimit($pager_options['perPage'], $page['from']-1);
     }
+    */
     $sth = $db->prepare($query);
-    $res = $sth->execute($dbparams);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-         
+    $sth->execute($dbparams);
+    
     $page['data'] = array();
 
-    while($row = $res->fetchRow()) {
+    while($row = $sth->fetch()) {
         $page['data'][] = $row;
     }
     if ($disabled) {
@@ -182,17 +181,21 @@ function get_default_theme()
 {
     global $dbh;
     $sth = $dbh->prepare("SELECT theme_id FROM maia_users WHERE user_name=?");
-    $res = $sth->execute(array('@.'));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row=$res->fetchrow()) {
+    $sth->execute(array('@.'));
+
+    if ($row=$sth->fetch()) {
         $default_theme_id = $row['theme_id'];
     } else {
         // ack! no default?
         $default_theme_id = false;
     }
-    $sth->free();
+
+    if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+      $default_theme_id = $row['theme_id'];
+      } else {
+        // ack! no default?
+        $default_theme_id = false;
+      }
+
     return $default_theme_id;
 }
