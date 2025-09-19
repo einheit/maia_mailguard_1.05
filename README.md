@@ -22,7 +22,7 @@ The branch retains the goals of maia_mailguard_1.04a but adds compatibility with
 
 Compatibility with php 7 and below is unknown at this point, but for that use case, maia_mailguard 1.04a is perfectly usable. 
 
-Maia is flexible and scalable. It can be deployed in a number of configurations, from deploying everything in a single container, VM or physical machine, to groups of of MTAs, groups of maiad/spamassasin servers, remote clamav servers, remote database servers, or dedicated web server instances for the management interface.
+Maia is flexible and scalable. It can be deployed in a number of configurations - everything in a single container, VM or physical machine, or dividing it up into MTAs, maiad/spamassasin servers, clamav servers, database servers, and web servers.
 
 To get started, run "./install" and the script will try to detect the OS and offer the best option for installing on your system. 
 

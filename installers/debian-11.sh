@@ -238,8 +238,8 @@ pear install Numbers_Words-0.18.2
 pear list
 
 # install html purifier separately -
-tar -C /var -xvf files/htmlpurifier-4.12.0.tar.gz
-ln -s /var/htmlpurifier-4.12.0 /var/htmlpurifier
+tar -C /var -xvf files/htmlpurifier-4.18.0.tar.gz
+ln -s /var/htmlpurifier-4.18.0 /var/htmlpurifier
 chown -R root:root /var/htmlpurifier*
 
 echo

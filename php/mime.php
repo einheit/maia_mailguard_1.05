@@ -79,8 +79,7 @@
    require_once "Mail/mimeDecode.php";  // PEAR::Mail::mimeDecode.php
    // edit jjs 2020-03-26
    // require_once 'HTMLPurifier.auto.php';
-   // require_once ("/var/htmlpurifier/library/HTMLPurifier.auto.php");
-   require_once 'HTMLPurifier.auto.php';
+   require_once ("/var/htmlpurifier/library/HTMLPurifier.auto.php");
 
    /*
     * display_parts(): Recursively decode and display the contents of
