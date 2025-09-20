@@ -44,6 +44,7 @@ private static $_keyLength = 32;
      *
      * @return int
      */
+
 protected static function strlen( $str )
 {
     static $isShadowed = null;
@@ -63,3 +64,5 @@ protected static function strlen( $str )
     /**
      * Generates a random salt
      *
+     */
+}
