@@ -124,11 +124,8 @@ if (!is_admin_for_domain($uid, $domain_id)) {
 
     $system_default = false;
     $res = $sth->execute(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchRow()) {
+
+    if ($row = $sth->fetch()) {
         $address = $row["email"];
         if ($address == "@.") {
             $smarty->assign('address', $lang['text_system_default'] . " (@.)");
@@ -234,22 +231,16 @@ if (!is_admin_for_domain($uid, $domain_id)) {
         }
  
     }
-    $sth->free();
     
     //get list of themes
     $sth = $dbh->prepare("SELECT id, name FROM maia_themes");
     $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
     $themes = array();
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         $themes[$row['id']] = $row['name'];
     }
     $smarty->assign("themes", $themes);
-    $sth->free();
     
     $sth = $dbh->prepare(
         "SELECT maia_users.discard_ham, maia_domains.enable_user_autocreation, maia_users.theme_id " .
@@ -258,7 +249,7 @@ if (!is_admin_for_domain($uid, $domain_id)) {
                          "AND maia_domains.id = ?"
     );
     $res = $sth->execute(array($domain_id));
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $smarty->assign('theme_id', $row["theme_id"]);
         if ($row["discard_ham"] == 'Y') {
             $smarty->assign('dh_y_checked', "");
@@ -290,13 +281,10 @@ if (!is_admin_for_domain($uid, $domain_id)) {
         "ORDER BY maia_users.user_name ASC"
     );
     $res = $sth->prepare(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+
     $admins = array();
-    if (($rowcount = $res->numrows()) > 0) {
-        while ($row = $res->fetchrow()) {
+    if (($rowcount = $sth->rowcount()) > 0) {
+        while ($row = $sth->fetch()) {
             $admins[] = array(
                 'id' => $row["id"],
                 'name' => $row["user_name"],
@@ -306,8 +294,6 @@ if (!is_admin_for_domain($uid, $domain_id)) {
     }
     $smarty->assign('admins', $admins);
 
-    $sth->free();
-
     $sth = $dbh->prepare(
         "SELECT maia_users.id " .
               "FROM maia_users, maia_domain_admins " .
@@ -315,19 +301,15 @@ if (!is_admin_for_domain($uid, $domain_id)) {
         "AND maia_domain_admins.domain_id = ?"
     );
     $res = $sth->execute(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+
     $id_list = "";
-    while($row = $res->fetchRow()) {
+    while($row = $sth->fetch()) {
         if (!empty($id_list)) {
             $id_list .= "," . $row["id"];
         } else {
             $id_list = $row["id"];
         }
     }
-    $sth->free();
 
     $select = "SELECT user_name, id " .
               "FROM maia_users " .
@@ -339,14 +321,10 @@ if (!is_admin_for_domain($uid, $domain_id)) {
     $select .= "ORDER BY user_name ASC";
     $sth->prepare($select);
     $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    if ($res->numrows()) {
+    if ($sth->rowcount()) {
         $add_admins = array();
-        while ($row = $res->fetchrow()) {
+        while ($row = $sth->fetch()) {
             $add_admins[] = array(
                 'id' => $row["id"],
                 'name' => $row["user_name"]
@@ -354,7 +332,6 @@ if (!is_admin_for_domain($uid, $domain_id)) {
         }
         $smarty->assign('add_admins', $add_admins);
     }
-    $sth->free();
     $smarty->assign('domain_id', $domain_id);
     $smarty->display('domainsettings.tpl');
     

@@ -125,19 +125,14 @@ if (isset($_POST["adddomain"])) {
               "AND id IN (" . implode(',', $formVars) . ")";
     $sth = $dbh->prepare($select);
     $res = $sth->execute();
-    // if (PEAR::isError($sth)) {  
-    if ((new PEAR)->isError($sth)) {  
-        die($sth->getMessage());  
-    } 
 
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         delete_domain($row["id"]);
         if ($_POST['deleteaddresses']) {
             $result = delete_domain_addresses($row['domain']);
         }
     }
 
-    $sth->free();
 
 }
 

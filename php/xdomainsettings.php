@@ -112,16 +112,12 @@ if (isset($_POST['update_domain'])) {
               "FROM maia_config WHERE id = 0"
     );
     $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $enable_charts = ($row["enable_charts"] == 'Y');
         $reminder_threshold_count = $row["reminder_threshold_count"];
         $enable_spamtraps = ($row["enable_spamtraps"] == 'Y');
     }
-    $sth->free();
 
     if (isset($_POST["policy"])) {
         $policy_id = trim($_POST["policy"]);
@@ -149,11 +145,8 @@ if (isset($_POST['update_domain'])) {
            "FROM policy WHERE id = ?"
     );
     $res = $sth->execute(array($policy_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchRow()) {
+
+    if ($row = $sth->fetch()) {
             $default_quarantine_viruses = ($row["virus_lover"] == "N");
             $default_quarantine_spam = ($row["spam_lover"] == "N");
             $default_quarantine_banned_files = ($row["banned_files_lover"] == "N");
@@ -171,7 +164,6 @@ if (isset($_POST['update_domain'])) {
             $default_score_level_2 = $row["spam_tag2_level"];
             $default_score_level_3 = $row["spam_kill_level"];
     }
-        $sth->free();
         $sth = $dbh->prepare(
             "SELECT maia_users.id, maia_users.discard_ham, maia_domains.enable_user_autocreation, maia_users.theme_id " .
                   "FROM maia_users, maia_domains " .
@@ -179,17 +171,13 @@ if (isset($_POST['update_domain'])) {
                   "AND maia_domains.id = ?"
         );
     $res = $sth->execute(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $domain_user_id = $row["id"];
         $default_discard_ham = ($row["discard_ham"] == "Y");
         $default_enable_user_autocreation = ($row["enable_user_autocreation"] == "Y");
         $default_theme_id = $row["theme_id"];
     }
-    $sth->free();
 
     if (isset($_POST["viruses"])) {
         $viruses = trim($_POST["viruses"]);
@@ -339,27 +327,12 @@ if (isset($_POST['update_domain'])) {
                                $spam_kill_level,
                                $policy_id)
     );
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
 
     $sth = $dbh->prepare("UPDATE maia_users SET discard_ham = ?, theme_id = ? WHERE id = ?");
     $sth->execute(array($discard_ham, $theme_id, $domain_user_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
 
     $sth = $dbh->prepare("UPDATE maia_domains SET enable_user_autocreation = ? WHERE id = ?");
     $sth->execute(array($enable_user_autocreation, $domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-    }
-    $sth->free();
 
     $message = $lang['text_settings_updated'];
     // Pressed the "Revoke Administrator Privileges" button
@@ -378,12 +351,8 @@ if (isset($_POST['update_domain'])) {
               "AND maia_domain_admins.domain_id = ?"
     );
     $res = $sth->execute(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
 
         $admin_name = $row["user_name"];
         $admin_var_name = str_replace(".", "_", $admin_name);
@@ -396,34 +365,19 @@ if (isset($_POST['update_domain'])) {
             // Remove the link between this administrator and this domain
             $sth2 = $dbh->prepare("DELETE FROM maia_domain_admins WHERE domain_id = ? AND admin_id = ?");
             $sth2->execute(array($domain_id, $admin_id));
-            // if (PEAR::isError($sth2)) {
-            if ((new PEAR)->isError($sth2)) {
-                die($sth2->getMessage());
-            }
-            // $sth2->free9();
-            $sth2->free();
 
             // If this administrator doesn't control any remaining domains,
             // demote him to a regular (U)ser.
             $sth2 = $dbh->prepare("SELECT domain_id FROM maia_domain_admins WHERE admin_id = ?");
             $res2 = $sth2->execute(array($admin_id));
-            // if (PEAR::isError($sth2)) {
-            if ((new PEAR)->isError($sth2)) {
-                die($sth2->getMessage());
-            }
-            if (!$res2->fetchrow()) {
+
+            if (!$sth2->fetch()) {
                 $sth3 = $dbh->prepare("UPDATE maia_users SET user_level = 'U' WHERE id = ?");
                 $sth3->execute(array($admin_id));
-                // if (PEAR::isError($sth)) {
-                if ((new PEAR)->isError($sth)) {
-                    die($sth->getMessage());
-                }
-                $sth3->free();
+
             }
-            $sth2->free();
         }
     }
-    $sth->free();
 
     $message = $lang['text_admins_revoked'];
 
@@ -439,20 +393,10 @@ if (isset($_POST['update_domain'])) {
             // Link the administrator to this domain
             $sth = $dbh->prepare("INSERT INTO maia_domain_admins (admin_id, domain_id) VALUES (?, ?)");
             $sth->execute(array($admin_id, $domain_id));
-            // if (PEAR::isError($sth)) {
-            if ((new PEAR)->isError($sth)) {
-                die($sth->getMessage());
-            }
-            $sth->free();
 
             // Change the user's privilege level to Domain (A)dministrator
             $sth = $dbh->prepare("UPDATE maia_users SET user_level = 'A' WHERE id = ?");
             $sth->execute(array($admin_id));
-            // if (PEAR::isError($sth)) {
-            if ((new PEAR)->isError($sth)) {
-                die($sth->getMessage());
-            }
-            $sth->free();
 
             $message = $lang['text_administrators_added'];
 

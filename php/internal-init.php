@@ -154,15 +154,12 @@ if (isset($_POST["submit"])) {
     );
     $sth->execute(
         array($admin_email,
-                               $reminder_login_url,
-                               $newuser_template_file,
-                               $trusted_server,
-                               $trusted_port
-                               )
+              $reminder_login_url,
+              $newuser_template_file,
+              $trusted_server,
+              $trusted_port
+              )
     );
-    if (PEAR::isError($sth)) {
-        die($sth->getMessage());
-    }
 
     $new_email = get_rewritten_email_address($your_email, $address_rewriting_type);
     $username = $new_email;
@@ -176,10 +173,6 @@ if (isset($_POST["submit"])) {
     list($password, $digest) = generate_random_password();
     $sth = $dbh->prepare("UPDATE maia_users SET password = ? WHERE id = ?");
     $sth->execute(array($digest, $new_user_id));
-    if (PEAR::isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
 
     $fh = fopen($newuser_template_file, "r");
     if ($fh) {
@@ -207,10 +200,8 @@ if (isset($_POST["submit"])) {
               "FROM maia_config WHERE id = 0"
     );
     $res = $sth->execute();
-    if (PEAR::isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $admin_email = $row["admin_email"];
         $reminder_login_url = $row["reminder_login_url"];
         $newuser_template_file = $row["newuser_template_file"];
@@ -218,7 +209,6 @@ if (isset($_POST["submit"])) {
         $trusted_port = $row["smtp_port"];
             
     }
-    $sth->free();
 } 
 
        $smarty->assign("newuser_template_file", $newuser_template_file);

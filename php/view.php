@@ -199,7 +199,8 @@ $sth = $dbh->prepare(
     "AND maia_mail_recipients.recipient_id = ?"
 );
    $res = $sth->execute(array($id, $euid));
-if ($row = $res->fetchrow()) {
+
+if ($row = $sth->fetch()) {
     $contents = $row["contents"];
     $sender_email = $row['sender_email'];
 
@@ -251,7 +252,6 @@ if ($row = $res->fetchrow()) {
 } else {
        $smarty->assign("error", "error");
 }
-   $sth->free();
    $smarty->assign("return_route", "view.php"); // depreciated, needed for legacy support in viewmail.tpl.
    $smarty->assign("ajax", $ajax);
    $smarty->assign("actionlang", response_text($cache_type));

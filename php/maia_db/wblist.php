@@ -16,10 +16,9 @@ function get_wb_status($user_id, $addr_id)
              "AND sid = ?"
     );
     $res = $sth->execute(array($user_id, $addr_id));
-    if ($row = $res->fetchRow()) {
+    if ($row = $sth->fetch()) {
         $wb = $row["wb"];
     }
-    $sth->free();
 
     return $wb;
 }
@@ -34,16 +33,13 @@ function set_wb_status($user_id, $addr_id, $wb)
     global $dbh;
     global $logger;
 
-    $sth = $dbh->prepare("UPDATE wblist SET wb = ? WHERE rid = ? AND sid = ?");
-    $sth->execute(array($wb, $user_id, $addr_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        $logger->err("Problem updating wblist: " . $sth->getMessage());
+    try {
+      $sth = $dbh->prepare("UPDATE wblist SET wb = ? WHERE rid = ? AND sid = ?");
+      $sth->execute(array($wb, $user_id, $addr_id));
+
+    } catch (PDOException $e) {
         return 'text_wblist_error';
-    } else {
-        return 'text_lists_updated';
     }
-    $sth->free();
 }
 
 
@@ -56,11 +52,7 @@ function add_wb_entry($user_id, $addr_id, $wb)
 
     $sth = $dbh->prepare("INSERT INTO wblist (rid, sid, wb) VALUES (?, ?, ?)");
     $sth->execute(array($user_id, $addr_id, $wb));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
+
 }
 
 
@@ -73,32 +65,22 @@ function delete_wb_entry($user_id, $addr_id)
 
     $sth = $dbh->prepare("DELETE FROM wblist WHERE rid = ? AND sid = ?");
     $sth->execute(array($user_id, $addr_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        $logger->err("Problem deleting wblist: " . $sth->getMessage());
-        return $lang['text_wblist_error'];
-    }
-    $sth->free();
 
     // If there are no other references to this address,
     // remove it from the mailaddr table as well.
     $sth2 = $dbh->prepare("SELECT wb FROM wblist WHERE sid = ?");
     $res = $sth2->execute(array($addr_id));
-    // if (PEAR::isError($sth2)) {
-    if ((new PEAR)->isError($sth2)) {
-         die($sth->getMessage());
-    } 
-    if (!$res->fetchRow()) {
-        $sth3 = $dbh->prepare("DELETE FROM mailaddr WHERE id = ?");
-        $sth3->execute(array($addr_id));
-        // if (PEAR::isError($sth3)) {
-        if ((new PEAR)->isError($sth3)) {
+    
+    if (!$sth2->fetch()) {
+	try {
+          $sth3 = $dbh->prepare("DELETE FROM mailaddr WHERE id = ?");
+          $sth3->execute(array($addr_id));
+
+	} catch (PDOException $e) {
             $logger->err("Problem updating wblist: " . $sth3->getMessage());
             return $lang['text_wblist_error'];
         }
-        $sth3->free();
     }
-    $sth2->free();
     return 'text_wb_deleted';
 }
 
@@ -116,14 +98,10 @@ function delete_user_wb_entries($user_id)
              "WHERE rid = ?"
     );
     $res = $sth->execute(array($user_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    }
-    while ($row = $res->fetchRow()) {
+    
+    while ($row = $sth->fetch()) {
         delete_wb_entry($user_id, $row["sid"]);
     }
-    $sth->free();
 }
 
 
@@ -141,23 +119,14 @@ function add_address($email)
     $sth = $dbh->prepare("INSERT INTO mailaddr (priority, email) VALUES (?, ?)");
 
     $sth->execute(array($priority, $email));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    }
-    $sth->free();
 
     $sth = $dbh->prepare("SELECT id FROM mailaddr WHERE email = ?");
 
     $res = $sth->execute(array($email));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    }
-    if ($row = $res->fetchRow()) {
+
+    if ($row = $sth->fetch()) {
         $addr_id = $row["id"];
     }
-    $sth->free();
 
     return $addr_id;
 }
@@ -175,14 +144,10 @@ function get_address_id($addr)
         
     $addr_id = 0;
     $res = $sth->execute(array($addr));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    } 
-    if ($row = $res->fetchRow()) {
+
+    if ($row = $sth->fetch()) {
         $addr_id = $row["id"];
     }
-    $sth->free();
         
     return $addr_id;
 }

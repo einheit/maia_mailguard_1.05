@@ -130,7 +130,8 @@ if ($_GET["report_ham"]) {
               "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-    while ($row = $res->fetchRow())
+
+    while ($row = $sth->fetch())
     {
 
         $mail_id = $row["id"];
@@ -153,7 +154,7 @@ if ($_GET["report_spam"]) {
               "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-    while ($row = $res->fetchRow())
+    while ($row = $sth->fetch())
     {
 
         $mail_id = $row["id"];
@@ -176,7 +177,8 @@ if ($_GET["report_virus"]) {
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-    while ($row = $res->fetchRow())
+
+    while ($row = $sth->fetch())
     {
             $mail_id = $row["id"];
             delete_mail_reference($euid, $mail_id);
@@ -197,7 +199,8 @@ if ($_GET["report_attachment"]) {
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-    while ($row = $res->fetchRow())
+
+    while ($row = $sth->fetch())
     {
             $mail_id = $row["id"];
             delete_mail_reference($euid, $mail_id);
@@ -218,7 +221,8 @@ if ($_GET["report_header"]) {
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-    while ($row = $res->fetchRow())
+
+    while ($row = $sth->fetch())
     {
             $mail_id = $row["id"];
             delete_mail_reference($euid, $mail_id);

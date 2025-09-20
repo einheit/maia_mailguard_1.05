@@ -95,17 +95,16 @@ if (isset($_POST["add"])) {
 
             // Get the name of the alias
             $select = "SELECT virus_name, count FROM maia_viruses WHERE id = ?";
-            $sth = $dbh->query($select, array($alias));
-        if ($row = $sth->fetchrow()) {
+            $sth = $dbh->execute($select, array($alias));
+	if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $alias_name = $row["virus_name"];
             $alias_count = $row["count"];
         }
-            $sth->free();
 
             // Make sure the alias doesn't already exist
             $select = "SELECT virus_id FROM maia_virus_aliases WHERE virus_alias = ?";
-            $sth = $dbh->query($select, array($alias_name));
-        if (!$sth->fetchrow()) {
+            $sth = $dbh->execute($select, array($alias_name));
+	if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
 
             // Create the new alias
             $insert = "INSERT INTO maia_virus_aliases (virus_id, virus_alias) VALUES (?, ?)";
@@ -113,26 +112,24 @@ if (isset($_POST["add"])) {
 
             // Get the received count of the actual virus
             $select = "SELECT count FROM maia_viruses WHERE id = ?";
-            $sth2 = $dbh->query($select, array($virus));
-            if ($row2 = $sth2->fetchrow()) {
-                $virus_count = $row2["count"];
-            }
-            $sth2->free();
+            $sth2 = $dbh->execute($select, array($virus));
+	if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $virus_count = $row2["count"];
+        }
 
             // Add the received count from the alias to the actual virus
             $update = "UPDATE maia_viruses SET count = ? WHERE id = ?";
-            $dbh->query($update, array($virus_count + $alias_count, $virus));
+            $dbh->execute($update, array($virus_count + $alias_count, $virus));
 
             // Replace any references to the alias with virus references
             $update = "UPDATE maia_viruses_detected SET virus_id = ? WHERE virus_id = ?";
-            $dbh->query($update, array($virus, $alias));
+            $dbh->execute($update, array($virus, $alias));
 
             // Delete the 'alias' from the viruses table
             $delete = "DELETE FROM maia_viruses WHERE id = ?";
-            $dbh->query($delete, array($alias));
+            $dbh->execute($delete, array($alias));
 
         }
-            $sth->free();
     }
 
 } elseif (isset($_POST["delete"])) {
@@ -144,8 +141,8 @@ if (isset($_POST["add"])) {
     }
 
     $select = "SELECT virus_alias, virus_id FROM maia_virus_aliases";
-    $sth = $dbh->query($select);
-    while ($row = $sth->fetchrow()) {
+    $sth = $dbh->execute($select);
+    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
 
         $alias_name = $row["virus_alias"];
         $virus_id = $row["virus_id"];
@@ -157,11 +154,10 @@ if (isset($_POST["add"])) {
 
             // Delete the alias
             $delete = "DELETE FROM maia_virus_aliases WHERE virus_alias = ? AND virus_id = ?";
-            $dbh->query($delete, array($alias_name, $virus_id));
+            $dbh->execute($delete, array($alias_name, $virus_id));
 
         }
     }
-    $sth->free();
 
 }
 

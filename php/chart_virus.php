@@ -149,22 +149,24 @@
     $Dataset =& Image_Graph::factory('dataset');
 
     
+    // DB_CODE here may need work - jjs 20250918
     $select = "SELECT virus_name, count FROM maia_viruses WHERE count > 0 ORDER BY count DESC, virus_name ASC LIMIT ".$out['limit'];
+
     $sth = $dbh->query($select);
     $keys = array();
     $values = array();
-    if($sth->numRows()) {
+    if($sth->rowcount()) {
         $sum = 0;
-        while ($row = $sth->fetchrow()) {
+        while ($row = $sth->fetch()) {
             $Dataset->addPoint($row["virus_name"], $row["count"], $row["virus_name"]);
             $keys[] = $row["virus_name"];
             $values[] = $row["count"];
             $sum += $row["count"];
         }
         $select = "SELECT (SUM(count)-".$sum.") AS rest FROM maia_viruses";
-        $sth = $dbh->query($select);
-        if($sth->numRows()) {
-            $row = $sth->fetchrow();
+        $sth = $dbh->execute($select);
+        if($sth->rowcount()) {
+            $row = $sth->fetch();
             if($row["rest"]) {
                 $Dataset->addPoint("Rest", $row["rest"], "Rest");
                 $keys[] = "Rest";
@@ -188,8 +190,6 @@
         $FillArray->addColor($chart_colors[$i]);
     }
     
-
-
     
     $Plot->explode(10);
 

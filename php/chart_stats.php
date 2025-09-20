@@ -96,7 +96,6 @@ if (isset($_GET["id"])) {
     
     $chart_colors = get_chart_colors();
     
-    
      
 if(!empty($_GET['thumb'])) {
     $out = array(
@@ -131,7 +130,6 @@ if(!empty($_GET['thumb'])) {
     
     $Graph->setFont($Font);
     // create the plotareas
-    
     
     $Graph->add(
         Image_Graph::vertical(
@@ -177,7 +175,7 @@ if(!empty($_GET['thumb'])) {
         $sth = $dbh->query($select);
     }
     $items = array();
-    if($row = $sth->fetchrow()) {
+    if($row = $sth->fetch()) {
         foreach ($row as $key => $value) {
             // print_r($value);
             if ($value != 0) {

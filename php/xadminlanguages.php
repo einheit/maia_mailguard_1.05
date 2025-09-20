@@ -105,19 +105,14 @@ if (isset($_POST["install"])) {
 
     $sth = $dbh->prepare($select);
     $res = $sth->execute($lang_abbrev);
-    if (PEAR::isError($sth)) {
-        die($sth->getMessage());
-    }
 
     // Make the language available to users
-    if($res->numrows()) {
+    if($res->rowcount()) {
         if (is_dir($lang_dir . "/" . $lang_abbrev)) {
             $update = "UPDATE maia_languages SET installed = 'Y' WHERE abbreviation = ?";
             $sth = $dbh->prepare($update);
             $res = $sth->execute($lang_abbrev);
-            if (PEAR::isError($sth)) {
-                die($sth->getMessage());
-            }
+
         }
         $d->close();
     } else {
@@ -130,9 +125,7 @@ if (isset($_POST["install"])) {
             $insert = "INSERT INTO maia_languages (language_name, abbreviation, installed) VALUES (?, ?, 'Y')";
             $sth = $dbh->prepare($insert);
             $res = $sth->execute(array($lang_name, $lang_abbrev));
-            if (PEAR::isError($sth)) {
-                die($sth->getMessage());
-            }
+
         }
         $d->close();
     }
@@ -151,11 +144,8 @@ if (isset($_POST["install"])) {
               "WHERE installed = 'Y' AND abbreviation <> ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array(strtolower($default_display_language)));
-    if (PEAR::isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
 
         $lang_name = $row["language_name"];
         $lang_abbrev = strtolower($row["abbreviation"]);
@@ -168,9 +158,7 @@ if (isset($_POST["install"])) {
 
             $sth = $dbh->prepare($update);
             $res = $sth->execute($lang_id);
-            if (PEAR::isError($sth)) {
-                die($sth->getMessage());
-            }
+
 
             // Reset all users who used this language to the default
             $update = "UPDATE maia_users SET language = ? WHERE language = ?";
@@ -178,14 +166,11 @@ if (isset($_POST["install"])) {
 
             $sth = $dbh->prepare($update);
             $res = $sth->execute(array($default_display_language, $lang_abbrev));
-            if (PEAR::isError($sth)) {
-                die($sth->getMessage());
-            }
+
             $_SESSION["display_language"] = $default_display_language;
         }
     }
 
-    $res->free();
 
 }
 

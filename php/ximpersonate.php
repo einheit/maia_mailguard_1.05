@@ -100,16 +100,11 @@ if (is_a_domain_default_user($id)) {
     $select = "SELECT email FROM users WHERE maia_user_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute($id);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    while (!$privilege && ($row = $res->fetchRow())) {
+    while (!$privilege && ($row = $sth->fetch())) {
         $domain_id = get_domain_id("@" . get_domain_from_email($row["email"]));
         $privilege = is_admin_for_domain($uid, $domain_id);
     }
-    $sth->free();
 
 } else { // superadmin gets privs
     $privilege = true;

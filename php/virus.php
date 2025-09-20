@@ -219,15 +219,11 @@ function get_virus_info_url($virus)
     $select = "SELECT virus_lookup, virus_info_url FROM maia_config WHERE id = 0";
     $sth = $dbh->prepare($select);
     $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-         die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $virus_lookup = $row["virus_lookup"];
         $virus_info_url = $row["virus_info_url"];
     }
-       $sth->free();
 
        // Exit if we don't want any link at all.
     if (($virus_lookup == "") || ($virus_info_url == "")) {

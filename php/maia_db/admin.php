@@ -35,11 +35,11 @@ function get_superadmin_id()
 
     $super_id = 0;
     $select = "SELECT id FROM maia_users WHERE user_level = 'S'";
-    $sth = $dbh->query($select);
-    if ($row = $sth->fetchRow()) {
+    $sth = $dbh->execute($select);
+
+    if ($row = $sth->fetch()) {
         $super_id = $row["id"];
     }
-    $sth->free();
 
     return $super_id;
 }
@@ -58,11 +58,7 @@ function set_superadmin_id($uid)
                   "WHERE id = ?"
         );
         $sth->execute(array($uid));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        $sth->free();
+
         return true;
     } else {
         return false;
@@ -85,11 +81,7 @@ function unset_superadmin_id($uid)
                   "WHERE id = ?"
         );
         $sth->execute(array($uid));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        $sth->free();
+
         return true;
     } else {
         return false;

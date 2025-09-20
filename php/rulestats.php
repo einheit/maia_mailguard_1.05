@@ -86,15 +86,15 @@
     $select = "SELECT enable_charts " .
               "FROM maia_config WHERE id = 0";
     $sth = $dbh->query($select);
-if ($row = $sth->fetchrow()) {
+
+if ($row = $sth->fetch()) {
     $enable_charts = ($row["enable_charts"] == 'Y');
 }
-    $sth->free();
     
 if ($enable_charts) {
     $select = "SELECT charts FROM maia_users WHERE id=$euid";
     $sth = $dbh->query($select);
-    if ($row = $sth->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $enable_charts = ($row["charts"] == 'Y');
     }
         $sth->free();
@@ -104,13 +104,13 @@ if ($enable_charts) {
     $select = "SELECT SUM(rule_count) AS total, COUNT(rule_count) AS rcount FROM maia_sa_rules WHERE rule_count > 0";
     $sth = $dbh->query($select);
     $data = array();
-if (($row = $sth->fetchrow()) && (($total = $row["total"]) > 0)) {
+if (($row = $sth->fetch()) && (($total = $row["total"]) > 0)) {
     $smarty->assign('rcount', $row["rcount"]);
     $smarty->assign('total', $row["total"]);
     $select = "SELECT rule_name, rule_description, rule_score_3 AS rule_score, rule_count " .
              "FROM maia_sa_rules WHERE rule_count > 0 ORDER BY rule_count DESC, rule_name ASC";
     $sth2 = $dbh->query($select);
-    while ($row2 = $sth2->fetchrow()) {
+    while ($row2 = $sth2->fetch()) {
         $data[] = array(
             'rule_name' => $row2['rule_name'],
             'rule_description' => add_links_to_text($row2['rule_description']),

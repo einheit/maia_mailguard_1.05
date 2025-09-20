@@ -100,7 +100,7 @@
               "enable_bad_header_checking, enable_banned_files_checking " .
               "FROM maia_config WHERE id = 0";
     $sth = $dbh->query($select);
-if ($row = $sth->fetchrow()) {
+if ($row = $sth->fetch()) {
     $currency_label = $row["currency_label"];
     $enable_false_negative_management = ($row["enable_false_negative_management"] == 'Y');
     $enable_virus_scanning = ($row["enable_virus_scanning"] == 'Y');
@@ -108,7 +108,6 @@ if ($row = $sth->fetchrow()) {
     $enable_bad_header_checking = ($row["enable_bad_header_checking"] == 'Y');
     $enable_banned_files_checking = ($row["enable_banned_files_checking"] == 'Y');
 }
-    $sth->free();
 
     update_mail_stats($id, "suspected_ham");
     update_mail_stats($id, "suspected_spam");

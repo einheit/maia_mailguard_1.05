@@ -116,18 +116,16 @@ if (!$super) {
               "WHERE maia_domains.id = maia_domain_admins.domain_id " .
               "AND maia_domain_admins.admin_id = ? " .
               "ORDER BY domain ASC";
-    //$sth = $dbh->query($select, array($uid));
+    // $sth = $dbh->query($select, array($uid));
     $sth = $dbh->prepare($select);
-    $res = $sth->execute($uid);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    while ($row = $res->fetchrow()) {
+    //$sth = $dbh->prepare($select, array($uid));
+    $sth->execute($uid);
+    //$sth->execute();
+  
+    while ($row = $sth->fetch()) {
         $domain_name[] =  strtolower($row["domain"]);
     }
     $smarty->assign('domain_name', $domain_name);
-    $sth->free();
 
     foreach ($domain_name as $dname) {
 
@@ -141,20 +139,13 @@ if (!$super) {
                   "OR maia_users.id = ?) " .
                   "ORDER BY users.email ASC";
         $sth = $dbh->prepare($select);
-        $res = $sth->execute($uid);
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-
+        $sth->execute($uid);
+        
            
-        while ($row = $res->fetchrow()) {
+        while ($row = $sth->fetch()) {
             $address[$row["email"]] = $row["id"];
         }
-        $res->free();
     }
-
-        
 
         
     foreach ($domain_name as $dname) {
@@ -169,18 +160,14 @@ if (!$super) {
                   "OR maia_users.id = ?) " .
                   "ORDER BY user_name ASC";
         $sth = $dbh->prepare($select);
-        $res = $sth->execute($uid);
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        while ($row = $res->fetchrow()) {
+        $sth->execute($uid);
+
+        while ($row = $sth->fetch()) {
             if (is_a_domain_default_user($row["id"])) {
                 continue;
             }
             $user[$row["user_name"]] = $row["id"];
         }
-        $sth->free();
     }
 } else {
 
@@ -190,36 +177,27 @@ if (!$super) {
               "WHERE email NOT LIKE '@%' " .
               "ORDER BY email ASC";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+    $sth->execute();
 
     $address = array();
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         $address[$row["email"]] = $row["id"];
     }
-    $res->free();
 
     // The superadmin can list all users in all domains.
     $select = "SELECT user_name, id " .
               "FROM maia_users " .
               "ORDER BY user_name ASC";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+    $sth->execute();
+    
     $user = array();
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         if (is_a_domain_default_user($row["id"])) {
             continue;
         }
         $user[$row["user_name"]] = $row["id"];
     }
-    $res->free();
 
 }
     ksort($address);
@@ -244,15 +222,11 @@ if (!$super) {
                   "AND maia_users.user_level = 'U' " .
                   "ORDER BY users.email ASC";
         $sth = $dbh->prepare($select);
-        $res = $sth->execute();
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        while ($row = $res->fetchrow()) {
+        $sth->execute();
+        
+        while ($row = $sth->fetch()) {
             $delete_address[$row["email"]] = $row["id"];
         }
-        $res->free();
     }
 
 } else {
@@ -263,16 +237,12 @@ if (!$super) {
               "WHERE email NOT LIKE '@%' " .
               "ORDER BY email ASC";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+    $sth->execute();
+    
     $delete_address = array();
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         $delete_address[$row["email"]] = $row["id"];
     }
-    $res->free();
 }
     ksort($delete_address);
     $smarty->assign('delete_address', $delete_address);
@@ -293,15 +263,11 @@ if (!$super) {
                   "AND maia_users.user_level = 'U' " .
                   "ORDER BY user_name ASC";
         $sth = $dbh->prepare($select);
-        $res = $sth->execute();
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        while ($row = $res->fetchrow()) {
+        $sth->execute();
+        
+        while ($row = $sth->fetch()) {
             $del_user[$row["user_name"]] = $row["id"];
         }
-        $res->free();
     }
 
 } else {
@@ -313,16 +279,12 @@ if (!$super) {
               "AND user_name NOT LIKE '@%' " .
               "ORDER BY user_name ASC";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
+    $sth->execute();
+    
     $del_user = array();
-    while ($row = $res->fetchrow()) {
+    while ($row = $sth->fetch()) {
         $del_user[$row["user_name"]] = $row["id"];
     }
-    $res->free();
 
 }
     ksort($del_user);

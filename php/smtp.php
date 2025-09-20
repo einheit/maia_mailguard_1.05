@@ -106,18 +106,14 @@ function smtp_send($from, $recips, $body, $ehlo="maia")
     global $lang;
         
     $sth = $dbh->prepare("SELECT smtp_server, smtp_port FROM maia_config WHERE id = 0");
-    $res = $sth->execute();
-    if (PEAR::isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+    $sth->execute();
+
+    if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
         $host = $row["smtp_server"];
         $port = $row["smtp_port"];
     }
-       $sth->free();
         
        $rcpt = explode(" ", $recips);
-
         
        /* Create a new Net_SMTP object. */
     if (! ($smtp = new Net_SMTP($host, $port, $ehlo))) {

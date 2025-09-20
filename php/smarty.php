@@ -114,22 +114,15 @@ class ThemeSmarty extends Smarty
     }
 }
     
-    // DB_CONNECTION
     $select = "SELECT banner_title, use_logo, use_icons, logo_file, logo_url, logo_alt_text, " .
               "enable_false_negative_management, enable_stats_tracking, enable_user_autocreation " .
               "FROM maia_config WHERE id = 0";
 
-    /*
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-if ((new PEAR)->isError($sth)) {
-    die($sth->getMessage());
-}
-if ($row = $res->fetchrow()) {
-    */
+    $sth->execute();
 
-    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+//    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+    while ($row = $sth->fetch()) {
 
     $banner_title = $row["banner_title"];
     $use_logo = ($row["use_logo"] == 'Y');
@@ -179,18 +172,16 @@ if ($showmenu) {
               "WHERE maia_users.id = ? OR maia_users.user_name = '@.' ".
         "ORDER BY maia_users.id DESC"
     );
-    $res = $sth->execute(array($uid));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    $sth->execute([$uid]);
+
+    if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
         $path = $row['path'];
     
     } else { // this really should not be reachable
         $path = "default";
     }
-    
+
     if (! (is_dir(dirname(__FILE__)."/themes/$path") && is_dir(dirname(__FILE__)."/themes/$path/templates") && is_readable(dirname(__FILE__)."/themes/$path/templates"))) {
         exit($lang['error_themes']);
     }

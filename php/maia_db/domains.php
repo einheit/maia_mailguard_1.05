@@ -10,14 +10,15 @@ function get_domain_id($domain_name)
     $domain_id = 0;
     $sth = $dbh->prepare("SELECT id FROM maia_domains WHERE domain = ?");
     $res = $sth->execute(array(strtolower($domain_name)));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $domain_id = $row["id"];
     }
-    $sth->free();
+
+    // while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+    if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+        $domain_id = $row["id"];
+    }
 
     return $domain_id;
 }
@@ -46,17 +47,12 @@ function is_admin_for_domain($uid, $domain_id)
         );
 
         $res = $sth->execute(array($uid, $domain_id));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        if ($row = $res->fetchrow()) {
+
+        if ($row = $sth->fetch()) {
             $result = ($row["user_level"] == "A");
         } else {
             $result = false;
         }
-        $sth->free();
-
         return $result;
     }
 }
@@ -72,18 +68,14 @@ function get_default_domain_policies()
 
     $sth = $dbh->prepare("SELECT enable_user_autocreation, transport FROM maia_domains WHERE domain = '@.'");
     $res = $sth->execute();
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $policy = $row["enable_user_autocreation"];
         $transport = $row['transport'];
     } else {
         $policy = false;
         $transport = ':';
     }
-    $sth->free();
     return array('autocreation' => $policy, 'transport' => $transport);
 }
 
@@ -98,16 +90,12 @@ function get_autocreation_policy($domain)
 
     $sth = $dbh->prepare("SELECT enable_user_autocreation FROM maia_domains WHERE domain = ?");
     $res = $sth->execute(array($domain));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $policy = $row["enable_user_autocreation"];
     } else {
         $policy = false;
     }
-    $sth->free();
     return $policy;
 }
 
@@ -122,11 +110,7 @@ function set_autocreation_policy($domain, $policy)
 
     $sth= $dbh->prepare("UPDATE maia_domains SET enable_user_autocreation=? FROM maia_domains WHERE domain = ?");
     $sth = $sth->execute(array($policy, $domain));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
+
 }
 
     /*
@@ -153,21 +137,13 @@ function add_domain($domain_name)
     // Add the domain to the maia_domains table
     $sth = $dbh->prepare("INSERT INTO maia_domains (domain, enable_user_autocreation, routing_domain, transport) VALUES (?,?,?,?)");
     $sth->execute(array($domain_name, $default_autocreation_policy,$routing_domain,$default_transport));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
+
     $sth = $dbh->prepare("SELECT id FROM maia_domains WHERE domain = ?");
     $res = $sth->execute(array($domain_name));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $domain_id = $row["id"];
     }
-    $sth->free();
 
     // Add a new policy for the domain, based on the
     // system defaults.
@@ -181,35 +157,22 @@ function add_domain($domain_name)
     $sth = $dbh->prepare("INSERT INTO maia_users (user_name, primary_email_id, reminders, discard_ham, theme_id) VALUES (?, ?, 'N', ?, ?)");
     $sth->execute(
         array($domain_name,
-                               $primary_email_id,
-                               $default_user_config["discard_ham"],
-                               $default_user_config["theme_id"]
-                               )
+              $primary_email_id,
+              $default_user_config["discard_ham"],
+              $default_user_config["theme_id"]
+              )
     );
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
 
     $sth = $dbh->prepare("SELECT id FROM maia_users WHERE user_name = ?");
     $res = $sth->execute(array($domain_name));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $maia_user_id = $row["id"];
     }
-    $sth->free();
 
     // Update the users table to link the e-mail address back to the domain
     $sth = $dbh->prepare("UPDATE users SET maia_user_id = ? WHERE id = ?");
     $sth->execute(array($maia_user_id, $primary_email_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
     return $domain_id;
 }
@@ -225,43 +188,27 @@ function delete_domain_admin_references($domain_id)
     // List all the administrators that reference the target domain.
     $sth = $dbh->prepare("SELECT admin_id FROM maia_domain_admins WHERE domain_id = ?");
     $res = $sth->execute(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    while ($row = $res->fetchrow()) {
+
+    while ($row = $sth->fetch()) {
         $admin_id = $row["admin_id"];
 
         // Delete this admin's reference to the target domain.
         $sth2 = $dbh->prepare("DELETE FROM maia_domain_admins WHERE domain_id = ? AND admin_id = ?");
         $res2 = $sth2->execute(array($domain_id, $admin_id));
-        // if (PEAR::isError($sth2)) {
-        if ((new PEAR)->isError($sth2)) {
-            die($sth2->getMessage());
-        }
-        $sth2->free();
 
         // Does this admin administer any other domains?
         $sth2 = $dbh->prepare("SELECT domain_id FROM maia_domain_admins WHERE admin_id = ?");
         $res2 = $sth2->execute(array($admin_id));
-        // if (PEAR::isError($sth2)) {
-        if ((new PEAR)->isError($sth2)) {
-            die($sth2->getMessage());
-        }
-        if (!$res2->fetchrow()) {
+
+        if (!$sth2->fetch()) {
 
             // This admin no longer administers any domains, so
             // return his privilege level to that of a normal user.
             $sth3 = $dbh->prepare("UPDATE maia_users SET user_level = 'U' WHERE id = ?");
             $res3 = $sth->execute(array($admin_id));
-            // if (PEAR::isError($sth3)) {
-            if ((new PEAR)->isError($sth3)) {
-                die($sth3->getMessage());
-            }
+
         }
-        $sth2->free();
     }
-    $sth->free();
 }
 
 
@@ -279,22 +226,13 @@ function delete_domain($domain_id)
     // Delete the domain record itself.
     $sth = $dbh->prepare("DELETE FROM maia_domains WHERE id = ?");
     $res = $sth->execute(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
 
     // Find and delete the default user records associated with this domain
     $sth = $dbh->prepare("SELECT maia_user_id FROM users WHERE maia_domain_id = ?");
     $res = $sth->execute(array($domain_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchrow()) {
+
+    if ($row = $sth->fetch()) {
         $maia_user_id = $row["maia_user_id"];
         delete_user($maia_user_id);
     }
-    $sth->free();
 }

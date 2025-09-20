@@ -186,19 +186,12 @@ function display_spam_report($mail_id)
               "AND maia_sa_rules_triggered.mail_id = ? " .
               "ORDER BY maia_sa_rules_triggered.rule_score DESC"
     );
-    // if (PEAR::isError($sth)) { 
-    if ((new PEAR)->isError($sth)) { 
-         die($sth . "and " . $mail_id); 
-    }
+
     $res = $sth->execute(array($mail_id));
-    // if (PEAR::isError($res)) { 
-    if ((new PEAR)->isError($res)) { 
-         return $res; 
-    }
 
-    if ($res->numrows() > 0) {
+    if ($sth->rowcount() > 0) {
 
-        while ($row = $res->fetchrow()) {
+        while ($row = $sth->fetch()) {
             $rows[] = array ( 'rule_score' => sprintf("%.3f", $row["rule_score"]),
                               'rule_name'  => $row["rule_name"],
                               'description' => add_links_to_text($row["rule_description"]));
@@ -206,7 +199,6 @@ function display_spam_report($mail_id)
         }
 
     }
-    $sth->free();
     return $rows;
 
 }

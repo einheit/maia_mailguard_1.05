@@ -90,7 +90,7 @@ function add_policy($email)
     // Try to find a domain-based set of defaults for this user,
     // based on his e-mail address.
     $res = $sth->execute(array($domain));
-    if ($row = $res->fetchRow()) {
+    if ($row = $sth->fetch()) {
         $virus_lover = $row["virus_lover"];
         $spam_lover = $row["spam_lover"];
         $bad_header_lover = $row["bad_header_lover"];
@@ -112,7 +112,7 @@ function add_policy($email)
 
         // Try to find a "Default" policy (@.) to copy defaults from.
         $res = $sth->execute(array("Default"));
-        if ($row = $res->fetchRow()) {
+        if ($row = $sth->fetch()) {
             $virus_lover = $row["virus_lover"];
             $spam_lover = $row["spam_lover"];
             $bad_header_lover = $row["bad_header_lover"];
@@ -136,18 +136,12 @@ function add_policy($email)
             $nodefault = true;
         }
     }
-    $sth->free();
 
     if ($nodefault) {
 
         // Use the database defaults as our last resort.
         $sth = $dbh->prepare("INSERT INTO policy (policy_name) VALUES (?)");
         $sth->execute(array($email));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        $sth->free();
 
     } else {
 
@@ -191,23 +185,14 @@ function add_policy($email)
                                    $spam_tag2_level,
                                    $spam_kill_level)
         );
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        $sth->free();
     }
 
     $sth = $dbh->prepare("SELECT id FROM policy WHERE policy_name = ?");
     $res = $sth->execute(array($email));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchRow()) {
+
+    if ($row = $sth->fetch()) {
         $policy_id = $row["id"];
     }
-    $sth->free();
 
     return $policy_id;
 }
@@ -222,11 +207,7 @@ function delete_policy($policy_id)
 
     $sth = $dbh->prepare("DELETE FROM policy WHERE id = ?");
     $sth->execute(array($policy_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $sth->free();
+
 }
 
 
@@ -243,21 +224,13 @@ function delete_email_address($address_id)
               "WHERE id = ?"
     );
     $res = $sth->execute(array($address_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    if ($row = $res->fetchRow()) {
+
+    if ($row = $sth->fetch()) {
         delete_policy($row["policy_id"]);
         $sth2 = $dbh->prepare("DELETE FROM users WHERE id = ?");
         $sth2->execute(array($address_id));
-        // if (PEAR::isError($sth2)) {
-        if ((new PEAR)->isError($sth2)) {
-            die($sth2->getMessage());
-        }
-        $sth2->free();
+
     }
-    $sth->free();
 }
 
 
@@ -275,27 +248,17 @@ function smart_delete_email_address($address_id)
                "WHERE users.maia_user_id = maia_users.id " .
                "AND users.id = ?"
     );
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    $res = $sth->execute(array($address_id));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
-    if ($row = $res->fetchRow()) {
+    $res = $sth->execute(array($address_id));
+
+    if ($row = $sth->fetch()) {
         // was this address the owner's primary address?
         if ($row['address_id'] == $row['primary_email_id']) {
             // yes - does the address owner own any other addresses?
             $sth2 = $dbh->prepare("SELECT COUNT(id) AS idcount FROM users WHERE maia_user_id = ? AND id <> ?");
             $res2 = $sth2->execute(array($row['maia_user_id'], $row['address_id']));
-            // if (PEAR::isError($sth2)) {
-            if ((new PEAR)->isError($sth2)) {
-                die($sth2->getMessage());
-            }  
-            $row2 = $res2->fetchrow();
+
+            $row2 = $sth2->fetch();
             if($row2['idcount'] <> 0) {
                 // yes - we can't go on with this, unless we add an override option too.
                 return false;
@@ -303,22 +266,17 @@ function smart_delete_email_address($address_id)
                 // no, it's the only address, go ahead and remove user too.
                 delete_user($row['maia_user_id']);
             }
-            $sth2->free();
+
         } else {
             // not the primary email address, just remove the address.
             // no need to delete anything else, until per-address is in effect
             delete_policy($row["policy_id"]);
             $sth2 = $dbh->prepare("DELETE FROM users WHERE id = ?");
             $sth2->execute(array($address_id));
-            // if (PEAR::isError($sth)) {
-            if ((new PEAR)->isError($sth)) {
-                die($sth->getMessage());
-            }
-            $sth2->free();
+
         }
         return true;
     }
-    $sth->free();
     return false;
 }
 
@@ -333,12 +291,9 @@ function delete_user_email_addresses($uid)
 
     $sth = $dbh->prepare("SELECT id FROM users WHERE maia_user_id = ?");
     $res = $sth->execute(array($uid));
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
-    while ($row = $res->fetchRow()) {
+
+    while ($row = $sth->fetch()) {
         delete_email_address($row["id"]);
     }
-    $sth->free();
+
 }

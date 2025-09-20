@@ -74,8 +74,6 @@
      *
      */
 
-    // define("MAIA_VERSION", "1.0.4a");
-    // define("MAIA_SESSION", "Maia104a");
     define("MAIA_VERSION", "1.0.5");
     define("MAIA_SESSION", "Maia105");
 

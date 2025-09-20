@@ -100,13 +100,9 @@ if (isset($_GET["id"])) {
               "enable_bad_header_checking, enable_banned_files_checking, enable_charts " .
               "FROM maia_config WHERE id = 0";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute();
-    // if (PEAR::isError($sth)) {  
-if ((new PEAR)->isError($sth)) {  
-    die($sth->getMessage());  
-} 
+    $sth->execute();
 
-if ($row = $res->fetchrow()) {
+if ($row = $sth->fetch()) {
     $currency_label = $row["currency_label"];
     $enable_false_negative_management = ($row["enable_false_negative_management"] == 'Y');
     $enable_virus_scanning = ($row["enable_virus_scanning"] == 'Y');
@@ -115,21 +111,15 @@ if ($row = $res->fetchrow()) {
     $enable_banned_files_checking = ($row["enable_banned_files_checking"] == 'Y');
     $enable_charts = ($row["enable_charts"] == 'Y');
 }
-    $sth->free();
     
 if ($enable_charts) {
     $select = "SELECT charts FROM maia_users WHERE id=?";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute($euid);
-    // if (PEAR::isError($sth)) {  
-    if ((new PEAR)->isError($sth)) {  
-          die($sth->getMessage());  
-    } 
+    $sth->execute([$euid]);
 
-    if ($row = $res->fetchrow()) {
+    if ($row = $sth->fetch()) {
         $enable_charts = ($row["charts"] == 'Y');
     }
-        $sth->free();
 }
 
     update_mail_stats($id, "suspected_ham");

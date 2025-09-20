@@ -150,16 +150,12 @@
               "FROM maia_sa_rules WHERE rule_count > 0 ORDER BY rule_count DESC, rule_name ASC LIMIT ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute($out['limit']);
-    // if (PEAR::isError($sth)) {
-    if ((new PEAR)->isError($sth)) {
-        die($sth->getMessage());
-    }
 
     $keys = array();
     $values = array();
-    if($res->numRows()) {
+    if($sth->rowcount()) {
         $sum = 0;
-        while ($row = $res->fetchRow()) {
+        while ($row = $sth->fetch()) {
             $Dataset->addPoint($row["rule_name"], $row["rule_count"], $row["rule_name"]);
             $keys[] = $row["rule_name"];
             $values[] = $row["rule_count"];
@@ -169,12 +165,9 @@
 
         $sth = $dbh->prepare($select);
         $res = $sth->execute($sum);
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($res->getMessage());
-        }
-        if($res->numRows()) {
-            $row = $res->fetchrow();
+
+        if($sth->rowcount()) {
+            $row = $sth->fetch();
             if(0 && $row["rest"]) {
                 $Dataset->addPoint("Rest", $row["rest"], "Rest");
                 $keys[] = "Rest";
@@ -199,8 +192,6 @@
         $FillArray->addColor($chart_colors[$i]);
     }
     
-
-
     
     $Plot->explode(10);
 

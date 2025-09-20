@@ -120,11 +120,8 @@ function record_mail_stats($euid, $mail_ids, $type)
                 "FROM maia_mail WHERE id = ?"
         );
         $res = $sth->execute(array($mail_id));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
-        if ($row = $res->fetchrow()) {
+
+        if ($row = $sth->fetch()) {
               $mail_received_date = $row["received_date"];
               $mail_size = $row["size"];
               $mail_score = (isset($row["score"]) ? $row["score"] : 0);
@@ -142,11 +139,8 @@ function record_mail_stats($euid, $mail_ids, $type)
                 "FROM maia_stats WHERE user_id = ?"
             );
               $res2 = $sth2->execute(array($euid));
-              // if (PEAR::isError($sth2)) {
-            if ((new PEAR)->isError($sth2)) {
-                die($sth->getMessage());
-            }
-            if ($row2 = $res2->fetchrow()) {
+
+            if ($row2 = $sth2->fetch()) {
                 $oldest_date = $row2["oldest_" . $type . "_date"];
                 $newest_date = $row2["newest_" . $type . "_date"];
                 $lowest_score = $row2["lowest_" . $type . "_score"];
@@ -214,11 +208,7 @@ function record_mail_stats($euid, $mail_ids, $type)
                                            $total_items,
                     $euid)
                 );
-                // if (PEAR::isError($sthu)) {
-                if ((new PEAR)->isError($sthu)) {
-                    die($sth->getMessage());
-                }
-                $sthu->free();
+
             } else {
                 $oldest_date = $mail_received_date;
                 $newest_date = $mail_received_date;
@@ -252,15 +242,9 @@ function record_mail_stats($euid, $mail_ids, $type)
                                  $total_size,
                                  $euid)
                 );
-                // if (PEAR::isError($sth)) {
-                if ((new PEAR)->isError($sth)) {
-                      die($sth->getMessage());
-                }
-                      $sthi->free();
+
             }
-              $sth2->free();
         }
-            $sth->free();
     }
 }
 
@@ -680,10 +664,7 @@ function count_items($user_id, $type)
     if ($user_id > 0) {
         $sth = $dbh->prepare("SELECT total_" . $type . "_items AS count FROM maia_stats WHERE user_id = ?");
         $res = $sth->execute(array($user_id));
-        // if (PEAR::isError($sth)) {
-        if ((new PEAR)->isError($sth)) {
-            die($sth->getMessage());
-        }
+
     } else {
         $sth = $dbh->prepare("SELECT SUM(total_" . $type . "_items) AS count FROM maia_stats");
         $sth->execute();
