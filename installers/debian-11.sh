@@ -229,7 +229,7 @@ pear install Pager
 pear install Net_Socket
 pear install Net_SMTP
 pear install Auth_SASL
-pear install Log
+pear install Log-1.13.3
 pear install Image_Color
 pear install Image_Canvas-0.3.5
 pear install Image_Graph-0.8.0

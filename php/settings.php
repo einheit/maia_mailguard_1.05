@@ -391,7 +391,7 @@
             "AND users.id = ?"
         );
 
-        sth->execute(array($address_id));
+        $sth->execute(array($address_id));
         
         if ($row = $sth->fetch()) {
             $smarty->assign('address', $row["email"]);

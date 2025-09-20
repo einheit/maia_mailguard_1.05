@@ -14,7 +14,12 @@
 
 ![maia languages page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_languages.png "maia languages page")
 
-NOTE - as of Sept 12th, 2025, this is a work in progress. We've just begun the tedious process of replacing the obsolete PEAR::MDB2 libraries with the php native PDO. 
+Update, Sept 20th 2025 - Maia Mailguard 1.0.5 is now working on a standard Debian 13 install.
+This means: Apache 2.4.65, PHP 8.4.11, Perl 5.40, Spamassassin 4.0.1, MariaDB 11.8.3, et al.
+
+We'll be testing installs on other distros, and fixing bugs as needed.
+
+---
 
 This repo was forked from the the technion/maia_mailguard repo
 
