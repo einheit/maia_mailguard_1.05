@@ -103,7 +103,7 @@ if (isset($_GET["lang"]) && strlen($_GET["lang"]) == 2 ) {
     // Only show this page if we've selected internal
     // authentication and there's no current superadmin
 if (($auth_method != "internal") || (get_superadmin_id() > 0)) {
-    header("Location: /index.php");
+    header("Location: /maia/index.php");
     exit();
 }
 

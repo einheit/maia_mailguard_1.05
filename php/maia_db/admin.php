@@ -35,7 +35,9 @@ function get_superadmin_id()
 
     $super_id = 0;
     $select = "SELECT id FROM maia_users WHERE user_level = 'S'";
-    $sth = $dbh->execute($select);
+
+    $sth = $dbh->prepare($select);
+    $res = $sth->execute();
 
     if ($row = $sth->fetch()) {
         $super_id = $row["id"];

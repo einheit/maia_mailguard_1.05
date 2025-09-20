@@ -100,9 +100,12 @@ if (get_config_value("enable_stats_tracking") != 'Y') {
     // Find out which button we pushed to get here
 if (isset($_POST["reset_users"])) {
     $delete = "DELETE FROM maia_stats";
-    $dbh->execute($delete);
+    $sth = $dbh->prepare($delete);
+    $sth->execute();
+
     $select = "SELECT id FROM maia_users";
-    $sth = $dbh->execute($select);
+    $sth = $dbh->prepare($select);
+    $sth->execute();
     while ($row = $sth->fetch()) {
             update_mail_stats($row["id"], "suspected_ham");
             update_mail_stats($row["id"], "suspected_spam");
@@ -111,28 +114,39 @@ if (isset($_POST["reset_users"])) {
 
 } elseif (isset($_POST["reset_viruses"])) {
     $update = "UPDATE maia_viruses SET count = 0";
-    $dbh->execute($update);
+    $sth = $dbh->prepare($update);
+    $sth->execute();
+
     $message = $lang['text_all_viruses_reset'];
 
 } elseif (isset($_POST["reset_rules"])) {
     $update = "UPDATE maia_sa_rules SET rule_count = 0";
-    $dbh->execute($update);
+    $sth = $dbh->prepare($update);
+    $sth->execute();
+
     $message = $lang['text_all_rules_reset'];
 
 } elseif (isset($_POST["reset_all"])) {
     $delete = "DELETE FROM maia_stats";
-    $dbh->execute($delete);
+    $sth = $dbh->prepare($delete);
+    $sth->execute();
+
     $select = "SELECT id FROM maia_users";
-    $sth = $dbh->execute($select);
+    $sth = $dbh->prepare($select);
+    $sth->execute();
+
     while ($row = $sth->fetch()) {
             update_mail_stats($row["id"], "suspected_ham");
             update_mail_stats($row["id"], "suspected_spam");
     }
-        $sth->free();
         $update = "UPDATE maia_viruses SET count = 0";
-        $dbh->execute($update);
+        $sth = $dbh->prepare($update);
+        $sth->execute();
+
         $update = "UPDATE maia_sa_rules SET rule_count = 0";
-        $dbh->execute($update);
+        $sth = $dbh->prepare($update);
+        $sth->execute();
+
         $message = $lang['text_all_stats_reset'];
 }
 

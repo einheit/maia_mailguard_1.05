@@ -89,7 +89,8 @@ try {
 function table_exists($dbh, $table_name)
 {
     $select = "SELECT * FROM " . $table_name . " LIMIT 1";
-    $sth = $dbh->execute($select);
+    $sth = $dbh->prepare($select);
+    $sth->execute();
 
 }
 
@@ -242,7 +243,8 @@ function create_index($dbh, $table_name, $index_columns, $type)
         
     $create .= "(" . implode(', ', $index_columns) . ")";
     //echo $create . "<br>";
-    return $dbh->execute($create); 
+    $sth = $dbh->prepare($create); 
+    return $sth->execute(); 
 }
 
 
@@ -339,7 +341,8 @@ function create_table($dbh, $table_name, $table_schema)
         
         
     //print $create;    
-    $db_result = $dbh->query($create);
+    $sth = $dbh->prepare($create);
+    $db_result = $sth->execute();
 
     foreach ($table_schema['indexes'] as $index => $def) {
         $db_result = create_index($dbh, $table_name, $def['rows'], $def['type']);
@@ -359,7 +362,8 @@ function create_table($dbh, $table_name, $table_schema)
                 }
                 $insert .= join(", ", $cols);
                     
-                $db_result = $dbh->execute($insert);
+                $sth = $dbh->prepare($insert);
+                $db_result = $sth->execute();
 
             }
                
@@ -378,6 +382,7 @@ function insert_data($dbh, $table, $fields)
     }
     $insert .= implode(", ", $sets);
     print $select;
-    return $dbh->execute($insert);
+    $sth = $dbh->prepare($insert);
+    return $sth->execute();
 }
 ?>

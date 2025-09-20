@@ -189,8 +189,8 @@ echo "stage 1 install complete"
 #
 
 # set up and start clamd
-cp /etc/clamav/clamd.conf /etc/clamav/clamd.conf_debian_orig-$$
-cp contrib/clamd-debian-maia-tcp.conf /etc/clamav/clamd.conf 
+#cp /etc/clamav/clamd.conf /etc/clamav/clamd.conf_debian_orig-$$
+#cp contrib/clamd-debian-maia-tcp.conf /etc/clamav/clamd.conf 
 systemctl start clamav-daemon
 systemctl start clamav-freshclam
 
@@ -201,6 +201,8 @@ systemctl start maiad
 #
 cp files/*.cf /etc/mail/spamassassin/
 # /var/lib/maia/scripts/load-sa-rules.pl
+# maiad does not use spamd, it replaces spamd
+systemctl disable --now spamd
 
 echo
 echo "installing php modules"

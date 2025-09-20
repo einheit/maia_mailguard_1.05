@@ -164,7 +164,9 @@
             $sum += $row["count"];
         }
         $select = "SELECT (SUM(count)-".$sum.") AS rest FROM maia_viruses";
-        $sth = $dbh->execute($select);
+        $sth = $dbh->prepare($select);
+        $sth->execute();
+
         if($sth->rowcount()) {
             $row = $sth->fetch();
             if($row["rest"]) {
