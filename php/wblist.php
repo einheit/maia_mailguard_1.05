@@ -191,12 +191,8 @@ function get_domain_wb_rows($dbh, $maia_user_id)
 {
     global $logger;
 
-//    if (substr(get_database_type($dbh), 0, 5) == "mysql") {
-/*	This isn't woking with mariadb-11.8.3 
- *	In the interest of getting the common case working, 
- *	we're kicking the can down the road and will address it later
- */
-        $query =<<<EOQ
+    if (substr(get_database_type($dbh), 0, 5) == "mysql") {
+      $query =<<<EOQ
       SELECT mailaddr.email, wb, user_name
         FROM mailaddr LEFT JOIN wblist ON mailaddr.id = wblist.sid
              LEFT JOIN maia_users ON wblist.rid=maia_users.id
@@ -206,8 +202,8 @@ function get_domain_wb_rows($dbh, $maia_user_id)
                      WHERE maia_users.id=?)
         ORDER BY mailaddr.email ASC
 EOQ;
-/*    } else {
-        $query =<<<EOQ
+    } else {
+      $query =<<<EOQ
       SELECT mailaddr.email, wb, user_name
         FROM mailaddr LEFT JOIN wblist ON mailaddr.id = wblist.sid
              LEFT JOIN maia_users ON wblist.rid=maia_users.id
@@ -218,7 +214,6 @@ EOQ;
         ORDER BY mailaddr.email ASC
 EOQ;
     }
-    */
 
     $rows = array();
 
