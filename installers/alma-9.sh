@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# centos 9 installer
+# almalinux 9 installer
 #
 
 echo 
-echo "This script is written for centos 9 using a mysql DB" 
+echo "This script is written for almalinux 9 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
@@ -81,16 +81,16 @@ yum install -y perl-Net-CIDR-Lite
 yum install -y perl-LDAP
 yum install -y perl-Unix-Syslog
 yum install -y perl-Razor-Agent
-yum install -y perl-Template-Toolkit
+#yum install -y perl-Template-Toolkit
 yum install -y perl-CPAN 
 yum install -y perl-Geo-IP
 #yum install -y perl-forks
-yum install -y perl-Data-UUID
-yum install -y perl-Convert-TNEF
-yum install -y perl-Digest-SHA1
+#yum install -y perl-Data-UUID
+#yum install -y perl-Convert-TNEF
+#yum install -y perl-Digest-SHA1
 
 # needed for cpanm
-yum install -y perl-LWP-Protocol-https-6.10-4.el9.noarch
+yum install -y perl-LWP-Protocol-https
 
 #
 # non-interactive cpan installs
@@ -100,6 +100,13 @@ yum install -y perl-App-cpanminus
 cpanm forks
 cpanm Geo-IP
 cpanm IP::Country::Fast
+cpanm Convert::TNEF
+cpanm Convert::UUlib
+cpanm Data::UUID
+cpanm IO::Stringy
+cpanm MIME::Parser
+cpanm Template
+
 
 yum install -y clamav 
 yum install -y clamav-update 
@@ -107,8 +114,8 @@ yum install -y clamav-data
 yum install -y clamav-server
 
 mv /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
-cp contrib/el-scan.conf /etc/clamd.d/scan.conf
-cp contrib/el-clamd.service /etc/systemd/system/clamd.service
+#cp contrib/el-scan.conf /etc/clamd.d/scan.conf
+#cp contrib/el-clamd.service /etc/systemd/system/clamd.service
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -143,11 +150,11 @@ cp maia.conf maiad.conf /etc/maia/
 cp contrib/maiad.service /etc/systemd/system/
 
 # maiad helpers
-yum install -y arc
+#yum install -y arc
 yum install -y arj
 yum install -y cpio
 yum install -y lzop
-yum install -y pax
+yum install -y pax-utils
 
 # a handy tool for a quick check
 cp -a contrib/check-maia-ports.sh /usr/local/bin/
