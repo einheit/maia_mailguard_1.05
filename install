@@ -4,7 +4,9 @@ DBG=0
 DEF=0
 
 # get os
-if [ -f /etc/oracle-release ]; then
+if [ -f /etc/fedora-release ]; then
+  export LXTYPE=FEDORA
+elif [ -f /etc/oracle-release ]; then
   export LXTYPE=RHEL
 elif [ -f /etc/redhat-release ]; then
   export LXTYPE=RHEL
@@ -18,6 +20,28 @@ elif [ -f /etc/gentoo-release ]; then
   export LXTYPE=GENTOO
 fi
 
+if [ $LXTYPE == "FEDORA" ]; then
+  ID=`grep ^ID= /etc/os-release | awk -F\= '{ print $2 }'`
+  VER=`grep ^VERSION_ID= /etc/os-release | awk -F\= '{ print $2 }'| tr -d \"`
+
+  if [ -f installers/${ID}-${VER}.sh ]; then
+    DEF=1
+    echo "copy & paste the following command to begin the install:"
+    echo
+    echo " bash installers/${ID}-${VER}.sh | tee installer.log 2>&1"
+    echo
+  fi
+  if [ $DBG -ne 0 ]; then
+    echo
+    echo "### DEBUG ###"
+    echo "Debian or derivative detected:"
+    echo "RVER = $RVER"
+    echo "$ID version $VER"
+    echo "### DEBUG ###"
+    echo
+  fi
+fi
+ 
 if [ $LXTYPE == "RHEL" ]; then
 # RHEL variant -
   if [ -f /etc/os-release ]; then
@@ -73,7 +97,6 @@ if [ $LXTYPE == "DEBIAN" ]; then
     echo "### DEBUG ###"
     echo
   fi
- 
 fi
 
 if [ $DEF == 0 ]; then
