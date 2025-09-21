@@ -31,8 +31,10 @@ export PATH
 # set selinux to warn mode
 setenforce 0
 
+echo "setting up basic dependencies..."
 # basic dependencies - 
 yum install -y curl wget make gcc sudo net-tools less which rsync 
+yum -y install epel-release
 
 # get the info, write params to file
 get-info.sh
@@ -83,10 +85,6 @@ yum install -y perl-Unix-Syslog
 yum install -y perl-Razor-Agent
 yum install -y perl-Template-Toolkit
 yum install -y perl-CPAN 
-yum install -y perl-Geo-IP
-#yum install -y perl-forks
-yum install -y perl-Data-UUID
-yum install -y perl-Convert-TNEF
 yum install -y perl-Digest-SHA1
 
 # needed for cpanm
@@ -101,6 +99,9 @@ cpanm forks
 cpanm IP::Country::Fast
 cpanm Convert::TNEF
 cpanm IO::Socket::INET6
+cpanm Convert::UUlib
+cpanm Data::UUID
+cpanm Template
 
 yum install -y clamav 
 yum install -y clamav-update 
@@ -144,11 +145,11 @@ cp maia.conf maiad.conf /etc/maia/
 cp contrib/maiad.service /etc/systemd/system/
 
 # maiad helpers
-yum install -y arc
+#yum install -y arc
 yum install -y arj
 yum install -y cpio
 yum install -y lzop
-yum install -y pax
+yum install -y pax-utils
 
 # a handy tool for a quick check
 cp -a contrib/check-maia-ports.sh /usr/local/bin/
