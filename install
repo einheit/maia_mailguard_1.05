@@ -6,6 +6,8 @@ DEF=0
 # get os
 if [ -f /etc/fedora-release ]; then
   export LXTYPE=FEDORA
+elif [ -f /etc/rocky-release ]; then
+  export LXTYPE=ROCKY
 elif [ -f /etc/almalinux-release ]; then
   export LXTYPE=ALMA
 elif [ -f /etc/centos-release ]; then
@@ -24,6 +26,29 @@ elif [ -f /etc/gentoo-release ]; then
   export LXTYPE=GENTOO
 fi
 
+cat /etc/rocky-release | awk '{ print $4 }' | awk -F\. '{ print $1 }'
+
+if [ $LXTYPE == "ROCKY" ]; then
+  ID="rocky"
+  VER=`cat /etc/rocky-release | awk '{ print $4 }' | awk -F\. '{ print $1 }'`
+  if [ -f installers/${ID}-${VER}.sh ]; then
+    DEF=1
+    echo "copy & paste the following command to begin the install:"
+    echo
+    echo " bash installers/${ID}-${VER}.sh | tee installer.log 2>&1"
+    echo
+  fi
+  if [ $DBG -ne 0 ]; then
+    echo
+    echo "### DEBUG ###"
+    echo "RHEL or derivative detected:"
+    echo "VER = $VER"
+    echo "$ID version $VER"
+    echo "### DEBUG ###"
+    echo
+  fi
+fi
+ 
 if [ $LXTYPE == "ALMA" ]; then
   ID="alma"
   VER=`grep '^VERSION=' /etc/os-release|awk '{ print $1 }'|awk -F\" '{ print $2 }'|awk -F\. '{ print $1 }'`
