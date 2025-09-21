@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# fedora 32 installer
+# fedora 42 installer
 #
 
 echo 
-echo "This script is written for fedora 32 using a mysql DB" 
+echo "This script is written for fedora 42 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
