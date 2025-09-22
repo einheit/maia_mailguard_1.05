@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# almalinux 9 installer
+# rocky 9 installer
 #
 
 echo 
-echo "This script is written for almalinux 9 using a mysql DB" 
+echo "This script is written for rocky 9 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
@@ -114,8 +114,7 @@ yum install -y clamav-data
 yum install -y clamav-server
 
 mv /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
-#cp contrib/el-scan.conf /etc/clamd.d/scan.conf
-#cp contrib/el-clamd.service /etc/systemd/system/clamd.service
+cp contrib/scan.conf-rocky-9 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -169,7 +168,7 @@ cp -r php/* /var/www/html/maia
 
 # enable services
 systemctl enable maiad.service
-systemctl enable clamd.service
+systemctl enable clamd@scan.service
 systemctl enable freshclam.service
 
 # install mysql client to begin with - 
@@ -210,7 +209,7 @@ systemctl start maiad.service
 echo "running freshclam..."
 freshclam
 # start clamd
-systemctl start clamd.service
+systemctl start clamd@scan.service
 
 # load the spamassassin rulesets -
 #
@@ -337,7 +336,6 @@ echo
 echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
 echo
-echo    "Note that if selinux is enabled, you may need to remediate a"
-echo    "number of selnux violations preventing maia components from running"
+echo	"Note that if selinux is enabled, you may need to remediate a"
+echo	"number of selnux violations preventing maia components from running"
 echo
-
