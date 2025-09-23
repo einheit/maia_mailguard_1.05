@@ -585,8 +585,12 @@ if (isset($_POST["upone"])
                 $message = $lang['text_login_name_not_allowed'];
             } else {
                 $isthupdate = $dbh->prepare("UPDATE maia_users SET user_name = ?, password = ? WHERE id = ?");
-                $sthupdate->execute(array($new_login, md5($new_password), $euid));
-                $message = $lang['text_credentials_updated'];
+                try {
+                    $sthupdate->execute(array($new_login, md5($new_password), $euid));
+                    $message = $lang['text_credentials_updated'];
+		}   catch (PDOException $e) {
+                    die("update failed: " . $e->getMessage());
+		}
             }
         }
     }
