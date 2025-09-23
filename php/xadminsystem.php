@@ -217,7 +217,6 @@ foreach($_POST as $varname => $value)
     if ((new PEAR)->isError($sthu)) {  
         die($sthu->getMessage());  
     } 
-    $sthu->free();
 
     if ($auth_method == "internal") {
         $sthu = $dbh->prepare(
@@ -233,7 +232,6 @@ foreach($_POST as $varname => $value)
         if ((new PEAR)->isError($sthu)) {  
             die($sthu->getMessage());  
         }
-        $sthu->free(); 
     }
 
     // Return to the system administration page

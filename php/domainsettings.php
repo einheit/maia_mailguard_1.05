@@ -271,7 +271,6 @@ if (!is_admin_for_domain($uid, $domain_id)) {
             $smarty->assign("system_enable_user_autocreation", false);
         }
     }
-    $sth->free();
     
     $sth = $dbh->prepare(
         "SELECT maia_users.user_name, maia_users.id " .
