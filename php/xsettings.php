@@ -584,7 +584,7 @@ if (isset($_POST["upone"])
             if ($new_login[0] == "@") {
                 $message = $lang['text_login_name_not_allowed'];
             } else {
-                $isthupdate = $dbh->prepare("UPDATE maia_users SET user_name = ?, password = ? WHERE id = ?");
+                $sthupdate = $dbh->prepare("UPDATE maia_users SET user_name = ?, password = ? WHERE id = ?");
                 try {
                     $sthupdate->execute(array($new_login, md5($new_password), $euid));
                     $message = $lang['text_credentials_updated'];
