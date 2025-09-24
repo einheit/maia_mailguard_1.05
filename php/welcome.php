@@ -120,8 +120,18 @@ if (isset($_POST['delete_all_items'])) {
    
    
 if (isset($_POST['change_protection']) && isset($_POST['protection_level'])) {
-    $sth = $dbh->prepare("SELECT policy_id FROM users WHERE maia_user_id = ?"); 
-    $sth->execute($euid);
+
+    try {
+        $sth = $dbh->prepare("SELECT policy_id FROM users WHERE maia_user_id = ?"); 
+    } catch (PDOException $e) {
+        die("update failed: " . $e->getMessage());
+    }
+
+    try {
+        $sth->execute([$euid]);
+    } catch (PDOException $e) {
+        die("update failed: " . $e->getMessage());
+    }
  
     $sth2 = $dbh->prepare(
         "UPDATE policy SET virus_lover = ?, " .
