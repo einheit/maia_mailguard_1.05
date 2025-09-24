@@ -124,16 +124,17 @@
     // "ifx"     (Informix)
     // "fbsql"   (FrontBase)
     //
-    // For more detailed information on the DSN syntax, see
-    // http://pear.php.net/manual/en/package.database.db.intro-dsn.php
 
-    // $maia_sql_dsn = "dbtype://dbuser:passwd@tcp(hostname:port)/dbname";
-    // $maia_sql_dsn = "dbtype://dbuser:passwd@unix(/var/tmp/mysql.sock)/dbname";
-    // e.g.
-    // $maia_sql_dsn = "mysqli://maia:password@tcp(dbhost:3306)/maia";
-    
-    // maia_1.04 syntax (MDB2)
-    // $maia_sql_dsn = "mysqli://maia:__PASSWORD__@tcp(__DBHOST__:3306)/__DBNAME__";
+    /*
+     *
+     * template for maia db connection 
+     * try {
+     *    $dbh = new PDO($dsn, $maia_dbuser, $maia_dbuer_pass, $maia_sql_connect_options);
+     * } catch (PDOException $e) {
+     *    die("Connection failed: " . $e->getMessage());
+     * }
+     *
+     */
 
     // maia_1.05 syntax (PDO)
     $maia_sql_dsn = 'mysql:host=__DBHOST__;dbname=__DBNAME__;charset=utf8mb4';
@@ -146,24 +147,8 @@
         PDO::ATTR_EMULATE_PREPARES   => false, // Important for true prepared statements
     ];
  
-    /*
-     *
-     * template for maia db connection 
-     * try {
-     *    $dbh = new PDO($dsn, $maia_dbuser, $maia_dbuer_pass, $maia_sql_connect_options);
-     * } catch (PDOException $e) {
-     *    die("Connection failed: " . $e->getMessage());
-     * }
-     *
-     */
+    // To improve html purifier performacer, set purifier_cache to a directory the web server can write to.
 
-    // To pass more options into DB:connect, set them in this array
-    // For more details, see:
-    // http://pear.php.net/manual/en/package.database.db.db-common.setoption.php
-    // $maia_sql_connect_options = array();
-    // $maia_sql_connect_options = array('persistent' => true);  // For persistent connections
-
-    // To improve performace with the html purifier, set purifier_cache to a directory the web server can write to.
     $purifier_cache = '/var/www/cache';
 
 

@@ -220,7 +220,11 @@ if ($_GET["report_header"]) {
             "AND maia_mail_recipients.type = 'B' " .
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
-    $res = $sth->execute(array($cutoff_date, $euid));
+    try {
+        $res = $sth->execute(array($cutoff_date, $euid));
+    } catch (PDOException $e) {
+        die("update failed: " . $e->getMessage());
+    }
 
     while ($row = $sth->fetch())
     {

@@ -75,11 +75,11 @@
      */
 
     // These names may be misleading, but for now...
-    //Possible levels:  LOG_DEBUG, LOG_INFO, LOG_NOTICE, LOG_WARNING, LOG_ERR ...
-    $loglevel = 7;			// messages >= this level are sent to php log
+    // Possible levels:  LOG_DEBUG, LOG_INFO, LOG_NOTICE, LOG_WARNING, LOG_ERR ...
+    $loglevel = 7;		// messages >= this level are sent to php log
     
-    $debug_popup = false;		// allow a debug popup to be shown
-    $debuglevel = 7;			// messages >= this level are displayed in popup window
+    $debug_popup = false;	// allow a debug popup to be shown
+    $debuglevel = 7;		// messages >= this level are displayed in popup window
 
 
     // Language to use for text display (en, fr, ja, de, etc.).
@@ -98,7 +98,7 @@
 
     // Default character set is UTF-8 ... hardcoded but if you really have a good reason to change it
     // go ahead and try.
-    //$html_charset = "UTF-8";
+    // $html_charset = "UTF-8";
     
     // Default session timeout - since we can't always trust the php installation to 
     // expire session cookies.  (in minutes)
@@ -111,7 +111,7 @@
 
     // Supported databases include:
     //
-    // "mysqli"   (MySQL)
+    // "mysql"   (MySQL)
     // "pgsql"   (PostgreSQL)
     // "ibase"   (InterBase)
     // "dbase"   (dBase)
@@ -124,67 +124,64 @@
     // "ifx"     (Informix)
     // "fbsql"   (FrontBase)
     //
-    // For more detailed information on the DSN syntax, see
-    // http://pear.php.net/manual/en/package.database.db.intro-dsn.php
 
-    //$maia_sql_dsn = "dbtype://dbuser:passwd@tcp(hostname:port)/maia";
-    // $maia_sql_dsn = "mysqli://maia:passwd@tcp(localhost:3306)/maia";
-    //$maia_sql_dsn = "mysqli://dbuser:passwd@unix(/var/tmp/mysql.sock)/maia";
-    //$maia_sql_dsn = "mysqli://dbuser:passwd/maia";
-    
-    // To pass more options into DB:connect, set them in this array
-    // For more details, see:
-    // http://pear.php.net/manual/en/package.database.db.db-common.setoption.php
-    // $maia_sql_connect_options = array();
-    // $maia_sql_connect_options = array('persistent' => true);  // For persistent connections
-
-    // maia_1.04 syntax (MDB2)
-    // $maia_sql_dsn = "mysqli://maia:__PASSWORD__@tcp(__DBHOST__:3306)/__DBNAME__";
+    /*
+     *
+     * template for maia db connection 
+     * try {
+     *    $dbh = new PDO($dsn, $maia_dbuser, $maia_dbuer_pass, $maia_sql_connect_options);
+     * } catch (PDOException $e) {
+     *    die("Connection failed: " . $e->getMessage());
+     * }
+     *
+     */
 
     // maia_1.05 syntax (PDO)
-    $maia_sql_dsn = 'mysql:host=__DBHOST__;dbname=__DBNAME__;charset=utf8mb4';
+    $maia_sql_dsn = 'mysql:host=%DBHOST;dbname=%DBNAME;charset=utf8mb4';
 
-    $maia_dbuser = '__DBUSER__';
-    $maia_dbuser_pass = '__PASSWORD__';
+    $maia_dbuser = '%DBUSER';
+    $maia_dbuser_pass = '%PASSWORD';
     $maia_sql_connect_options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES   => false, // Important for true prepared statements
     ];
+ 
+    // To improve html purifier performacer, set purifier_cache to a directory the web server can write to.
 
-    // To improve performace with the html purifier, set purifier_cache to a directory the web server can write to.
     $purifier_cache = '/var/www/cache';
 
 
-	// Default protection level
-    // Level = virus_lover,spam_lover,banned_files_lover,bad_header_lover,bypass_virus_checks,
-	//         bypass_spam_checks,bypass_banned_checks,bypass_header_checks,discard_viruses, discard_spam,
-	//         discard_banned_files,discard_bad_headers, spam_modifies_subj, 
-	//         spam_tag_level, spam_tag2_level, spam_kill_level
-	// Original levels:
-	//   No Protection at all:
-	//                    'off'     => array ('Y','Y','Y','Y','Y','Y','Y','Y','N','N','N','N','N','999','999','999'),
-	//   Virus protection only:
-	//                    'low'     => array ('N','Y','Y','Y','N','Y','Y','Y','N','N','N','N','N','999','999','999'),
-	//   Spam is marked at level 5, but not quarantined, attachments and bad headers allowed:
-    //                    'medium'  => array ('N','N','Y','Y','N','N','Y','Y','N','N','N','N','Y','5','999','999'),
-	//   Spam is marked at level 1, and quarantined at level 5; attachments, bad headers, and viruses are quarantined
-    //                    'high'    => array ('N','N','N','N','N','N','N','N','N','N','N','N','N','1','5','5')
+// Default protection level
+// Level = virus_lover,spam_lover,banned_files_lover,bad_header_lover,
+// bypass_virus_checks,bypass_spam_checks,bypass_banned_checks,bypass_header_checks,
+// discard_viruses, discard_spam,discard_banned_files,discard_bad_headers,
+// spam_modifies_subj,spam_tag_level,spam_tag2_level,spam_kill_level
+
+// Original levels:
+//   No Protection at all:
+// 'off'     => array ('Y','Y','Y','Y','Y','Y','Y','Y','N','N','N','N','N','999','999','999'),
+// Virus protection only:
+// 'low'     => array ('N','Y','Y','Y','N','Y','Y','Y','N','N','N','N','N','999','999','999'),
+//   Spam marked at level 5, not quarantined, attachments and bad headers allowed:
+// 'medium'  => array ('N','N','Y','Y','N','N','Y','Y','N','N','N','N','Y','5','999','999'),
+// Spam marked at level 1, quarantined at level 5; attachments, bad headers, and viruses are quarantined
+// 'high'    => array ('N','N','N','N','N','N','N','N','N','N','N','N','N','1','5','10')
 	
-	$protection = array( 'off'     => array ('Y','Y','Y','Y','Y','Y','Y','Y','N','N','N','N','N','999','999','999'),
+  $protection = array( 'off'     => array ('Y','Y','Y','Y','Y','Y','Y','Y','N','N','N','N','N','999','999','999'),
                          'low'     => array ('N','Y','Y','Y','N','Y','Y','Y','N','N','N','N','N','999','999','999'),
-                         'medium'  => array ('N','N','Y','Y','N','N','Y','Y','N','N','N','N','Y','5','999','999'),
-                         'high'    => array ('N','N','N','N','N','N','N','N','N','N','N','N','N','1','5','5')
+                         'medium'  => array ('N','N','Y','Y','N','N','Y','Y','N','N','N','N','N','-999','7','7'),
+                         'high'    => array ('N','N','N','N','N','N','N','N','N','N','N','N','N','-999','5','5')
 	);
 	
 	
-	
-  // Chart font to use.  The location and availability of truetype fonts varies from system to 
-	// system.  if the font path is set up right, all you have to do is specify the name of the font
-	// without the extension. Leaving it blank seems to pick a default font.
+  // Chart font to use.  The location and availability of truetype fonts varies 
+  // from system to system.  if the font path is set up right, all you have to 
+  // do is specify the name of the font without the extension. Leaving it blank 
+  // seems to pick a default font.
 	
 	$chart_font = '';
-	//$chart_font = 'coolveti';
+	// $chart_font = 'coolveti';
 	
 	// Optional Smarty include path.  The usual location for Smarty template libs is in the "Smarty/" folder
 	// under the default include path or in libs/Smarty/, but some distros such as Debian 
@@ -210,7 +207,7 @@
     //       used as the "user" portion of a user@domain address, with
     //       the main or ISP's domain indicating where the mail traffic
     //       should be directed.
-   //
+    //
     //    2: user_virtualdomain@routingdomain (e.g. joe_example_com@myisp.net)
     //       Similar to (1), except with underscores instead of periods.
     //
