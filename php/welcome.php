@@ -86,6 +86,7 @@
     
     require_once "smarty.php";
 
+
 if (isset($_GET["id"])) {
     $id = trim($_GET["id"]);
     if (($id != 0) && (!is_an_administrator($uid))) {
@@ -127,34 +128,30 @@ if (isset($_POST['change_protection']) && isset($_POST['protection_level'])) {
         die("update failed: " . $e->getMessage());
     }
 
-    try {
-        $sth->execute([$euid]);
-    } catch (PDOException $e) {
-        die("update failed: " . $e->getMessage());
-    }
+    $res = $sth->execute([$euid]);
  
     $sth2 = $dbh->prepare(
         "UPDATE policy SET virus_lover = ?, " .
-                                 "spam_lover = ?, " .
-                                 "banned_files_lover = ?, " .
-                                 "bad_header_lover = ?, " .
-                                 "bypass_virus_checks = ?, " .
-                                 "bypass_spam_checks = ?, " .
-                                 "bypass_banned_checks = ?, " .
-                                 "bypass_header_checks = ?, " .
-                                 "discard_viruses = ?, " .
-        "discard_spam = ?, " .
-                   "discard_banned_files = ?, " .
+                "spam_lover = ?, " .
+                "banned_files_lover = ?, " .
+                "bad_header_lover = ?, " .
+                "bypass_virus_checks = ?, " .
+                "bypass_spam_checks = ?, " .
+                "bypass_banned_checks = ?, " .
+                "bypass_header_checks = ?, " .
+                "discard_viruses = ?, " .
+                "discard_spam = ?, " .
+                "discard_banned_files = ?, " .
                 "discard_bad_headers = ?, " .
-        "spam_modifies_subj = ?, " .
-                                 "spam_tag_level = ?, " .
-                                 "spam_tag2_level = ?, " .
-                                 "spam_kill_level = ? " .
-               "WHERE id = ?"
+        	"spam_modifies_subj = ?, " .
+                "spam_tag_level = ?, " .
+                "spam_tag2_level = ?, " .
+                "spam_kill_level = ? " .
+                "WHERE id = ?"
     );
     $protection_level = $_POST["protection_level"];
-                  
-    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+
+    while ($row = $sth->fetch()) {
 
         $sth2->execute(array_merge($protection[$protection_level], array($row['policy_id'])));
         
@@ -220,11 +217,13 @@ $sth = $dbh->prepare(
     "WHERE users.maia_user_id = ?"
 ); 
     $sth->execute(array($euid));
-    
-if ($sth->fetchcolumn() > 1) {
+
+    $rows = $sth->rowcount();
+
+if ($rows > 1) {
     $protection_mode = "custom";
-} elseif ($sth->fetchcolumn() == 1) {
-    $result = $sth->fetchcolumn();
+} elseif ($rows == 1) {
+    $result = $sth->fetch(PDO::FETCH_ASSOC);
     if (implode(',', $result) == implode(',', $protection['off'])) {
         $protection_mode = 'off';        
     } elseif (implode(',', $result) == implode(',', $protection['low'])) {

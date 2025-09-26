@@ -121,7 +121,6 @@ class ThemeSmarty extends Smarty
     $sth = $dbh->prepare($select);
     $sth->execute();
 
-//    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
     while ($row = $sth->fetch()) {
 
     $banner_title = $row["banner_title"];
@@ -175,7 +174,7 @@ if ($showmenu) {
 
     $sth->execute([$uid]);
 
-    if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+    if ($row = $sth->fetch()) {
         $path = $row['path'];
     
     } else { // this really should not be reachable
