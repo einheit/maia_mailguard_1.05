@@ -159,8 +159,7 @@ if (is_readable($smarty_base)) {
     $result = "Cannot read $smarty_base\n";
 }
 if ($status == ERROR) {
-    $result .= "Please <a href=\"http://www.maiamailguard.com/maia/wiki/BlankPage\">" .
-             "set your file permissions</a> so that the web server " .
+    $result .= "Please set your file permissions</a> so that the web server " .
              "user can write to the above directories. ";
 }
     print_row("File Permissions", $result, $status);
@@ -519,10 +518,10 @@ if ($have_pear) {
         $info = $pear_reg->packageInfo("Net_IMAP");
         $result = is_array($info["version"])?$info["version"]["release"]:$info["version"];
         if ($result == "1.0.3" && $php_version >= "5.0.0") {
-             $result = "A bug exists in Net_IMAP 1.0.3 when run under PHP 5, see <a href=\"http://www.maiamailguard.com/maia/ticket/266\">http://www.maiamailguard.com/maia/ticket/266</a> for more details.";
+             $result = "A bug exists in Net_IMAP 1.0.3 when run under PHP 5.";
              $status = WARN;      
         } elseif ($result == "1.1.1") {
-            $result = "A regression bug exists in Net_IMAP 1.1.1, possibly restricted to ssl on alternate ports; see <a href=\"http://www.maiamailguard.com/maia/ticket/569\">http://www.maiamailguard.com/maia/ticket/569</a> for more details.  Reverting to 1.1.0 helps.";
+            $result = "A regression bug exists in Net_IMAP 1.1.1, possibly restricted to ssl on alternate ports; Reverting to 1.1.0 helps.";
             $status = WARN;
         } else {
             $status = OK;

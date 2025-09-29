@@ -194,7 +194,7 @@ CREATE TABLE maia_config (
    banner_title				varchar(255) DEFAULT 'Maia Mailguard',
    use_icons				char(1) DEFAULT 'Y' NOT NULL, -- 'Y', 'N'
    use_logo				char(1) DEFAULT 'Y' NOT NULL, -- 'Y', 'N'
-   logo_url				varchar(255) DEFAULT 'http://www.maiamailguard.com/',
+   logo_url				varchar(255) DEFAULT 'https://github.com/einheit/maia_mailguard_1.05',
    logo_file				varchar(255) DEFAULT 'images/maia-logotoolbar.gif',
    logo_alt_text			varchar(255) DEFAULT 'Maia Mailguard Home Page',
    virus_info_url			varchar(255) DEFAULT 'http://www.google.com/search?q=%%VIRUSNAME%%+virus+information',

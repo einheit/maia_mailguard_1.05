@@ -95,7 +95,7 @@
     $lang['text_npv'] =  "NPV";
     $lang['text_false_positive'] =  "Hibásan kedvezményezett";
     $lang['text_false_negative'] =  "Hibásan karanténezett";
-    $lang['powered_by'] = "Powered by Maia Mailguard - http://www.maiamailguard.com";
+    $lang['powered_by'] = "Powered by Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
     
     $lang['text_truncate_subject'] = "Trim non-email lines to: (characters)";
     $lang['text_truncate_email'] = "Trim email lines to: (characters)";

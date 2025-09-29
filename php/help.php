@@ -332,8 +332,8 @@ $lang['help_assistance_1'] = sprintf(
 
 $lang['help_credits_1'] = sprintf(
     $lang['help_credits_1'],
-    "<a href=\"http://www.maiamailguard.com/\">Maia Mailguard</a>",
-    "<a href=\"mailto:rjl@renaissoft.com\">Robert LeBlanc</a> &amp; <a href=\"mailto:mortonda@dgrmm.net\">David Morton</a>",
+    "<a href=\"https://github.com/einheit/maia_mailguard_1.05">Maia Mailguard</a>",
+    "<a href=\"mailto:maia-users@renaissoft.com\">Maia-Users Mailing List</a>>",
     "<a href=\"http://www.ijs.si/software/amavisd/\">AMaViS Mail Virus Scanner (amavisd-new)</a>",
     "<a href=\"http://www.spamassassin.org/\">SpamAssassin</a>",
     "<a href=\"http://us.mcafee.com/root/package.asp?pkgid=100\">McAfee VirusScan</a>",
