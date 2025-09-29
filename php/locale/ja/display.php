@@ -100,7 +100,7 @@
     $lang['text_npv'] =  "正規メール純度";
     $lang['text_false_positive'] =  "誤ってスパムと判定";
     $lang['text_false_negative'] =  "スパムを見逃し";
-    $lang['powered_by'] = "Powered by Maia Mailguard - http://www.maiamailguard.com";
+    $lang['powered_by'] = "Powered by Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
     $lang['text_activate_javascript'] = "ブラウザの JavaScript を有効にしてください。";
 
     $lang['text_truncate_subject'] = "Trim non-email lines to:(characters)";

@@ -289,13 +289,10 @@ Here is an example crontab for root -
 In case you find anything else not working as advertised, please visit
 the issues page to see if there are workarounds -
 
-  https://github.com/einheit/maia_mailguard_1.04a/issues
+  https://github.com/einheit/maia_mailguard_1.05/issues
 
 An older contributed install document can be found in docs/Install-maia-56e6.txt
 
-The original install doc is online at http://www.maiamailguard.com/install.php
-
-Additional contributed docs at http://www.maiamailguard.com/maia/wiki/ContribDocs
 
 # note - 
 # http://www.example.com/maia/login.php?super=register

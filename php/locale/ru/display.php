@@ -96,7 +96,7 @@
     $lang['text_npv'] =  "NPV";
     $lang['text_false_positive'] =  "Ложное срабатывание";
     $lang['text_false_negative'] =  "Пропущенный спам";
-    $lang['powered_by'] = "Поддержка Maia Mailguard - http://www.maiamailguard.com";
+    $lang['powered_by'] = "Поддержка Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
     
     $lang['text_truncate_subject'] = "Обрезать не email строку до: (символов)";
     $lang['text_truncate_email'] = "Обрезать email строку до: (символов)";

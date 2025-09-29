@@ -95,7 +95,7 @@
     $lang['text_npv'] =  "NPV";
     $lang['text_false_positive'] =  "False Positive";
     $lang['text_false_negative'] =  "False Negative";
-    $lang['powered_by'] = "Powered by Maia Mailguard - http://www.maiamailguard.com";
+    $lang['powered_by'] = "Powered by Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
     
     $lang['text_truncate_subject'] = "Zkrátit předmět na: (znaků)";
     $lang['text_truncate_email'] = "Zkrátit řádky emailů na: (znaků)";

@@ -95,7 +95,7 @@
     $lang['text_npv'] =  "NPV";
     $lang['text_false_positive'] =  "Falsk Positiv";
     $lang['text_false_negative'] =  "Falsk Negativ";
-    $lang['powered_by'] = "Med kraft från Maia Mailguard - http://www.maiamailguard.com";
+    $lang['powered_by'] = "Med kraft från Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
 
                         
     // Links
