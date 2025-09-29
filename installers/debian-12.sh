@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# debian 12 installer
+# debian 13 installer
 #
 
 echo 
@@ -48,6 +48,9 @@ apt update
 apt install -y locales
 cp contrib/locale.gen /etc
 /usr/sbin/locale-gen
+
+# make sure git is installed for fixes
+apt install -y git
 
 # make sure perl is installed 
 apt-get -y install perl
@@ -224,6 +227,9 @@ echo
 
 pear channel-update pear.php.net
 
+# required for Image_Color
+pear install --force pear-1.10.16
+
 pear install Mail_mimeDecode
 pear install Pager
 pear install Net_Socket
@@ -262,6 +268,10 @@ echo
 echo "reloading http server"
 apachectl restart
 
+# fix up Mail_mimeDecode
+echo "fixing up Mail_mimedecode"
+bash -xv scripts/fixup-Mail_mimeDecode.sh
+
 echo "stage 2 complete"
 
 # call postfix setup script
@@ -285,7 +295,7 @@ echo    "If configtest.pl passes, check the web configuration at"
 echo    " http://$host/maia/admin/configtest.php"
 echo
 echo    "if everything passes, and you are creating a database for the"
-echo    "first time, (no existing database) create the initial maia user"
+echo    "first time, i.e. no existing database, create the initial maia user"
 echo    "by visiting http://$host/maia/internal-init.php"
 echo
 echo    "maia will send your login credentials to the email addess you"
