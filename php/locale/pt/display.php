@@ -95,7 +95,7 @@
     $lang['text_npv'] =  "NPV";
     $lang['text_false_positive'] =  "Falso Positivo";
     $lang['text_false_negative'] =  "Falso Negativo";
-    $lang['powered_by'] = "Providenciado por Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
+    $lang['powered_by'] = "Providenciado por Maia Mailguard - http://www.maiamailguard.com";
     
     $lang['text_truncate_subject'] = "Truncar linhas de não-email para: (caracteres)";
     $lang['text_truncate_email'] = "Truncar linhas de email para: (caracteres)";

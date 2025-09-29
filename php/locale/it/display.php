@@ -95,7 +95,7 @@
     $lang['text_npv'] =  "NPV";
     $lang['text_false_positive'] =  "Falsi Positivi";
     $lang['text_false_negative'] =  "Falsi Negativi";
-    $lang['powered_by'] = "Powered by Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
+    $lang['powered_by'] = "Powered by Maia Mailguard - http://www.maiamailguard.com";
 
     // Links
     $lang['link_systemwide'] =  "Visualizza tutte le statistiche del sistema";

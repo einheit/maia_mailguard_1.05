@@ -74,14 +74,12 @@
      *
      */
 
-    // Defined log levels:
-    // LOG_DEBUG (7), LOG_INFO (6), LOG_NOTICE (5), LOG_WARNING (4),
-    // LOG_ERR (3), LOG_CRIT (2), LOG_ALERT (1), LOG_EMERG (0)
-
-    $loglevel = LOG_ERR;		// messages >= this level are sent to php log
+    // These names may be misleading, but for now...
+    // Possible levels:  LOG_DEBUG, LOG_INFO, LOG_NOTICE, LOG_WARNING, LOG_ERR ...
+    $loglevel = 2;		// messages >= this level are sent to php log
     
-    $debug_popup = false;		// allow a debug popup to be shown?
-    $debuglevel = LOG_ERR;		// messages >= this level are displayed in popup window
+    $debug_popup = false;	// allow a debug popup to be shown
+    $debuglevel = 2;		// messages >= this level are displayed in popup window
 
 
     // Language to use for text display (en, fr, ja, de, etc.).
@@ -128,12 +126,14 @@
     //
 
     /*
+     *
      * template for maia db connection 
      * try {
      *    $dbh = new PDO($dsn, $maia_dbuser, $maia_dbuer_pass, $maia_sql_connect_options);
      * } catch (PDOException $e) {
      *    die("Connection failed: " . $e->getMessage());
      * }
+     *
      */
 
     // maia_1.05 syntax (PDO)

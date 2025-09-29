@@ -383,6 +383,8 @@ $banned_filename_re = new_RE(
 #   * If no primary scanners are available, the secondary scanners
 #       are consulted.
 #   * Typically more efficient, daemonized scanners
+#   * See http://www.maiamailguard.com/maia/wiki/VirusScannerConfig
+#       for more virus scanner definitions.
 
 @av_scanners = (
 
@@ -405,6 +407,8 @@ $banned_filename_re = new_RE(
 # Secondary scanners (@av_scanners_backup)
 #   * Only used if all primary scanners fail
 #   * Typically command-line (non-daemonized) scanners
+#   * See http://www.maiamailguard.com/maia/wiki/VirusScannerConfig
+#       for more virus scanner definitions.
 
 @av_scanners_backup = (
 

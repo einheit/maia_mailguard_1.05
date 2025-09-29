@@ -96,7 +96,7 @@
     $lang['text_false_positive'] =  "Faux positifs";
     $lang['text_false_negative'] =  "Faux n&eacute;gatifs";
     
-    $lang['powered_by'] = "Powered by Maia Mailguard - https://github.com/einheit/maia_mailguard_1.05";
+    $lang['powered_by'] = "Powered by Maia Mailguard - http://www.maiamailguard.com";
     
     $lang['text_truncate_subject'] = "Tronquer les lignes non-email en:  (caract&egrave;res)";
     $lang['text_truncate_email'] = "Tronquer les lignes email en: (caract&egrave;res)";

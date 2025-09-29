@@ -8,7 +8,7 @@
 #
 # Maia Mailguard was written by Robert LeBlanc <rjl@renaissoft.com> 
 # and David Morton <mortonda@dgrmm.net>, and is
-# available at https://github.com/einheit/maia_mailguard_1.05
+# available at http://www.maiamailguard.com/
 #
 # $Id: maiad 1579 2012-03-07 02:04:26Z dmorton $
 
@@ -12940,7 +12940,7 @@ sub process_smtp_request($$$$) {
       };
       /^HELP\z/ && do {
         $self->smtp_resp(1,"214 2.0.0 See Maia Mailguard home page at:\n".
-                           "https://github.com/einheit/maia_mailguard_1.05");
+                           "http://www.maiamailguard.com/");
         last;
       };
       /^AUTH\z/ && @{ca('auth_mech_avail')} && do {  # rfc2554

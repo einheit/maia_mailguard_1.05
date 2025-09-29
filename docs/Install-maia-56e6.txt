@@ -374,7 +374,7 @@ These defaults, of course, are just suggestions. Feel free to interpret 'low', '
 ||`internal`||Internal SQL ||
 ||`external`||External script or application||
 
-`$address_rewriting_type` and `$routing_domain` allow you to compensate for any rewriting that your upstream mail server performs on e-mail addresses. 
+`$address_rewriting_type` and `$routing_domain` allow you to compensate for any rewriting that your upstream mail server performs on e-mail addresses. To learn more about this issue and how to configure these settings (if necessary), see [http://www.maiamailguard.com/addresses.php Virtual Hosts, Aliases, and E-mail Addresses].
 
 ==== Authenticating with a POP3 server ====
 
@@ -588,9 +588,9 @@ Now that you've logged in successfully as the super-administrator, you can finis
 
 == 16. Install any additional language packs ==
 
-Maia Mailguard ships with an English language pack pre-installed, but other languages and character sets are supported as well. 
+Maia Mailguard ships with an English language pack pre-installed, but other languages and character sets are supported as well. These language packs no longer ship with the distribution, however they will be made available for download individually [http://www.maiamailguard.com/download.php here] as soon as they become available.
 
-Note that translations are all based on the English language versions, and are contributed by members of the user community on a volunteer basis. As such, Renaissoft can make no guarantees regarding the accuracy or the completeness of a given non-English translation. We certainly appreciate the efforts of these volunteer translators, and credit for their work is incorporated into each of their language packs.
+Note that translations are all based on the English language versions, and are contributed by members of the user community on a volunteer basis. As such, Renaissoft can make no guarantees regarding the accuracy or the completeness of a given non-English translation. We certainly appreciate the efforts of these volunteer translators, and credit for their work is incorporated into each of their language packs. If you would like to contribute a translation, please contact [mailto:rjl@renaissoft.com Robert LeBlanc] for more details.
 
 == 17. Customise the help page ==
 
