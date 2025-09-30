@@ -97,7 +97,6 @@ if ($enable_charts) {
     if ($row = $sth->fetch()) {
         $enable_charts = ($row["charts"] == 'Y');
     }
-        $sth->free();
 }
     $smarty->assign("enable_charts", $enable_charts);
    
