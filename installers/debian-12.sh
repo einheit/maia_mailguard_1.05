@@ -110,11 +110,11 @@ cpanm Net::LDAP::LDIF
 useradd -d /var/lib/maia maia
 mkdir -p /var/lib/maia
 chmod 755 /var/lib/maia
-chown -R maia.maia /var/lib/maia
+chown -R maia:maia /var/lib/maia
 
 # create and chown dirs
 mkdir -p /var/log/maia
-chown -R maia.maia /var/log/maia
+chown -R maia:maia /var/log/maia
 
 mkdir -p  /var/lib/maia/tmp
 mkdir -p  /var/lib/maia/db
@@ -124,9 +124,9 @@ cp files/maiad /var/lib/maia/
 cp -r maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 
-chown -R maia.maia /var/lib/maia
-chown root.root /var/lib/maia/maiad
-chown -R maia.clamav /var/lib/maia/tmp
+chown -R maia:maia /var/lib/maia
+chown root:root /var/lib/maia/maiad
+chown -R maia:clamav /var/lib/maia/tmp
 chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
@@ -227,18 +227,15 @@ echo
 
 pear channel-update pear.php.net
 
-# needed for Image_Color
-pear install --force pear-1.10.16
-
 pear install Mail_mimeDecode
 pear install Pager
 pear install Net_Socket
 pear install Net_SMTP
 pear install Auth_SASL
 pear install Log-1.13.3
-pear install Image_Color
-pear install Image_Canvas-0.3.5
-pear install Image_Graph-0.8.0
+#pear install Image_Color
+#pear install Image_Canvas-0.3.5
+#pear install Image_Graph-0.8.0
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -258,10 +255,10 @@ do
 done
 
 chmod 775 /var/www/html/maia/themes/*/compiled
-chown maia.www-data /var/www/html/maia/themes/*/compiled
+chown maia:www-data /var/www/html/maia/themes/*/compiled
 cp config.php /var/www/html/maia/
 mkdir /var/www/cache
-chown www-data.maia /var/www/cache
+chown www-data:maia /var/www/cache
 chmod 775 /var/www/cache
 
 echo

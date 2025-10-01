@@ -46,7 +46,7 @@
 Development issues and trouble tickets can be registered at:  <a href="https://github.com/einheit/maia_mailguard_1.05">https://github.com/einheit/maia_mailguard_1.05</a><br>
 
 
-&copy; 2004 Robert LeBlanc and David Morton, &copy 2025 Dick Johnson and J J Sloan.</div>
+&copy; 2004 Robert LeBlanc and David Morton, &copy 2025 Dick Johnson.</div>
 
 </div>
 </body>

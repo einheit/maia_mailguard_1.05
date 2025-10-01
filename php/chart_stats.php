@@ -122,7 +122,9 @@ if(!empty($_GET['thumb'])) {
 }
     
     // create the graph
-    $Graph =& Image_Graph::factory('graph', array(400, 300));
+    $factory = new Image_Graph();
+    $Graph =& $factory->factory('graph', array(400, 300));
+
     // add a TrueType font
     $Font =& $Graph->addNew('ttf_font', $chart_font);
     // set the font size to 11 pixels
@@ -130,7 +132,7 @@ if(!empty($_GET['thumb'])) {
     
     $Graph->setFont($Font);
     // create the plotareas
-    
+   /* 
     $Graph->add(
         Image_Graph::vertical(
             Image_Graph::factory('title', array('Mail Stats', 12)),
@@ -142,7 +144,27 @@ if(!empty($_GET['thumb'])) {
             5
         )
     );
-    
+   */ 
+
+    $Graph = new Image_Graph(400, 300);
+    // Create instances of the layout objects using the factory method.
+    $verticalLayout = $Graph->factory('layout', Image_Graph::LAYOUT_VERTICAL);
+    $horizontalLayout = $Graph->factory('layout', Image_Graph::LAYOUT_HORIZONTAL);
+
+    // Add the components to the horizontal layout first.
+    $horizontalLayout->add($Plotarea = Image_Graph::factory('plotarea'));
+    $horizontalLayout->add($Legend = Image_Graph::factory('legend'));
+    $horizontalLayout->setPadding(60);
+
+    // Now, add all the components to the vertical layout.
+    $verticalLayout->add(Image_Graph::factory('title', array('Mail Stats', 12)));
+    $verticalLayout->add($horizontalLayout);
+    $verticalLayout->setPadding(5);
+
+    // Add the final layout to the graph instance.
+    $Graph->add($verticalLayout);
+
+
     $Legend->setPlotarea($Plotarea);
     $Legend->setAlignment(IMAGE_GRAPH_ALIGN_VERTICAL);
     

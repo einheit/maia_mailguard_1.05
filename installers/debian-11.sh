@@ -49,6 +49,9 @@ apt install -y locales
 cp contrib/locale.gen /etc
 /usr/sbin/locale-gen
 
+# make sure git is installed for fixes
+apt install -y git
+
 # make sure perl is installed 
 apt-get -y install perl
 
@@ -107,11 +110,11 @@ cpanm Net::LDAP::LDIF
 useradd -d /var/lib/maia maia
 mkdir -p /var/lib/maia
 chmod 755 /var/lib/maia
-chown -R maia.maia /var/lib/maia
+chown -R maia:maia /var/lib/maia
 
 # create and chown dirs
 mkdir -p /var/log/maia
-chown -R maia.maia /var/log/maia
+chown -R maia:maia /var/log/maia
 
 mkdir -p  /var/lib/maia/tmp
 mkdir -p  /var/lib/maia/db
@@ -121,9 +124,9 @@ cp files/maiad /var/lib/maia/
 cp -r maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 
-chown -R maia.maia /var/lib/maia
-chown root.root /var/lib/maia/maiad
-chown -R maia.clamav /var/lib/maia/tmp
+chown -R maia:maia /var/lib/maia
+chown root:root /var/lib/maia/maiad
+chown -R maia:clamav /var/lib/maia/tmp
 chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
@@ -224,17 +227,15 @@ echo
 
 pear channel-update pear.php.net
 
-pear install MDB2-2.5.0b5
-pear install MDB2_Driver_mysqli-1.5.0b4
 pear install Mail_mimeDecode
 pear install Pager
 pear install Net_Socket
 pear install Net_SMTP
 pear install Auth_SASL
 pear install Log-1.13.3
-pear install Image_Color
-pear install Image_Canvas-0.3.5
-pear install Image_Graph-0.8.0
+#pear install Image_Color
+#pear install Image_Canvas-0.3.5
+#pear install Image_Graph-0.8.0
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -254,15 +255,19 @@ do
 done
 
 chmod 775 /var/www/html/maia/themes/*/compiled
-chown maia.www-data /var/www/html/maia/themes/*/compiled
+chown maia:www-data /var/www/html/maia/themes/*/compiled
 cp config.php /var/www/html/maia/
 mkdir /var/www/cache
-chown www-data.maia /var/www/cache
+chown www-data:maia /var/www/cache
 chmod 775 /var/www/cache
 
 echo
 echo "reloading http server"
 apachectl restart
+
+# fix up Mail_mimeDecode
+echo "fixing up Mail_mimedecode"
+bash -xv scripts/fixup-Mail_mimeDecode.sh
 
 echo "stage 2 complete"
 
@@ -271,7 +276,6 @@ systemctl enable postfix
 systemctl start postfix
 postfix-setup.sh
 systemctl restart postfix
-
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 
@@ -288,7 +292,7 @@ echo    "If configtest.pl passes, check the web configuration at"
 echo    " http://$host/maia/admin/configtest.php"
 echo
 echo    "if everything passes, and you are creating a database for the"
-echo    "first time, (no existing database) create the initial maia user"
+echo    "first time, i.e. no existing database, create the initial maia user"
 echo    "by visiting http://$host/maia/internal-init.php"
 echo
 echo    "maia will send your login credentials to the email addess you"

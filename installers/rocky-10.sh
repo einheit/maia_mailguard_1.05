@@ -32,7 +32,7 @@ export PATH
 setenforce 0
 
 # basic dependencies - 
-yum install -y curl wget make gcc sudo net-tools less which rsync rsyslog
+yum install -y curl wget make gcc sudo net-tools less which rsync rsyslog git
 
 # get the info, write params to file
 get-info.sh
@@ -131,7 +131,7 @@ chmod 755 /var/lib/maia
 
 # create and chown dirs
 mkdir -p /var/log/maia
-chown -R maia.maia /var/log/maia
+chown -R maia:maia /var/log/maia
 
 mkdir -p /var/log/clamav
 chmod 775 /var/lib/clamav/
@@ -143,7 +143,7 @@ mkdir -p  /var/lib/maia/templates
 cp files/maiad /var/lib/maia/
 cp -r maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
-chown -R maia.maia /var/lib/maia/db
+chown -R maia:maia /var/lib/maia/db
 chown -R maia.virusgroup /var/lib/maia/tmp
 chmod 2775 /var/lib/maia/tmp
 
@@ -250,9 +250,9 @@ pear install Mail_mimeDecode
 pear install Net_Socket
 pear install Net_SMTP
 pear install Pager
-pear install Image_Color
-pear install Image_Canvas-0.3.5
-pear install Image_Graph-0.8.0
+#pear install Image_Color
+#pear install Image_Canvas-0.3.5
+#pear install Image_Graph-0.8.0
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -307,6 +307,10 @@ echo
 echo "reloading http server"
 systemctl restart httpd
 
+# fix up Mail_mimeDecode
+echo "fixing up Mail_mimedecode"
+bash -xv scripts/fixup-Mail_mimeDecode.sh
+
 echo "stage 2 complete"
 
 # call postfix setup script
@@ -341,5 +345,8 @@ echo	" http://${host}/maia/login.php?super=register"
 echo
 echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
+echo
+echo	"Note that if selinux is enabled, you may need to remediate a"
+echo	"number of selnux violations preventing maia components from running"
 echo
 

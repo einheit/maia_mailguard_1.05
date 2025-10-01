@@ -32,7 +32,7 @@ export PATH
 setenforce 0
 
 # basic dependencies - 
-yum install -y curl wget make gcc sudo net-tools less which rsync 
+yum install -y curl wget make gcc sudo net-tools less which rsync git
 
 # get the info, write params to file
 get-info.sh
@@ -113,7 +113,7 @@ yum install -y clamav-update
 yum install -y clamav-data 
 yum install -y clamav-server
 
-mv /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
+cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
 #cp contrib/el-scan.conf /etc/clamd.d/scan.conf
 #cp contrib/el-clamd.service /etc/systemd/system/clamd.service
 
@@ -129,7 +129,7 @@ chmod 755 /var/lib/maia
 
 # create and chown dirs
 mkdir -p /var/log/maia
-chown -R maia.maia /var/log/maia
+chown -R maia:maia /var/log/maia
 
 mkdir -p /var/log/clamav
 chmod 775 /var/lib/clamav/
@@ -141,7 +141,7 @@ mkdir -p  /var/lib/maia/templates
 cp files/maiad /var/lib/maia/
 cp -r maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
-chown -R maia.maia /var/lib/maia/db
+chown -R maia:maia /var/lib/maia/db
 chown -R maia.virusgroup /var/lib/maia/tmp
 chmod 2775 /var/lib/maia/tmp
 
@@ -245,36 +245,12 @@ pear install Mail_mimeDecode
 pear install Net_Socket
 pear install Net_SMTP
 pear install Pager
-pear install Image_Color
-pear install Image_Canvas-0.3.5
-pear install Image_Graph-0.8.0
+#pear install Image_Color
+#pear install Image_Canvas-0.3.5
+#pear install Image_Graph-0.8.0
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
-
-###
-### module versions known to work as of 20200501
-###
-#
-# Installed packages, channel pear.php.net:
-# =========================================
-# Package            Version State
-# Archive_Tar        1.4.9   stable
-# Auth_SASL          1.1.0   stable
-# Console_Getopt     1.4.3   stable
-# Log-1.13.3-1.13.3                1.13.1  stable
-# MDB2               2.5.0b5 beta
-# MDB2_Driver_mysqli 1.5.0b4 beta
-# Mail_Mime          1.10.7  stable
-# Mail_mimeDecode    1.5.6   stable
-# Net_SMTP           1.9.0   stable
-# Net_Socket         1.2.2   stable
-# PEAR               1.10.12 stable
-# PEAR_Manpages      1.10.0  stable
-# Pager              2.5.1   stable
-# Structures_Graph   1.1.1   stable
-# XML_Util           1.4.5   stable
-#
 
 # install html purifier separately -
 tar -C /var -xvf files/htmlpurifier-4.18.0.tar.gz
@@ -292,15 +268,19 @@ do
 done
 
 chmod 775 /var/www/html/maia/themes/*/compiled
-chown apache.maia /var/www/html/maia/themes/*/compiled
+chown apache:maia /var/www/html/maia/themes/*/compiled
 cp config.php /var/www/html/maia/
 mkdir /var/www/cache
-chown apache.maia /var/www/cache
+chown apache:maia /var/www/cache
 chmod 775 /var/www/cache
 
 echo
 echo "reloading http server"
 systemctl restart httpd
+
+# fix up Mail_mimeDecode
+echo "fixing up Mail_mimedecode"
+bash -xv scripts/fixup-Mail_mimeDecode.sh
 
 echo "stage 2 complete"
 

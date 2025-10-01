@@ -566,7 +566,7 @@ if ($have_pear) {
 }
     print_row("PEAR::Log", $result, $status);
 
-    // PEAR::Image_Color
+/*    // PEAR::Image_Color
 if ($have_pear) {
     if (!in_array("image_color", $pear_list)) {
         $result = "Not installed.  Optional package, required only if you wish " .
@@ -622,6 +622,7 @@ if ($have_pear) {
     $status = WARN;
 }
     print_row("PEAR::Image_Graph", $result, $status);
+*/
 
     // PEAR::Numbers_Roman
 if ($have_pear) {

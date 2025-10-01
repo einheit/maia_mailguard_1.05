@@ -4,7 +4,7 @@
 #
 
 echo 
-echo "This installer is for Debian 13 Trixie web portall"
+echo "This installer is for Debian 13 Trixie web portal"
 echo 
 echo "Be sure the system is up to date before running this script!"
 echo 
@@ -47,6 +47,9 @@ apt install -y locales
 cp contrib/locale.gen /etc
 /usr/sbin/locale-gen
 
+# make sure git is installed for fixes
+apt install -y git
+
 # make sure perl is installed 
 apt-get -y install perl
 
@@ -63,41 +66,40 @@ apt-get install -y make gcc patch
 apt-get install -y curl wget telnet
 #
 apt-get install -y file
-apt-get install -y libarchive-zip-perl
-apt-get install -y libberkeleydb-perl
-apt-get install -y libconvert-tnef-perl
-apt-get install -y libconvert-uulib-perl
-apt-get install -y libcrypt-openssl-rsa-perl
-apt-get install -y libdata-uuid-perl
-apt-get install -y libdbd-mysql-perl libdbd-pg-perl
-apt-get install -y libdbi-perl
-apt-get install -y libdigest-sha-perl
-apt-get install -y libencode-detect-perl
-apt-get install -y libforks-perl
-apt-get install -y libmail-dkim-perl
-apt-get install -y libnet-cidr-lite-perl
-apt-get install -y libnet-ldap-perl
-apt-get install -y libnet-server-perl
-apt-get install -y libtemplate-perl
-apt-get install -y libtext-csv-perl
-apt-get install -y libunix-syslog-perl
-apt-get install -y perl-Net-DNS-Nameserver
-apt-get install -y razor
-apt-get install -y libmail-spf-perl
-apt-get install -y spamassassin
+
+#apt-get install -y libarchive-zip-perl
+#apt-get install -y libberkeleydb-perl
+#apt-get install -y libconvert-tnef-perl
+#apt-get install -y libconvert-uulib-perl
+#apt-get install -y libcrypt-openssl-rsa-perl
+#apt-get install -y libdata-uuid-perl
+#apt-get install -y libdbd-mysql-perl libdbd-pg-perl
+#apt-get install -y libdbi-perl
+#apt-get install -y libdigest-sha-perl
+#apt-get install -y libencode-detect-perl
+#apt-get install -y libforks-perl
+#apt-get install -y libmail-dkim-perl
+#apt-get install -y libnet-cidr-lite-perl
+#apt-get install -y libnet-ldap-perl
+#apt-get install -y libnet-server-perl
+#apt-get install -y libtemplate-perl
+#apt-get install -y libtext-csv-perl
+#apt-get install -y libunix-syslog-perl
+#apt-get install -y perl-Net-DNS-Nameserver
+#apt-get install -y razor
+#apt-get install -y libmail-spf-perl
+#apt-get install -y spamassassin
 #
 #
 # non-interactive cpan installs
 #
 
-apt-get install -y cpanminus
-
-cpanm Digest::SHA1
-cpanm IP::Country::Fast
-cpanm LWP
-cpanm Net::LDAP::LDIF
-#cpanm Razor2::Client::Agent
-
+#apt-get install -y cpanminus
+#
+#cpanm Digest::SHA1
+#cpanm IP::Country::Fast
+#cpanm LWP
+#cpanm Net::LDAP::LDIF
 
 #
 # web interface
@@ -133,9 +135,9 @@ pear install Net_Socket
 pear install Net_SMTP
 pear install Auth_SASL
 pear install Log-1.13.3
-pear install Image_Color
-pear install Image_Canvas-0.3.5
-pear install Image_Graph-0.8.0
+#pear install Image_Color
+#pear install Image_Canvas-0.3.5
+#pear install Image_Graph-0.8.0
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -155,7 +157,7 @@ do
 done
 
 chmod 775 /var/www/html/maia/themes/*/compiled
-chown maia.www-data /var/www/html/maia/themes/*/compiled
+chown www-data:www-data /var/www/html/maia/themes/*/compiled
 cp config.php /var/www/html/maia/
 mkdir /var/www/cache
 chown -R www-data.www-data /var/www/cache
@@ -164,6 +166,10 @@ chmod 775 /var/www/cache
 echo
 echo "reloading http server"
 apachectl restart
+
+# fix up Mail_mimeDecode
+echo "fixing up Mail_mimedecode"
+bash -xv scripts/fixup-Mail_mimeDecode.sh
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 

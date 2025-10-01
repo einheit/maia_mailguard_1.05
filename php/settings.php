@@ -96,7 +96,8 @@
     );
     $sth->execute();
     if ($row = $sth->fetch()) {
-        $enable_charts = ($row["enable_charts"] == 'Y');
+        //$enable_charts = ($row["enable_charts"] == 'Y');
+        $enable_charts = False;
         $reminder_threshold_count = $row["reminder_threshold_count"];
         $enable_spamtraps = ($row["enable_spamtraps"] == 'Y');
         $enable_username_changes = ($row["enable_username_changes"] == 'Y');
