@@ -26,8 +26,6 @@ elif [ -f /etc/gentoo-release ]; then
   export LXTYPE=GENTOO
 fi
 
-cat /etc/rocky-release | awk '{ print $4 }' | awk -F\. '{ print $1 }'
-
 if [ $LXTYPE == "ROCKY" ]; then
   ID="rocky"
   VER=`cat /etc/rocky-release | awk '{ print $4 }' | awk -F\. '{ print $1 }'`
@@ -94,8 +92,8 @@ if [ $LXTYPE == "CENTOS" ]; then
 fi
  
 if [ $LXTYPE == "FEDORA" ]; then
-  RID=`grep ^RID= /etc/os-release | awk -F\= '{ print $2 }'`
-  ID=`echo $ID | sed 's/"//g'`
+  RID=`grep ^ID= /etc/os-release | awk -F\= '{ print $2 }'`
+  ID=`echo $RID | sed 's/"//g'`
   VER=`grep ^VERSION_ID= /etc/os-release | awk -F\= '{ print $2 }'| tr -d \"`
 
   if [ -f installers/${ID}-${VER}.sh ]; then
