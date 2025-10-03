@@ -22,6 +22,6 @@ if [ -r /etc/os-release ]; then
 	echo "(scripts in the installers directory)"
     fi
 else 
-    echo "OS detection did not provide clearly results."
+    echo "OS detection did not provide unambiguous results."
     echo "refer to the docs directory for manual install procedures"
 fi
