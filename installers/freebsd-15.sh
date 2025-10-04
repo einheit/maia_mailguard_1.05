@@ -4,10 +4,10 @@
 #
 
 echo "This install script is a work in progress. As of now, it installs"
-echo "the perl components and maiad such that configtest.pl will pass."
+echo "the perl components and maiad such that configtest.pl will pass,"
+echo "as well as the mysql database."
 echo
-echo "There are still more pieces needed for a complete maia install," 
-echo
+echo "There is still more work to be done for a complete maia install," 
 echo "but consider this a preview of things to come."
 
 DBG=0
@@ -92,7 +92,6 @@ pkg install -y
 #
 pkg install -y spamassassin
 pkg install -y razor-agents
-#pkg install -y 
 
 # create vscan account if it doesn't already exist
 id vscan
@@ -124,5 +123,55 @@ mkdir -p /usr/local/etc/maia-mailguard/
 cp maia.conf /usr/local/etc/maia-mailguard/maia.conf 
 cp maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
 cp freebsd/etc/maiad.rc /usr/local/etc/rc.d/maiad
+
+# maiad helpers
+pkg install -y arc
+pkg install -y arj
+pkg install -y nomarch
+pkg install -y rar
+pkg install -y unarj
+pkg install -y unrar
+pkg install -y unzoo
+pkg install -y zoo
+
+# clamav anti virus 
+pkg install -y clamav
+echo "updating clam AV database..."
+freshclam
+sigtool -V
+
+# install mysql server if called for -
+DBINST=`grep DB_INSTALL installer.tmpl | wc -l`
+DB_INST=`expr $DBINST`
+
+
+### work needed ###
+# install mysql server if called for -
+if [ $DB_INST -eq 1 ]; then
+  echo "creating maia database..."
+  pkg install -y mysql80-server
+  echo 'mysql_enable="YES"' >> /etc/rc.conf
+  service mysql-server start
+  mysqladmin create maia
+  maia-grants.sh
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo "*** problem granting maia privileges - db needs attention ***"
+    read
+  fi
+  mysql maia < files/maia-mysql.sql
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo "*** problem importing maia schema - db needs attention ***"
+    read
+  fi
+fi
+
+echo "stage 1 install complete"
+
+#
+# the database should be working at this point.
+#
+
 
 ### To be continued...
