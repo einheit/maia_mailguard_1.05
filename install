@@ -14,7 +14,7 @@ if [ -r /etc/os-release ]; then
     if [ -f installers/${ID}-${VER}.sh ]; then
 	echo "copy & paste the following command to begin the install:"
 	echo
-	echo " bash installers/${ID}-${VER}.sh | tee installer.log 2>&1"
+	echo " sh -xv installers/${ID}-${VER}.sh | tee installer.log 2>&1"
 	echo
     else 
 	echo "$ID version $VER detected, but specific installer not found"
