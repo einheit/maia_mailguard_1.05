@@ -110,10 +110,12 @@ mkdir -p  /var/maiad/db
 mkdir -p  /usr/local/share/maia-mailguard/scripts
 mkdir -p  /usr/local/etc/maia-mailguard/templates
 
-cp -r freebsd/sbin/configtest.pl /usr/local/share/maia-mailguard/scripts/
+cp -r freebsd/maia_scripts/* /usr/local/share/maia-mailguard/scripts/
 cp -r freebsd/maia_templates/* /usr/local/etc/maia-mailguard/templates
-
 cp freebsd/sbin/maiad /usr/local/sbin
+
+chown -R root:wheel /usr/local/share/maia-mailguard/
+chown -R root:wheel /usr/local/etc/maia-mailguard/
 chown root:wheel /usr/local/sbin/maiad
 
 chmod 2775 /var/maiad/tmp
@@ -123,6 +125,8 @@ mkdir -p /usr/local/etc/maia-mailguard/
 cp maia.conf /usr/local/etc/maia-mailguard/maia.conf 
 cp maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
 cp freebsd/etc/maiad.rc /usr/local/etc/rc.d/maiad
+
+cp 
 
 # maiad helpers
 pkg install -y arc
@@ -143,7 +147,6 @@ sigtool -V
 # install mysql server if called for -
 DBINST=`grep DB_INSTALL installer.tmpl | wc -l`
 DB_INST=`expr $DBINST`
-
 
 ### work needed ###
 # install mysql server if called for -
@@ -172,6 +175,64 @@ echo "stage 1 install complete"
 #
 # the database should be working at this point.
 #
+
+cp files/*.cf /usr/local/etc/mail/spamassassin/
+/usr/local/share/maia-mailguard/scripts/load-sa-rules.pl
+
+#
+# install the web stuff
+#
+pkg install -y apache24
+
+mkdir -p /usr/local/www/maia-mailguard
+cp -r php/* /usr/local/www/maia-mailguard
+
+pkg install -y php83
+pkg install -y php83-bcmath
+pkg install -y php83-gd
+pkg install -y php83-iconv
+pkg install -y php83-imap
+pkg install -y php83-mbstring
+pkg install -y php83-mysqli
+pkg install -y php83-pdo
+pkg install -y php83-pdo_mysql
+pkg install -y php83-pdo_pgsql
+pkg install -y php83-pdo_sqlite
+pkg install -y php83-pear
+pkg install -y php83-pear-Auth_SASL
+pkg install -y php83-pear-Mail
+pkg install -y php83-pear-Mail_Mime
+pkg install -y php83-pear-Mail_mimeDecode
+pkg install -y php83-pear-Math_BigInteger
+pkg install -y php83-pear-Net_IMAP
+pkg install -y php83-pear-Net_POP3
+pkg install -y php83-pear-Net_SMTP
+pkg install -y php83-pear-Net_Socket
+pkg install -y php83-pear-Numbers_Roman
+pkg install -y php83-pear-Numbers_Words
+pkg install -y php83-pear-Pager
+pkg install -y php83-pecl-scrypt
+pkg install -y php83-pgsql
+pkg install -y php83-posix
+pkg install -y php83-session
+pkg install -y php83-simplexml
+pkg install -y php83-sockets
+pkg install -y php83-sqlite3
+pkg install -y php83-tokenizer
+pkg install -y php83-xml
+pkg install -y php83-zlib
+pkg install -y smarty3-php83
+
+# pear fixes -
+pear channel-update pear.php.net
+pear install Log-1.13.3
+
+freebsd/scripts/fixup-Mail_mimeDecode.sh
+
+# htmlpurifier -
+tar -C /var -xf files/htmlpurifier-4.18.0.tar.gz
+ln -s /var/htmlpurifier-4.18.0 /var/htmlpurifier
+chown -R root:wheel /var/htmlpurifier*
 
 
 ### To be continued...
