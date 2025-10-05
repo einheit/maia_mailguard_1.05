@@ -251,6 +251,10 @@ mkdir -p /var/www/cache
 chown www:vscan /var/www/cache
 chmod 775 /var/www/cache
 
+# configure apache for maia
+ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
+perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
+
 echo
 echo "reloading http server"
 apachectl restart
