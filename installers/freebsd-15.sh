@@ -224,6 +224,7 @@ pkg install -y php83-xml
 pkg install -y php83-zlib
 
 pkg install -y smarty3-php83
+ln -s /usr/local/share/smarty3-php83/ /usr/local/share/php/Smarty
 
 # pear fixes -
 pear channel-update pear.php.net
@@ -287,21 +288,21 @@ echo    "any other site specific MTA configuration can be applied now - "
 echo
 echo
 echo    "at this point, a good sanity check would be to run"
-echo    " /var/lib/maia/scripts/configtest.pl"
+echo    "/usr/local/share/maia-mailguard/scripts/configtest.pl"
 echo
 echo    "You may now need to edit firewall to allow http access"
 echo
 echo    "If configtest.pl passes, check the web configuration at"
-echo    " http://$host/maia/admin/configtest.php"
+echo    " http://$host/maia-mailguard/admin/configtest.php"
 echo
 echo    "if everything passes, and you are creating a database for the"
 echo    "first time, i.e. no existing database, create the initial maia user"
-echo    "by visiting http://$host/maia/internal-init.php"
+echo    "by visiting http://$host/maia-mailguard/internal-init.php"
 echo
 echo    "maia will send your login credentials to the email addess you"
 echo    "supplied in the internal-init form. Use those credentials to"
 echo    "log into the url below (note the "super=register" arg)"
-echo    " http://${host}/maia/login.php?super=register"
+echo    " http://${host}/maia-mailguard/login.php?super=register"
 echo
 echo    "You will also need to set up cron jobs to maintain your system"
 echo    "See docs/cronjob.txt for more info"
