@@ -94,9 +94,8 @@ pkg install -y
 pkg install -y spamassassin
 pkg install -y razor-agents
 
-# create vscan account if it doesn't already exist
-id vscan
-[ $? == 0 ] && pw user add vscan -c "Scanning Virus Account" -d /var/maiad -m -s /bin/sh
+# create vscan account 
+pw user add vscan -c "Scanning Virus Account" -d /var/maiad -m -s /bin/sh
 
 if [ $DBG != 0 ]; then
   echo "checkpoint 2"
@@ -190,6 +189,7 @@ cp -r php/* /usr/local/www/maia-mailguard
 
 pkg install -y php83
 pkg install -y php83-bcmath
+pkg install -y php83-ctype
 pkg install -y php83-gd
 pkg install -y php83-iconv
 pkg install -y php83-imap
@@ -222,6 +222,7 @@ pkg install -y php83-sqlite3
 pkg install -y php83-tokenizer
 pkg install -y php83-xml
 pkg install -y php83-zlib
+
 pkg install -y smarty3-php83
 
 # pear fixes -
@@ -248,12 +249,27 @@ chmod 775 /usr/local/www/maia-mailguard/themes/*/compiled
 chown -R vscan:www /usr/local/www/maia-mailguard/themes/*/compiled
 cp config.php /usr/local/www/maia-mailguard
 mkdir -p /var/www/cache
-chown www:vscan /var/www/cache
 chmod 775 /var/www/cache
+chown www:vscan /var/www/cache
 
+#
 # configure apache for maia
+#
+
+# point to the maia mailguard directory
 ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
+
+# set up php-fpm handler
+cp freebsd/etc/php.conf /usr/local/etc/apache24/Includes
+
+perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
+
+perl -pi -e 'print "LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so\n" if  $. == 67' /usr/local/etc/apache24/httpd.conf
+
+# enable index.php
 perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
+
+cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
 echo
 echo "reloading http server"

@@ -1,4 +1,4 @@
-#!/bin/sh -xv
+#!/bin/sh 
 # 
 
 mydbpass=""
