@@ -4,8 +4,9 @@
 #
 
 echo "This install script is a work in progress. As of now, it installs"
-echo "the perl components and maiad such that configtest.pl will pass,"
-echo "as well as the mysql database."
+echo "the perl components and maiad such that configtest.pl passes,"
+echo "installs or configures access to the mysql database, and installs"
+echo "the web server and php code."
 echo
 echo "There is still more work to be done for a complete maia install," 
 echo "but consider this a preview of things to come."
@@ -234,5 +235,55 @@ tar -C /var -xf files/htmlpurifier-4.18.0.tar.gz
 ln -s /var/htmlpurifier-4.18.0 /var/htmlpurifier
 chown -R root:wheel /var/htmlpurifier*
 
+echo
+echo "preparing php directory"
 
-### To be continued...
+# temp bug workaround
+for i in /usr/local/www/maia-mailguard/themes/*
+do
+ mkdir -p ${i}/compiled
+done
+
+chmod 775 /usr/local/www/maia-mailguard/themes/*/compiled
+chown -R vscan:www /usr/local/www/maia-mailguard/themes/*/compiled
+cp config.php /usr/local/www/maia-mailguard
+mkdir -p /var/www/cache
+chown www:vscan /var/www/cache
+chmod 775 /var/www/cache
+
+echo
+echo "reloading http server"
+apachectl restart
+
+echo "stage 2 complete"
+
+# call postfix setup script
+postfix-setup.sh
+
+host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
+
+echo
+echo    "any other site specific MTA configuration can be applied now - "
+echo
+echo
+echo    "at this point, a good sanity check would be to run"
+echo    " /var/lib/maia/scripts/configtest.pl"
+echo
+echo    "You may now need to edit firewall to allow http access"
+echo
+echo    "If configtest.pl passes, check the web configuration at"
+echo    " http://$host/maia/admin/configtest.php"
+echo
+echo    "if everything passes, and you are creating a database for the"
+echo    "first time, i.e. no existing database, create the initial maia user"
+echo    "by visiting http://$host/maia/internal-init.php"
+echo
+echo    "maia will send your login credentials to the email addess you"
+echo    "supplied in the internal-init form. Use those credentials to"
+echo    "log into the url below (note the "super=register" arg)"
+echo    " http://${host}/maia/login.php?super=register"
+echo
+echo    "You will also need to set up cron jobs to maintain your system"
+echo    "See docs/cronjob.txt for more info"
+echo
+

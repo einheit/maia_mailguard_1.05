@@ -10,7 +10,6 @@ cat contrib/master.cf-append >> /usr/local/etc/postfix/master.cf
 postconf -e inet_interfaces=all
 postconf -e content_filter=maia:[127.0.0.1]:10024
 
-#hostname=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 hostname=`grep FQDN installer.tmpl | awk -F\= '{ print $2 }'`
 domain=`grep DOMAIN installer.tmpl | awk -F\= '{ print $2 }'`
 postconf -e myhostname=${hostname}
