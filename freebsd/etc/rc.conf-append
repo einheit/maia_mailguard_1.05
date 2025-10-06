@@ -1,0 +1,8 @@
+apache24_enable="yes"
+postfix_enable="YES"
+sendmail_enable="NONE"
+maiad_enable="YES"
+clamav_clamd_enable="YES"
+clamav_freshclam_enable="YES"
+mysql_enable="YES"
+php_fpm_enable="YES"

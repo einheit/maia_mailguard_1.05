@@ -281,6 +281,11 @@ echo "stage 2 complete"
 # call postfix setup script
 postfix-setup.sh
 
+echo "Enabling automatic startup of maia services..."
+echo "Confirm the settings are correct in /erc/rc.conf"
+cp -a /etc/rc.conf /etc/rc.conf-save-$$
+cat freebsd/etc/rc.conf-append >> /etc/rc.conf
+
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 
 echo
@@ -288,15 +293,16 @@ echo    "any other site specific MTA configuration can be applied now - "
 echo
 echo
 echo    "at this point, a good sanity check would be to run"
-echo    "/usr/local/share/maia-mailguard/scripts/configtest.pl"
+echo    " /usr/local/share/maia-mailguard/scripts/configtest.pl"
 echo
-echo    "You may now need to edit firewall to allow http access"
+echo    "You may need to edit firewall rules to allow http access"
 echo
-echo    "If configtest.pl passes, check the web configuration at"
+echo    "If configtest.pl passes, make sure the http service has been"
+echo	"started, and then check the maia mailguard configuration at"
 echo    " http://$host/maia-mailguard/admin/configtest.php"
 echo
-echo    "if everything passes, and you are creating a database for the"
-echo    "first time, i.e. no existing database, create the initial maia user"
+echo    "if everything passes, and you have just created a new maia"
+echo	"mailguard database, create the initial maia user"
 echo    "by visiting http://$host/maia-mailguard/internal-init.php"
 echo
 echo    "maia will send your login credentials to the email addess you"
