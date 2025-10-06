@@ -118,17 +118,13 @@ cp maia.conf /usr/local/etc/maia-mailguard/maia.conf
 cp maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
 cp freebsd/etc/maiad.rc /usr/local/etc/rc.d/maiad
 
-cp 
-
 # maiad helpers
-pkg install -y arc
-pkg install -y arj
+pkg install -y arc arj
+pkg install -y lha lzop
 pkg install -y nomarch
-pkg install -y rar
-pkg install -y unarj
-pkg install -y unrar
-pkg install -y unzoo
-pkg install -y zoo
+pkg install -y rar unrar unarj
+pkg install -y zoo unzoo
+pkg install -y cabextract ripole rpm2cpio
 
 # clamav anti virus 
 pkg install -y clamav
