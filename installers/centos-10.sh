@@ -33,7 +33,7 @@ setenforce 0
 
 echo "setting up basic dependencies..."
 # basic dependencies - 
-yum install -y curl wget make gcc sudo net-tools less which rsync git
+yum install -y curl wget make gcc sudo net-tools less which rsync rsyslog git
 yum -y install epel-release
 
 # get the info, write params to file
@@ -277,7 +277,7 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-bash -xv scripts/fixup-Mail_mimeDecode.sh
+scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
 
 echo "stage 2 complete"
 
@@ -314,4 +314,9 @@ echo
 echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
 echo
+echo	"Note that if selinux is enabled, you may need to remediate a"
+echo	"number of selnux violations preventing maia components from running"
+echo	"the script "fix-selinux-errors.pl" can be run repeatedly until"
+echo	"all violations have been remediated"
+
 

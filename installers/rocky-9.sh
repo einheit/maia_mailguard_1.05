@@ -113,7 +113,7 @@ yum install -y clamav-update
 yum install -y clamav-data 
 yum install -y clamav-server
 
-mv /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
+cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
 cp contrib/scan.conf-rocky-9 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
@@ -141,7 +141,7 @@ cp files/maiad /var/lib/maia/
 cp -r maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 chown -R maia:maia /var/lib/maia/db
-chown -R maia.virusgroup /var/lib/maia/tmp
+chown -R maia:virusgroup /var/lib/maia/tmp
 chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
@@ -251,30 +251,6 @@ pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
 
-###
-### module versions known to work as of 20200501
-###
-#
-# Installed packages, channel pear.php.net:
-# =========================================
-# Package            Version State
-# Archive_Tar        1.4.9   stable
-# Auth_SASL          1.1.0   stable
-# Console_Getopt     1.4.3   stable
-# Log-1.13.3-1.13.3                1.13.1  stable
-# MDB2               2.5.0b5 beta
-# MDB2_Driver_mysqli 1.5.0b4 beta
-# Mail_Mime          1.10.7  stable
-# Mail_mimeDecode    1.5.6   stable
-# Net_SMTP           1.9.0   stable
-# Net_Socket         1.2.2   stable
-# PEAR               1.10.12 stable
-# PEAR_Manpages      1.10.0  stable
-# Pager              2.5.1   stable
-# Structures_Graph   1.1.1   stable
-# XML_Util           1.4.5   stable
-#
-
 # install html purifier separately -
 tar -C /var -xvf files/htmlpurifier-4.18.0.tar.gz
 ln -s /var/htmlpurifier-4.18.0 /var/htmlpurifier
@@ -291,10 +267,10 @@ do
 done
 
 chmod 775 /var/www/html/maia/themes/*/compiled
-chown apache.maia /var/www/html/maia/themes/*/compiled
+chown apache:maia /var/www/html/maia/themes/*/compiled
 cp config.php /var/www/html/maia/
 mkdir /var/www/cache
-chown apache.maia /var/www/cache
+chown apache:maia /var/www/cache
 chmod 775 /var/www/cache
 
 echo
@@ -303,7 +279,7 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-bash -xv scripts/fixup-Mail_mimeDecode.sh
+scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
 
 echo "stage 2 complete"
 
