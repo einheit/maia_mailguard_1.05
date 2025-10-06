@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# rhel 9 installer
+# rhel 10 installer
 #
 
 echo 
-echo "This script is written for rhel 9 using a mysql DB" 
+echo "This script is written for rhel 10 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
