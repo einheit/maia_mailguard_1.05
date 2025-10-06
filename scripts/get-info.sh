@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash 
 # 
 
 mydbpass=""
@@ -6,7 +6,7 @@ needsmarthost=0
 localdb=0
 
 # find out whether to install local db server
-echo "Do you want to install a local db server?"
+echo "Are we installing a db server on this machine?"
 echo "if there is already a maia database server, the answer is no"
 echo -n  "install a local maia db server? (y/N)"
 read junk
@@ -17,20 +17,21 @@ if [ $junk == 'y' ] || [ $junk == 'Y' ]; then
   dbserver=localhost
 fi
 
-dbname=maia
 if [ $localdb -eq 0 ]; then
-  echo -n "Enter the resolvable name or IP of the maia DB server:  "
+  echo -n "Enter the IP or resolvable name of the maia DB server:  "
   read dbserver
-  echo
-  echo -n "Enter the maia database name (default: maia): "
-  read dbname
-  [ "${dbname}X" == "X" ] && dbname="maia"
 fi
 
 echo
-echo "### note that the maia db user is maia ###"
-dbuser=maia
-
+echo -n "Enter the maia database name (default: maia): "
+read dbname
+[ "${dbname}X" == "X" ] && dbname="maia"
+    
+echo
+echo -n "Enter the maia db username (default: maia): "
+read dbuser
+[ "${dbuser}X" == "X" ] && dbuser="maia"
+  
 # get the maia password
 echo
 echo -n "Enter the maia db password: "
@@ -44,9 +45,9 @@ echo
 shost=`hostname -s`
 fqdn=`hostname -f`
 domain=`echo $fqdn | sed s/${shost}\.//g`
-
+  
 echo "does this server require an smtp relayhost/smarthost?"
-echo -n "enter relayhost if required, otherwise just press enter:"
+echo -n "enter relayhost if required, otherwise just press enter: "
 read smarthost
 [ "${smarthost}X" == "X" ] || needsmarthost=1
 echo
@@ -55,7 +56,7 @@ echo
 # review settings - 
 #
 
-echo "OK, reviewing settings..."
+echo "Current settings..."
 echo
 
 echo "the short hostname is $shost"
@@ -69,6 +70,7 @@ echo
 echo "database name: $dbname"
 echo
 echo "password for maia db: $mydbpass"
+echo
 
 if [ $needsmarthost == 1 ]; then
   echo "SMTP smarthost: $smarthost"
@@ -78,6 +80,7 @@ fi
 
 echo
 echo "settings correct? hit <ENTER> to continue, CTRL-C to abort"
+read junk
 
 #
 # final confirmation -
@@ -100,10 +103,10 @@ cat installer.tmpl
 echo 
 echo "Verify the parameters above are correct"
 echo
-echo "If there are any incorrect parameters, open a new terminal"
-echo "and edit installer.tmpl to correct any errors"
+echo "If there are any incorrect parameters, open another terminal,"
+echo "edit installer.tmpl and hit enter to continue"
 echo
-echo "Then return to this terminal and press <ENTER>"
-echo
+echo "Continue?" 
+read junk
 read
 
