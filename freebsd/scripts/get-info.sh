@@ -70,6 +70,7 @@ echo
 echo "database name: $dbname"
 echo
 echo "password for maia db: $mydbpass"
+echo
 
 if [ $needsmarthost == 1 ]; then
   echo "SMTP smarthost: $smarthost"
@@ -78,7 +79,8 @@ else
 fi
 
 echo
-read -p "settings correct? hit <ENTER> to continue, CTRL-C to abort" junk
+echo "settings correct? hit <ENTER> to continue, CTRL-C to abort"
+read junk
 
 #
 # final confirmation -
