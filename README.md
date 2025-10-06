@@ -29,13 +29,13 @@ This repo was forked from the the technion/maia_mailguard repo
 
 The branch retains the goals of maia_mailguard_1.04a but adds compatibility with php 8.
 
-Compatibility with php 7 and below is unknown at this point, but for that use case, maia_mailguard 1.04a is perfectly usable. 
+Compatibility with php 7 was tested and confirmed working with Debian 11.
 
 Maia is flexible and scalable. It can be deployed in a number of configurations - everything in a single container, VM or physical machine, or dividing it up into MTAs, maiad/spamassasin servers, clamav servers, database servers, and web servers.
 
 To get started, run "./install" and the script will try to detect the OS and offer the best option for installing on your system. 
 
-The install scripts are perhaps something of a kludge, but they save time and they work fairly well. The installer could fail to detect a supported OS, which, in and of itself is not a show stopper, as the install scripts are merely a convenience. It's safe to say that some or all maia components should be able to run on any Unix-like OS.
+The install scripts are simple-minded sequences of shell commands which save time and effort, and they work fairly well. The installer could fail to detect a supported OS, which, in and of itself is not a show stopper, as the install scripts are merely a convenience. It's safe to say that some or all maia components should be able to run on any Unix-like OS.
 
 Contributed scripts for additional distros/platforms are welcome.
 
