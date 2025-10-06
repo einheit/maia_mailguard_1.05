@@ -1,4 +1,13 @@
-![maia configtest page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_configtest.png "maia configtest page")
+Update, Oct 6th 2025 - Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
+
+Alma Linux 9,10
+Centos 10
+Debian 11,12,13
+Fedora 42
+FreeBSD 14.3 and 15-Alpha
+Rocky Linux 9,10
+Ubuntu 24.04
+
 
 ![maia login page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_login.png "maia login page")
 
@@ -13,11 +22,6 @@
 ![maia settings page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_settings.png "maia settings page")
 
 ![maia languages page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_languages.png "maia languages page")
-
-Update, Sept 20th 2025 - Maia Mailguard 1.0.5 is now working on a standard Debian 13 install.
-This means: Apache 2.4.65, PHP 8.4.11, Perl 5.40, Spamassassin 4.0.1, MariaDB 11.8.3, et al.
-
-We'll be testing installs on other distros, and fixing bugs as needed.
 
 ---
 
