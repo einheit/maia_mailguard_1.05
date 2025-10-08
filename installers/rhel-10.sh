@@ -69,9 +69,7 @@ firewall-cmd --permanent --add-service http
 firewall-cmd --reload
 
 # continue with install
-yum install -y telnet
-yum install -y file
-yum install -y tar
+yum install -y telnet file tar
 #
 yum install -y perl-DBI 
 yum install -y spamassassin
@@ -89,11 +87,12 @@ yum install -y perl-Razor-Agent
 yum install -y perl-Template-Toolkit
 yum install -y perl-CPAN 
 yum install -y perl-Geo-IP
+yum install -y perl-Digest-SHA1
+yum install -y perl-IO-Socket-INET6
+
 #yum install -y perl-forks
 #yum install -y perl-Data-UUID
 #yum install -y perl-Convert-TNEF
-yum install -y perl-Digest-SHA1
-yum install -y perl-IO-Socket-INET6
 
 # needed for cpanm
 yum install -y perl-LWP-Protocol-https
