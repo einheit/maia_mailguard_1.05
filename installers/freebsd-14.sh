@@ -5,17 +5,17 @@
 
 DBG=0
 
-echo 
+echo
 echo "This install script is for FreeBSD 14 and a mysql DB"
 echo "if using postgresql or other DB, you'll need to manually"
 echo "edit the maia/maiad config files & the php config file"
-echo 
+echo
 
-# set path for the install - 
+# set path for the install
 PATH=`pwd`/freebsd/scripts:$PATH
 export PATH
 
-# get the info, write parames to a file
+# get the info, write params to a file
 get-info.sh
 
 echo "If there are no errors, this script will run to completion."
@@ -46,47 +46,19 @@ if [ $DBG != "0" ]l; then
   read junk
 fi
 
-pkg install -y p5-Template-Toolkit
-pkg install -y p5-Archive-Zip
-pkg install -y p5-BerkeleyDB
-pkg install -y p5-Convert-TNEF
-pkg install -y p5-Convert-UUlib
-pkg install -y p5-Crypt-OpenSSL-RSA
-pkg install -y p5-DBI
-pkg install -y p5-DBD-mysql
-pkg install -y p5-DBD-pg
-pkg install -y p5-Data-Dumper-Concise
-pkg install -y p5-Data-UUID
-pkg install -y p5-DateTime
-pkg install -y p5-Digest-SHA1
-pkg install -y p5-GeoIP2
-pkg install -y p5-IO-Multiplex
-pkg install -y p5-IO-Socket-INET6
-pkg install -y p5-IO-Socket-SSL
-pkg install -y p5-IP-Country
-pkg install -y p5-LWP-Protocol-https
-pkg install -y p5-Locale-gettext
-pkg install -y p5-MIME-Base64
-pkg install -y p5-MIME-Tools
-pkg install -y p5-Mail-DKIM
-pkg install -y p5-Mail-SPF
-pkg install -y p5-NetAddr-IP
-pkg install -y p5-Net-SSLeay
-pkg install -y p5-Net-Server
-pkg install -y p5-NetAddr-IP
-pkg install -y p5-Net-CIDR-Lite
-pkg install -y p5-Net-DNS
-pkg install -y p5-forks
-pkg install -y p5-Unix-Syslog
-pkg install -y p5-Text-CSV
-pkg install -y
-pkg install -y
-pkg install -y
-#
-pkg install -y spamassassin
-pkg install -y razor-agents
+pkg install -y p5-Template-Toolkit p5-Archive-Zip \
+  p5-BerkeleyDB p5-Convert-TNEF p5-Convert-UUlib \
+  p5-Crypt-OpenSSL-RSA p5-DBI p5-DBD-mysql p5-DBD-pg \
+  p5-Data-Dumper-Concise p5-Data-UUID p5-DateTime \
+  p5-Digest-SHA1 p5-GeoIP2 p5-IO-Multiplex \
+  p5-IO-Socket-INET6 p5-IO-Socket-SSL p5-IP-Country \
+  p5-LWP-Protocol-https p5-Locale-gettext \
+  p5-MIME-Base64 p5-MIME-Tools p5-Mail-DKIM p5-Mail-SPF \
+  p5-NetAddr-IP p5-Net-SSLeay p5-Net-Server p5-NetAddr-IP \
+  p5-Net-CIDR-Lite p5-Net-DNS p5-forks p5-Unix-Syslog \
+  p5-Text-CSV spamassassin razor-agents
 
-# create vscan account 
+# create vscan account
 pw user add vscan -c "Scanning Virus Account" -d /var/maiad -m -s /bin/sh
 
 if [ $DBG != 0 ]; then
@@ -114,19 +86,15 @@ chmod 2775 /var/maiad/tmp
 chown -R vscan:vscan /var/maiad
 
 mkdir -p /usr/local/etc/maia-mailguard/
-cp maia.conf /usr/local/etc/maia-mailguard/maia.conf 
+cp maia.conf /usr/local/etc/maia-mailguard/maia.conf
 cp maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
 cp freebsd/etc/maiad.rc /usr/local/etc/rc.d/maiad
 
 # maiad helpers
-pkg install -y arc arj
-pkg install -y lha lzop 
-pkg install -y nomarch
-pkg install -y rar unrar unarj
-pkg install -y zoo unzoo
-pkg install -y cabextract ripole rpm2cpio
+pkg install -y arc arj lha lzop nomarch rar unrar \
+  unarj zoo unzoo cabextract ripole rpm2cpio
 
-# clamav anti virus 
+# clamav anti virus
 pkg install -y clamav
 echo "updating clam AV database..."
 freshclam
@@ -175,43 +143,17 @@ pkg install -y apache24
 mkdir -p /usr/local/www/maia-mailguard
 cp -r php/* /usr/local/www/maia-mailguard
 
-pkg install -y php83
-pkg install -y php83-bcmath
-pkg install -y php83-ctype
-pkg install -y php83-gd
-pkg install -y php83-iconv
-pkg install -y php83-imap
-pkg install -y php83-mbstring
-pkg install -y php83-mysqli
-pkg install -y php83-pdo
-pkg install -y php83-pdo_mysql
-pkg install -y php83-pdo_pgsql
-pkg install -y php83-pdo_sqlite
-pkg install -y php83-pear
-pkg install -y php83-pear-Auth_SASL
-pkg install -y php83-pear-Mail
-pkg install -y php83-pear-Mail_Mime
-pkg install -y php83-pear-Mail_mimeDecode
-pkg install -y php83-pear-Math_BigInteger
-pkg install -y php83-pear-Net_IMAP
-pkg install -y php83-pear-Net_POP3
-pkg install -y php83-pear-Net_SMTP
-pkg install -y php83-pear-Net_Socket
-pkg install -y php83-pear-Numbers_Roman
-pkg install -y php83-pear-Numbers_Words
-pkg install -y php83-pear-Pager
-pkg install -y php83-pecl-scrypt
-pkg install -y php83-pgsql
-pkg install -y php83-posix
-pkg install -y php83-session
-pkg install -y php83-simplexml
-pkg install -y php83-sockets
-pkg install -y php83-sqlite3
-pkg install -y php83-tokenizer
-pkg install -y php83-xml
-pkg install -y php83-zlib
+pkg install -y php83 php83-bcmath php83-ctype php83-gd php83-iconv \
+  php83-imap php83-mbstring php83-mysqli php83-pdo php83-pdo_mysql \
+  php83-pdo_pgsql php83-pdo_sqlite php83-pear php83-pear-Auth_SASL \
+  php83-pear-Mail php83-pear-Mail_Mime php83-pear-Mail_mimeDecode \
+  php83-pear-Math_BigInteger php83-pear-Net_IMAP php83-pear-Net_POP3 \
+  php83-pear-Net_SMTP php83-pear-Net_Socket php83-pear-Numbers_Roman \
+  php83-pear-Numbers_Words php83-pear-Pager php83-pecl-scrypt \
+  php83-pgsql php83-posix php83-session php83-simplexml php83-sockets \
+  php83-sqlite3 php83-tokenizer php83-xml php83-zlib smarty3-php83
 
-pkg install -y smarty3-php83
+# link Smarty
 ln -s /usr/local/share/smarty3-php83/ /usr/local/share/php/Smarty
 
 # pear fixes -
