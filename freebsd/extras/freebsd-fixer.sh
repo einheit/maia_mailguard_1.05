@@ -40,3 +40,14 @@ fi
 mv /var/htmlpurifier-4.18.0 /var/htmlpurifier
 chown -R root:wheel /var/htmlpurifier
 rm -rf ${HTMLPF}
+
+# make themes directories writeable 
+cd /usr/local/www/maia-mailguard
+for i in /usr/local/www/maia-mailguard/themes/*
+do
+ mkdir -p ${i}/compiled
+ chown -R www:www /usr/local/www/maia-mailguard/themes/*/compiled
+ chmod 775 ${i}/compiled
+done
+
+

@@ -136,6 +136,9 @@ do
  inline-edit.sh '__PASSWORD__'  $passwd $i
 done
 
+# enable maia related services 
+enable-services.sh
+
 # copy maia configs to destination
 mkdir -p /usr/local/etc/maia-mailguard/
 cp -a maia.conf /usr/local/etc/maia-mailguard/
