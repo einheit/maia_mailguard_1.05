@@ -100,11 +100,9 @@ read
 
 # process changes
 
-/bin/rm -f maia.conf maiad.conf config.php
-
-cp freebsd/cfg_template/maia.conf.tmpl maia.conf
-cp freebsd/cfg_template/maiad.conf.tmpl maiad.conf
-cp freebsd/cfg_template/config.php.tmpl config.php
+cp maia.conf.tmpl maia.conf
+cp maiad.conf.tmpl maiad.conf
+cp config.php.tmpl config.php
 
 # modify the working copies of the config files in place
 HOST=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
@@ -138,10 +136,11 @@ do
  inline-edit.sh '__PASSWORD__'  $passwd $i
 done
 
+# copy maia configs to destination
 mkdir -p /usr/local/etc/maia-mailguard/
-cp -a maia.conf /usr/local/etc/maia-mailguard/maia.conf
-cp -a maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
-cp -a freebsd/etc/maiad.rc /usr/local/etc/rc.d/maiad
+cp -a maia.conf /usr/local/etc/maia-mailguard/
+cp -a maiad.conf /usr/local/etc/maia-mailguard/
+cp -a maiad.rc /usr/local/etc/rc.d/
 
 # point to the maia mailguard directory
 ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
@@ -149,7 +148,7 @@ ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
 #
 # set up apache & php
 #
-cp -a freebsd/etc/php.conf /usr/local/etc/apache24/Includes/
+cp -a php.conf /usr/local/etc/apache24/Includes/
 
 perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
 
