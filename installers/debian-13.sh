@@ -53,49 +53,49 @@ cp contrib/locale.gen /etc
 apt install -y git
 
 # make sure perl is installed 
-apt-get -y install perl
+apt -y install perl
 
 # make sure we have postfix
 apt remove --purge exim4  exim4-base  exim4-config exim4-daemon-light
-apt-get install -y postfix
+apt install -y postfix
 
 # find out what we need to change
 process-changes.sh
 
 #
 echo "now installing packages.."
-apt-get install -y make gcc patch
-apt-get install -y curl wget telnet
+apt install -y make gcc patch
+apt install -y curl wget telnet
 #
-apt-get install -y file
-apt-get install -y libarchive-zip-perl
-apt-get install -y libberkeleydb-perl
-apt-get install -y libconvert-tnef-perl
-apt-get install -y libconvert-uulib-perl
-apt-get install -y libcrypt-openssl-rsa-perl
-apt-get install -y libdata-uuid-perl
-apt-get install -y libdbd-mysql-perl libdbd-pg-perl
-apt-get install -y libdbi-perl
-apt-get install -y libdigest-sha-perl
-apt-get install -y libencode-detect-perl
-apt-get install -y libforks-perl
-apt-get install -y libmail-dkim-perl
-apt-get install -y libnet-cidr-lite-perl
-apt-get install -y libnet-ldap-perl
-apt-get install -y libnet-server-perl
-apt-get install -y libtemplate-perl
-apt-get install -y libtext-csv-perl
-apt-get install -y libunix-syslog-perl
-apt-get install -y perl-Net-DNS-Nameserver
-apt-get install -y razor
-apt-get install -y libmail-spf-perl
-apt-get install -y spamassassin
+apt install -y file
+apt install -y libarchive-zip-perl
+apt install -y libberkeleydb-perl
+apt install -y libconvert-tnef-perl
+apt install -y libconvert-uulib-perl
+apt install -y libcrypt-openssl-rsa-perl
+apt install -y libdata-uuid-perl
+apt install -y libdbd-mysql-perl libdbd-pg-perl
+apt install -y libdbi-perl
+apt install -y libdigest-sha-perl
+apt install -y libencode-detect-perl
+apt install -y libforks-perl
+apt install -y libmail-dkim-perl
+apt install -y libnet-cidr-lite-perl
+apt install -y libnet-ldap-perl
+apt install -y libnet-server-perl
+apt install -y libtemplate-perl
+apt install -y libtext-csv-perl
+apt install -y libunix-syslog-perl
+apt install -y perl-Net-DNS-Nameserver
+apt install -y razor
+apt install -y libmail-spf-perl
+apt install -y spamassassin
 #
 #
 # non-interactive cpan installs
 #
 
-apt-get install -y cpanminus
+apt install -y cpanminus
 
 cpanm Digest::SHA1
 cpanm IP::Country::Fast
@@ -133,11 +133,8 @@ mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
 
 # maiad helpers
-apt install -y arc
-apt install -y arj
-apt install -y cabextract
-apt install -y lzop
-apt install -y pax
+apt install -y arc arj cabextract
+apt install -y lzop pax lhasa rpm2cpio
 apt install -y unrar || apt install -y unrar-free || echo "unrar not found"
 
 # a handy tool for a quick check
@@ -145,15 +142,15 @@ cp -a contrib/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
-apt-get install -y clamav 
-apt-get install -y clamav-daemon
-apt-get install -y clamav-freshclam
+apt install -y clamav 
+apt install -y clamav-daemon
+apt install -y clamav-freshclam
 
 #
 # web interface
 #
 
-apt-get install -y apache2 apache2-utils 
+apt install -y apache2 apache2-utils 
 mkdir -p /var/www/html/maia
 cp -r php/* /var/www/html/maia
 
@@ -168,7 +165,7 @@ DB_INST=`expr $DBINST`
 if [ $DB_INST -eq 1 ]; then
   echo "creating maia database..."
   # suppress dialog boxes during mysql install -
-  apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mariadb-server
+  apt install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mariadb-server
   systemctl start mysql
   mysqladmin create maia
   maia-grants.sh
@@ -210,15 +207,15 @@ systemctl disable --now spamd
 echo
 echo "installing php modules"
 echo
-apt-get install -y libapache2-mod-php
-apt-get install -y php-mysql
-apt-get install -y php-mbstring
-apt-get install -y php-bcmath
-apt-get install -y php-gd
-apt-get install -y php-xml
-apt-get install -y php-pear
+apt install -y libapache2-mod-php
+apt install -y php-mysql
+apt install -y php-mbstring
+apt install -y php-bcmath
+apt install -y php-gd
+apt install -y php-xml
+apt install -y php-pear
 
-apt-get install -y smarty3
+apt install -y smarty3
 ln -s /usr/share/php/smarty3/ /usr/share/php/Smarty
 
 echo

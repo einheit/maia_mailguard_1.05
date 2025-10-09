@@ -212,9 +212,8 @@ echo "stage 2 complete"
 postfix-setup.sh
 
 echo "Enabling automatic startup of maia services..."
+enable-services.sh
 echo "Confirm the settings are correct in /erc/rc.conf"
-cp -a /etc/rc.conf /etc/rc.conf-save-$$
-cat freebsd/etc/rc.conf-append >> /etc/rc.conf
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 
