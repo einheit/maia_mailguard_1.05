@@ -3,6 +3,8 @@
 # collect info and update maia related config files 
 #
 
+export PATH=.:$PATH
+
 # get info
 mydbpass=""
 needsmarthost=0
@@ -153,15 +155,24 @@ ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
 #
 cp -a php.conf /usr/local/etc/apache24/Includes/
 
-perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
-
-perl -pi -e 'print "LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so\n" if  $. == 67' /usr/local/etc/apache24/httpd.conf
-
-perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
+has_php_cfg=`grep "maia_config" /usr/local/etc/apache24/httpd.conf | wc -l`
+if [ $has_php_cfg == '0' ]; then
+  perl -pi -e 'print "# maia_config requires the following two lines:\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 67' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so\n" if  $. == 68' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "#\n" if  $. == 69' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
+fi
 
 cp -a /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
 echo
 echo "reloading http server"
 apachectl restart
+
+has_pf_cfg=`grep "maia_config" /usr/local/etc/postfix/master.cf | wc -l`
+if [ $has_pf_cfg == '0' ]; then
+    cp -a /usr/local/etc/postfix/master.cf /usr/local/etc/postfix/master.cf-save-$$
+    cat master.cf-append >> /usr/local/etc/postfix/master.cf
+fi
 

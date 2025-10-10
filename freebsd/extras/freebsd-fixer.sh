@@ -50,4 +50,16 @@ do
  chmod 775 ${i}/compiled
 done
 
+# make the cache directory writable
+mkdir -p /var/www/cache
+chmod 775 /var/www/cache
+chown www:vscan /var/www/cache
+
+# make the symlink for smarty in the expected location
+cd /usr/local/share/php
+if [ -d ../smarty-php83 ] ; then
+  ln -s ../smarty-php83 Smarty
+elif [ -d ../smarty3-php83 ] ; then
+  ln -s ../smarty3-php83 Smarty
+fi
 
