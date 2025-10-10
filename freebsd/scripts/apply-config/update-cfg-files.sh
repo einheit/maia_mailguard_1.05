@@ -146,6 +146,7 @@ mkdir -p /usr/local/etc/maia-mailguard/
 cp -a maia.conf /usr/local/etc/maia-mailguard/
 cp -a maiad.conf /usr/local/etc/maia-mailguard/
 cp -a maiad.rc /usr/local/etc/rc.d/
+cp -a config.php /usr/local/www/maia-mailguard/
 
 # point to the maia mailguard directory
 ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
