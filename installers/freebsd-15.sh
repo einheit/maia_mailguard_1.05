@@ -189,26 +189,35 @@ ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
 # set up php-fpm handler
 cp freebsd/etc/php.conf /usr/local/etc/apache24/Includes
 
-perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
+has_php_cfg=`grep "maia_config" /usr/local/etc/apache24/httpd.conf | wc -l`
+if [ $has_php_cfg == '0' ]; then
+  perl -pi -e 'print "# maia_config requires the following two lines:\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 67' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so\n" if  $. == 68' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "#\n" if  $. == 69' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
+fi
 
-perl -pi -e 'print "LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so\n" if  $. == 67' /usr/local/etc/apache24/httpd.conf
-
-# enable index.php
-perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
-
-cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
+cp -a /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
 echo
 echo "reloading http server"
 apachectl restart
 
-echo "stage 2 complete"
 
 # call postfix setup script
 postfix-setup.sh
 
+has_pf_cfg=`grep "maia_config" /usr/local/etc/postfix/master.cf | wc -l`
+if [ $has_pf_cfg == '0' ]; then
+    cp -a /usr/local/etc/postfix/master.cf /usr/local/etc/postfix/master.cf-save-$$
+    cat master.cf-append >> /usr/local/etc/postfix/master.cf
+fi
+
+echo "stage 2 complete"
+
 echo "Enabling automatic startup of maia services..."
-enable-services.sh
+$(cd freebsd/scripts/apply-config; ./enable-services.sh)
 echo "Confirm the settings are correct in /erc/rc.conf"
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
