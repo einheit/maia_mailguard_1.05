@@ -167,13 +167,19 @@ fi
 
 cp -a /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
-echo
-echo "reloading http server"
-apachectl restart
-
 has_pf_cfg=`grep "maia_config" /usr/local/etc/postfix/master.cf | wc -l`
 if [ $has_pf_cfg == '0' ]; then
     cp -a /usr/local/etc/postfix/master.cf /usr/local/etc/postfix/master.cf-save-$$
     cat master.cf-append >> /usr/local/etc/postfix/master.cf
 fi
+
+echo "starting/restarting services"
+for i in apache24 php_fpm postfix maiad clamav_clamd clamav_freshclam mysql
+do
+    present=expr `grep $i /etc/rc.conf | grep yes`
+    count=`echo $present| wc -l`
+    if [ $count -eq 1 ]; then
+	service $i restart
+    fi
+done
 
