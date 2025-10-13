@@ -19,8 +19,10 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read
 echo 
 
+OS='linux'
+
 # set path for the install - 
-PATH=`pwd`/scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # get the info, write parames to a file
@@ -122,7 +124,7 @@ mkdir -p  /var/lib/maia/db
 mkdir -p  /var/lib/maia/scripts
 mkdir -p  /var/lib/maia/templates
 cp files/maiad /var/lib/maia/
-cp -r maia_scripts/* /var/lib/maia/scripts/
+cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 
 chown -R maia:maia /var/lib/maia
@@ -270,7 +272,7 @@ apachectl restart
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-bash -xv scripts/fixup-Mail_mimeDecode.sh
+fixup-Mail_mimeDecode.sh
 
 echo "stage 2 complete"
 

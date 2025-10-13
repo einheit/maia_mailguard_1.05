@@ -127,20 +127,11 @@
     // "fbsql"   (FrontBase)
     //
 
-    /*
-     * template for maia db connection 
-     * try {
-     *    $dbh = new PDO($dsn, $maia_dbuser, $maia_dbuer_pass, $maia_sql_connect_options);
-     * } catch (PDOException $e) {
-     *    die("Connection failed: " . $e->getMessage());
-     * }
-     */
-
     // maia_1.05 syntax (PDO)
-    $maia_sql_dsn = 'mysql:host=%DBHOST;dbname=%DBNAME;charset=utf8mb4';
+    $maia_sql_dsn = 'mysql:host=__DBHOST__;dbname=__DBNAME__;charset=utf8mb4';
 
-    $maia_dbuser = '%DBUSER';
-    $maia_dbuser_pass = '%PASSWORD';
+    $maia_dbuser = '__DBUSER__';
+    $maia_dbuser_pass = '__PASSWORD__';
     $maia_sql_connect_options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -150,6 +141,7 @@
     // To improve html purifier performacer, set purifier_cache to a directory the web server can write to.
 
     $purifier_cache = '/var/www/cache';
+    // $purifier_cache = '_OS_PURIFIER_CACHE_DIR_';
 
 
 // Default protection level

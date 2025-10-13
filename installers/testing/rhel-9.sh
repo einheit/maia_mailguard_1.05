@@ -24,8 +24,10 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read junk
 echo 
 
+OS='linux'
+
 # set path for the install - 
-PATH=`pwd`/scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # set selinux to warn mode
@@ -142,7 +144,7 @@ mkdir -p  /var/lib/maia/db
 mkdir -p  /var/lib/maia/scripts
 mkdir -p  /var/lib/maia/templates
 cp files/maiad /var/lib/maia/
-cp -r maia_scripts/* /var/lib/maia/scripts/
+cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 chown -R maia:maia /var/lib/maia/db
 chown -R maia:virusgroup /var/lib/maia/tmp
@@ -283,7 +285,7 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
 
 echo "stage 2 complete"
 

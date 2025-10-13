@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# rhel 10 installer
+# rocky 10 installer
 #
 
 echo 
-echo "This script is written for rhel 10 using a mysql DB" 
+echo "This script is written for rocky 10 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
@@ -25,18 +25,14 @@ read junk
 echo 
 
 # set path for the install - 
-PATH=`pwd`/scripts:$PATH
+PATH=`pwd`//scripts:$PATH
 export PATH
 
 # set selinux to warn mode
 setenforce 0
 
 # basic dependencies - 
-echo "installing basic dependencies..."
-
-subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms && dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
-
-yum install -y curl wget make gcc sudo net-tools less which rsync git
+yum install -y curl wget make gcc sudo net-tools less which rsync rsyslog git
 
 # get the info, write params to file
 get-info.sh
@@ -69,8 +65,9 @@ firewall-cmd --permanent --add-service http
 firewall-cmd --reload
 
 # continue with install
-yum install -y telnet file tar
-#
+yum install -y telnet
+yum install -y file
+yum install -y tar
 yum install -y perl-DBI 
 yum install -y spamassassin
 yum install -y perl-Archive-Zip
@@ -84,15 +81,13 @@ yum install -y perl-Net-CIDR-Lite
 yum install -y perl-LDAP
 yum install -y perl-Unix-Syslog
 yum install -y perl-Razor-Agent
-yum install -y perl-Template-Toolkit
+#yum install -y perl-Template-Toolkit
 yum install -y perl-CPAN 
 yum install -y perl-Geo-IP
-yum install -y perl-Digest-SHA1
-yum install -y perl-IO-Socket-INET6
-
 #yum install -y perl-forks
 #yum install -y perl-Data-UUID
 #yum install -y perl-Convert-TNEF
+#yum install -y perl-Digest-SHA1
 
 # needed for cpanm
 yum install -y perl-LWP-Protocol-https
@@ -102,26 +97,27 @@ yum install -y perl-LWP-Protocol-https
 #
 yum install -y perl-App-cpanminus
 
-cpanm forks
-cpanm Geo-IP
-cpanm IP::Country::Fast
 cpanm Convert::TNEF
 cpanm Convert::UUlib
-#cpanm IO::Socket::INET6
 cpanm Data::UUID
+cpanm Digest::SHA1
+cpanm forks
+cpanm Geo-IP
+cpanm IO::Socket::INET6
 cpanm IO::Stringy
+cpanm IP::Country::Fast
 cpanm MIME::Parser
-#cpanm Template
-cpanm BerkeleyDB
-cpanm libdb
-cpanm Razor2::Client::Agent
-cpanm Text::CSV
-#cpanm Digest::SHA1
+cpanm Template
 
+# maia antivirus 
 yum install -y clamav 
 yum install -y clamav-update 
 yum install -y clamav-data 
 yum install -y clamav-server
+
+cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
+#cp contrib/el-scan.conf /etc/clamd.d/scan.conf
+#cp contrib/el-clamd.service /etc/systemd/system/clamd.service
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -175,7 +171,7 @@ cp -r php/* /var/www/html/maia
 
 # enable services
 systemctl enable maiad.service
-systemctl enable clamd@scan.service
+systemctl enable clamd.service
 systemctl enable freshclam.service
 
 # install mysql client to begin with - 
@@ -216,7 +212,7 @@ systemctl start maiad.service
 echo "running freshclam..."
 freshclam
 # start clamd
-systemctl start clamd@scan.service
+systemctl start clamd.service
 
 # load the spamassassin rulesets -
 #
@@ -233,12 +229,11 @@ yum install -y php-process
 yum install -y php-xml
 yum install -y php-mbstring
 yum install -y php-mysqlnd
-yum install -y php-pgsql
 yum install -y php-bcmath
 yum install -y php-devel
 yum install -y php-pear
-#yum install -y php-Smarty
-# smarty missing from rhel 10; fall back to manual install
+# yum install -y php-Smarty
+# smarty missing from rocky 10; fall back to manual install
 tar -C /tmp -xzvf files/smarty-3.1.34.tar.gz
 mv /tmp/smarty-3.1.34/libs /usr/share/php/Smarty
 
@@ -254,8 +249,6 @@ pear install Mail_Mime
 pear install Mail_mimeDecode
 pear install Net_Socket
 pear install Net_SMTP
-pear install Net_IMAP
-pear install Net_POP3
 pear install Pager
 #pear install Image_Color
 #pear install Image_Canvas-0.3.5
@@ -293,6 +286,7 @@ systemctl restart httpd
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
 scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+
 
 echo "stage 2 complete"
 

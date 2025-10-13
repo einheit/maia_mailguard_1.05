@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash -xv
 
 old_str=$1
 new_str=$2

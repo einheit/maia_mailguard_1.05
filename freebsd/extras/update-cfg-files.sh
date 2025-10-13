@@ -5,6 +5,15 @@
 
 export PATH=.:$PATH
 
+# define inline-edit function for use below
+inline-edit() {
+  old_str=$1
+  new_str=$2
+  filename=$3
+  echo "perl -p -e 's#"$old_str"#"$new_str"#g' $filename"
+  perl -pi -e "s#$old_str#$new_str#g" $filename
+}
+
 # get info
 mydbpass=""
 needsmarthost=0
@@ -101,10 +110,12 @@ echo read junk
 read
 
 # process changes
+MAIACFGDIR=/usr/local/etc/maia-mailguard
+PHPCFGDIR=/usr/local/www/maia-mailguard
 
-cp maia.conf.tmpl maia.conf
-cp maiad.conf.tmpl maiad.conf
-cp config.php.tmpl config.php
+cp ${MAIACFGDIR}/maia.conf.dist ${MAIACFGDIR}/maia.conf
+cp ${MAIACFGDIR}/maiad.conf.dist ${MAIACFGDIR}/maiad.conf
+cp ${PHPCFGDIR}/config.php.dist ${PHPCFGDIR}config.php
 
 # modify the working copies of the config files in place
 HOST=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
@@ -118,43 +129,60 @@ websrv=`grep WEBSRV installer.tmpl | awk -F\= '{ print $2 }'`
 
 export HOST FQDN DOMAIN dbhost passwd websrv
 
+MAIACFGDIR=/usr/local/etc/maia-mailguard/
+PHPCFGDIR=/usr/local/www/maia-mailguard/
  echo "modifying maia base_url"
- inline-edit.sh example.com ${websrv}/maia maia.conf
-
+ inline-edit example.com ${websrv}/maia ${MAIACFGDIR}/maia.conf
  echo "editing HOST"
- inline-edit.sh __HOST__ $HOST maiad.conf
+ inline-edit '__HOST__' $HOST ${MAIACFGDIR}/maiad.conf
  echo "editing DOMAIN"
- inline-edit.sh __DOMAIN__  $DOMAIN maiad.conf
+ inline-edit '__DOMAIN__'  $DOMAIN ${MAIACFGDIR}/maiad.conf
 
-for i in config.php maia.conf maiad.conf
+for i in ${PHPCFGDIR}/config.php ${MAIACFGDIR}/maia.conf ${MAIACFGDIR}/maiad.conf
 do
  echo "editing DBHOST"
- inline-edit.sh __DBHOST__  $dbhost $i
+ inline-edit '__DBHOST__'  $dbhost $i
  echo "editing DBUSER"
- inline-edit.sh __DBUSER__  $dbuser $i
+ inline-edit '__DBUSER__'  $dbuser $i
  echo "editing DBNAME"
- inline-edit.sh __DBNAME__  $dbname $i
- echo "editing PASSWORD/${passwd}"
- inline-edit.sh '__PASSWORD__'  $passwd $i
+ inline-edit '__DBNAME__'  $dbname $i
+ echo "editing PASSWORD"
+ inline-edit '__PASSWORD__'  $passwd $i
 done
 
-# enable maia related services 
-enable-services.sh
+#
+# enable the maia related services in /etc/rc.conf
+#
 
-# copy maia configs to destination
-mkdir -p /usr/local/etc/maia-mailguard/
-cp -a maia.conf /usr/local/etc/maia-mailguard/
-cp -a maiad.conf /usr/local/etc/maia-mailguard/
-cp -a maiad.rc /usr/local/etc/rc.d/
-cp -a config.php /usr/local/www/maia-mailguard/
+TGT=/etc/rc.conf
+cp -a $TGT ${TGT}-save-$$
+
+ITEMS="apache24_enable
+php_fpm_enable
+maiad_enable
+clamav_clamd_enable
+clamav_freshclam_enable
+mysql_enable
+postfix_enable"
+
+for item in $ITEMS
+do
+    grep $item $TGT || echo "$item=yes" >> $TGT
+done
 
 # point to the maia mailguard directory
 ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
 
 #
-# set up apache & php
+# set up apache & php for maia
 #
-cp -a php.conf /usr/local/etc/apache24/Includes/
+# cp -a php.conf /usr/local/etc/apache24/Includes/
+
+# create php.conf for apache
+echo "<FilesMatch "\.php$">
+   SetHandler "proxy:fcgi://127.0.0.1:9000"
+</FilesMatch>
+" > /usr/local/etc/apache24/Includes/php.conf
 
 has_php_cfg=`grep "maia_config" /usr/local/etc/apache24/httpd.conf | wc -l`
 if [ $has_php_cfg == '0' ]; then
@@ -165,21 +193,36 @@ if [ $has_php_cfg == '0' ]; then
   perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
 fi
 
+# use suitable php.ini 
 cp -a /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
+# make sure postfix is set up for maia
 has_pf_cfg=`grep "maia_config" /usr/local/etc/postfix/master.cf | wc -l`
 if [ $has_pf_cfg == '0' ]; then
     cp -a /usr/local/etc/postfix/master.cf /usr/local/etc/postfix/master.cf-save-$$
     cat master.cf-append >> /usr/local/etc/postfix/master.cf
 fi
 
+hostname=`grep FQDN installer.tmpl | awk -F\= '{ print $2 }'`
+domain=`grep DOMAIN installer.tmpl | awk -F\= '{ print $2 }'`
+postconf -e myhostname=${hostname}
+postconf -e mydomain=${domain}
+
+# do we need to add a relayhost?
+relayhost=`grep RELAY installer.tmpl | awk -F\= '{ print $2 }'`
+addrelay=`echo $relayhost | wc -l`
+[ $addrelay ] && postconf -e relayhost=$relayhost
+
+postconf -e inet_interfaces=all
+postconf -e content_filter=maia:[127.0.0.1]:10024
+
+
 echo "starting/restarting services"
 for i in apache24 php_fpm postfix maiad clamav_clamd clamav_freshclam mysql
 do
-    present=expr `grep $i /etc/rc.conf | grep yes`
+    present=`grep $i /etc/rc.conf | grep yes`
     count=`echo $present| wc -l`
     if [ $count -eq 1 ]; then
-	service $i restart
+        service $i restart
     fi
 done
-

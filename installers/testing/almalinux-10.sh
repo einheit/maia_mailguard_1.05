@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# rocky 10 installer
+# almalinux 10 installer
 #
 
 echo 
-echo "This script is written for rocky 10 using a mysql DB" 
+echo "This script is written for almalinux 10 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
@@ -25,7 +25,7 @@ read junk
 echo 
 
 # set path for the install - 
-PATH=`pwd`/scripts:$PATH
+PATH=`pwd`//scripts:$PATH
 export PATH
 
 # set selinux to warn mode

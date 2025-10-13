@@ -127,15 +127,6 @@
     // "fbsql"   (FrontBase)
     //
 
-    /*
-     * template for maia db connection 
-     * try {
-     *    $dbh = new PDO($dsn, $maia_dbuser, $maia_dbuer_pass, $maia_sql_connect_options);
-     * } catch (PDOException $e) {
-     *    die("Connection failed: " . $e->getMessage());
-     * }
-     */
-
     // maia_1.05 syntax (PDO)
     $maia_sql_dsn = 'mysql:host=__DBHOST__;dbname=__DBNAME__;charset=utf8mb4';
 
@@ -150,6 +141,7 @@
     // To improve html purifier performacer, set purifier_cache to a directory the web server can write to.
 
     $purifier_cache = '/var/www/cache';
+    // $purifier_cache = '_OS_PURIFIER_CACHE_DIR_';
 
 // Default protection level
 // Level = virus_lover,spam_lover,banned_files_lover,bad_header_lover,
@@ -180,8 +172,8 @@
 	// Optional Smarty include path.  The usual location for Smarty template libs is in the "Smarty/" folder
 	// under the default include path or in libs/Smarty/, but some distros such as Debian 
 	// tend to come up with other ideas.
+	// $smarty_path = "/usr/share/php/smarty/libs";
 	$smarty_path = "/usr/local/share/php/Smarty";
-	
 	
 	
     // The format your mail server uses to rewrite your e-mail address

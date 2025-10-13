@@ -25,7 +25,7 @@ read junk
 echo 
 
 # set path for the install - 
-PATH=`pwd`/scripts:$PATH
+PATH=`pwd`//scripts:$PATH
 export PATH
 
 # set selinux to warn mode

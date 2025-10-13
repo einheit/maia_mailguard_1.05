@@ -108,5 +108,5 @@ echo "edit installer.tmpl and hit enter to continue"
 echo
 echo "Continue?" 
 read junk
-read
+echo
 

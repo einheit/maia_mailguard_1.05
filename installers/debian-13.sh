@@ -19,8 +19,10 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read
 echo 
 
+OS='linux'
+
 # set path for the install - 
-PATH=`pwd`/scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # get the info, write parames to a file
@@ -121,7 +123,7 @@ mkdir -p  /var/lib/maia/db
 mkdir -p  /var/lib/maia/scripts
 mkdir -p  /var/lib/maia/templates
 cp files/maiad /var/lib/maia/
-cp -r maia_scripts/* /var/lib/maia/scripts/
+cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 
 chown -R maia:maia /var/lib/maia
@@ -233,6 +235,8 @@ pear install Log-1.13.3
 #pear install Image_Color
 #pear install Image_Canvas-0.3.5
 #pear install Image_Graph-0.8.0
+pear install Net_POP3
+pear install Net_IMAP
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -264,7 +268,7 @@ apachectl restart
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-bash -xv scripts/fixup-Mail_mimeDecode.sh
+fixup-Mail_mimeDecode.sh
 
 echo "stage 2 complete"
 

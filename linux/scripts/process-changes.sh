@@ -1,10 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/bash -xv
+
+OS='linux'
 
 /bin/rm -f maia.conf maiad.conf config.php
 
-cp cfg_tpl/maia.conf.tmpl maia.conf 
-cp cfg_tpl/maiad.conf.tmpl maiad.conf 
-cp cfg_tpl/config.php.tmpl config.php
+cp ${OS}/cfg_tpl/maia.conf.tmpl maia.conf 
+cp ${OS}/cfg_tpl/maiad.conf.tmpl maiad.conf 
+cp ${OS}/cfg_tpl/config.php.tmpl config.php
 
 # modify the working copies of the config files in place
 HOST=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`

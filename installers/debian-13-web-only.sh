@@ -17,8 +17,10 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read
 echo 
 
+OS='linux'
+
 # set path for the install - 
-PATH=`pwd`/scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # get the info, write parames to a file
@@ -66,6 +68,13 @@ apt install -y make gcc patch
 apt install -y curl wget telnet
 #
 apt install -y file
+
+# call postfix setup script
+systemctl enable postfix
+systemctl start postfix
+postfix-setup.sh
+systemctl restart postfix
+
 
 #
 # web interface
@@ -135,7 +144,7 @@ apachectl restart
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-bash -xv scripts/fixup-Mail_mimeDecode.sh
+fixup-Mail_mimeDecode.sh
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 
