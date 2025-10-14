@@ -33,11 +33,11 @@ export PATH
 # set selinux to warn mode
 setenforce 0
 
-# basic dependencies - 
 echo "installing basic dependencies..."
 
 subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms && dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
+# basic dependencies - 
 yum install -y curl wget make gcc sudo net-tools less which rsync git
 
 # get the info, write params to file
@@ -112,15 +112,16 @@ cpanm Data::UUID
 cpanm IO::Stringy
 cpanm MIME::Parser
 cpanm Template
-cpanm BerkeleyDB
-cpanm libdb
-cpanm Razor2::Client::Agent
-cpanm Text::CSV
 
+# clamav 
 yum install -y clamav 
+yum install -y clamd 
 yum install -y clamav-update 
 yum install -y clamav-data 
 yum install -y clamav-server
+
+cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
+cp contrib/scan.conf-rhel-9 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -143,7 +144,7 @@ mkdir -p  /var/lib/maia/tmp
 mkdir -p  /var/lib/maia/db
 mkdir -p  /var/lib/maia/scripts
 mkdir -p  /var/lib/maia/templates
-cp files/maiad /var/lib/maia/
+cp ${OS}/files/maiad /var/lib/maia/
 cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 chown -R maia:maia /var/lib/maia/db
@@ -152,17 +153,14 @@ chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
-cp contrib/maiad.service /etc/systemd/system/
+cp ${OS}/contrib/maiad.service /etc/systemd/system/
 
 # maiad helpers
 #yum install -y arc
-yum install -y arj
-yum install -y cpio
-yum install -y lzop
-yum install -y pax-utils
+yum install -y arj cabextract cpio lzop pax-utils unrar unzoo
 
 # a handy tool for a quick check
-cp -a contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
@@ -253,6 +251,8 @@ pear install Pager
 #pear install Image_Color
 #pear install Image_Canvas-0.3.5
 #pear install Image_Graph-0.8.0
+pear install Net_POP3
+pear install Net_IMAP
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -285,7 +285,7 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+${OS}/scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
 
 echo "stage 2 complete"
 
@@ -322,8 +322,8 @@ echo
 echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
 echo
-echo    "Note that if selinux is enabled, you may need to remediate a"
-echo    "number of selinux violations preventing maia components from running."
-echo    "The script "fix-selinux-errors.pl" can be run repeatedly until"
-echo    "all violations have been remediated."
-
+echo	"Note that if selinux is enabled, you may need to remediate a"
+echo	"number of selinux violations preventing maia components from running."
+echo	"The script "fix-selinux-errors.pl" can be run repeatedly until"
+echo	"all violations have been remediated."
+echo

@@ -72,7 +72,7 @@ firewall-cmd --reload
 
 # continue with install
 yum install -y telnet file tar
-#
+
 yum install -y perl-DBI 
 yum install -y spamassassin
 yum install -y perl-Archive-Zip
@@ -86,15 +86,13 @@ yum install -y perl-Net-CIDR-Lite
 yum install -y perl-LDAP
 yum install -y perl-Unix-Syslog
 yum install -y perl-Razor-Agent
-yum install -y perl-Template-Toolkit
+#yum install -y perl-Template-Toolkit
 yum install -y perl-CPAN 
 yum install -y perl-Geo-IP
-yum install -y perl-Digest-SHA1
-yum install -y perl-IO-Socket-INET6
-
 #yum install -y perl-forks
 #yum install -y perl-Data-UUID
 #yum install -y perl-Convert-TNEF
+#yum install -y perl-Digest-SHA1
 
 # needed for cpanm
 yum install -y perl-LWP-Protocol-https
@@ -104,26 +102,26 @@ yum install -y perl-LWP-Protocol-https
 #
 yum install -y perl-App-cpanminus
 
-cpanm forks
-cpanm Geo-IP
-cpanm IP::Country::Fast
 cpanm Convert::TNEF
 cpanm Convert::UUlib
-#cpanm IO::Socket::INET6
 cpanm Data::UUID
+cpanm Digest::SHA1
+cpanm forks
+cpanm Geo-IP
+cpanm IO::Socket::INET6
 cpanm IO::Stringy
+cpanm IP::Country::Fast
 cpanm MIME::Parser
-#cpanm Template
-cpanm BerkeleyDB
-cpanm libdb
-cpanm Razor2::Client::Agent
-cpanm Text::CSV
-#cpanm Digest::SHA1
+cpanm Template
 
+# maia antivirus 
 yum install -y clamav 
 yum install -y clamav-update 
 yum install -y clamav-data 
 yum install -y clamav-server
+
+cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
+cp ${OS}/contrib/scan.conf-rhel-10 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -146,7 +144,7 @@ mkdir -p  /var/lib/maia/tmp
 mkdir -p  /var/lib/maia/db
 mkdir -p  /var/lib/maia/scripts
 mkdir -p  /var/lib/maia/templates
-cp files/maiad /var/lib/maia/
+cp ${OS}/files/maiad /var/lib/maia/
 cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 chown -R maia:maia /var/lib/maia/db
@@ -155,17 +153,14 @@ chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
-cp contrib/maiad.service /etc/systemd/system/
+cp ${OS}/contrib/maiad.service /etc/systemd/system/
 
 # maiad helpers
 #yum install -y arc
-yum install -y arj
-yum install -y cpio
-yum install -y lzop
-yum install -y pax-utils
+yum install -y arj cabextract cpio lzop pax-utils
 
 # a handy tool for a quick check
-cp -a contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
@@ -222,7 +217,7 @@ systemctl start clamd@scan.service
 
 # load the spamassassin rulesets -
 #
-cp files/*.cf /etc/mail/spamassassin/
+cp ${OS}/files/*.cf /etc/mail/spamassassin/
 # /var/lib/maia/scripts/load-sa-rules.pl
 
 echo
@@ -235,12 +230,11 @@ yum install -y php-process
 yum install -y php-xml
 yum install -y php-mbstring
 yum install -y php-mysqlnd
-yum install -y php-pgsql
 yum install -y php-bcmath
 yum install -y php-devel
 yum install -y php-pear
-#yum install -y php-Smarty
-# smarty missing from rhel 10; fall back to manual install
+# yum install -y php-Smarty
+# smarty missing from rocky 10; fall back to manual install
 tar -C /tmp -xzvf files/smarty-3.1.34.tar.gz
 mv /tmp/smarty-3.1.34/libs /usr/share/php/Smarty
 
@@ -256,12 +250,12 @@ pear install Mail_Mime
 pear install Mail_mimeDecode
 pear install Net_Socket
 pear install Net_SMTP
-pear install Net_IMAP
-pear install Net_POP3
 pear install Pager
 #pear install Image_Color
 #pear install Image_Canvas-0.3.5
 #pear install Image_Graph-0.8.0
+pear install Net_POP3
+pear install Net_IMAP
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -294,7 +288,7 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+${OS}/scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
 
 echo "stage 2 complete"
 

@@ -83,14 +83,14 @@ $X_HEADER_LINE = "Maia Mailguard 1.0.5";
 #   * The domain portion of your email addresses
 #   * Typically 'yourdomain.tld'
 
-$mydomain = '__DOMAIN__';
+$mydomain = 'mainphrame.net';
 
 
 # Hostname ($myhostname)
 #   * Used to identify this host in Received: headers
 #   * Must be a fully-qualified domain name!
 
-$myhostname = '__HOST__.__DOMAIN__';
+$myhostname = 'maiatest3.mainphrame.net';
 
 
 ###########################################################################
@@ -191,7 +191,7 @@ $LOGFILE = "/var/log/maia/maiad.log";
 #   * dbuser is the name of your Maia database user, typically 'maia'
 #   * dbpass is the Maia database user's password
 
-@lookup_sql_dsn = ( ['DBI:mysql:__DBNAME__:__DBHOST__:3306', '__DBUSER__', '__PASSWORD__'] );
+@lookup_sql_dsn = ( ['DBI:mysql:maia:mysql1:3306', 'maia', 'amazing'] );
 
 
 # BerkeleyDB/libdb ($enable_db)
@@ -388,8 +388,11 @@ $banned_filename_re = new_RE(
 
 # Clam Antivirus Daemon (clamd)
 ['ClamAV-clamd',
+# the location of the socket varies between linux distros
+#  \&ask_daemon, ["CONTSCAN {}\n", "/run/clamd.scan/clamd.sock"],
    \&ask_daemon, ["CONTSCAN {}\n", "/run/clamav/clamd.ctl"],
-#   \&ask_daemon, ["CONTSCAN {}\n", "localhost:3310"],
+#  \&ask_daemon, ["CONTSCAN {}\n", "/run/clamd.scan/clamd.ctl"],
+#  \&ask_daemon, ["CONTSCAN {}\n", "localhost:3310"],
    qr/\bOK$/m, qr/\bFOUND$/m,
    qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
 # NOTE: run clamd under the same user as maiad, or run it under its own

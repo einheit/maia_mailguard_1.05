@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-# FreeBSD 14 installer
+# FreeBSD 15 installer
 #
 
 DBG=0
 
 echo
-echo "This install script is for FreeBSD 14 and a mysql DB"
+echo "This install script is for FreeBSD 15 and a mysql DB"
 echo "if using postgresql or other DB, you'll need to manually"
 echo "edit the maia/maiad config files & the php config file"
 echo
@@ -60,7 +60,7 @@ pkg install -y p5-Template-Toolkit p5-Archive-Zip \
   p5-Net-CIDR-Lite p5-Net-DNS p5-forks p5-Unix-Syslog \
   p5-Text-CSV spamassassin razor-agents
 
-# create vscan account
+# create vscan account 
 pw user add vscan -c "Scanning Virus Account" -d /var/maiad -m -s /bin/sh
 
 if [ $DBG != 0 ]; then
@@ -88,7 +88,7 @@ chmod 2775 /var/maiad/tmp
 chown -R vscan:vscan /var/maiad
 
 mkdir -p /usr/local/etc/maia-mailguard/
-cp maia.conf /usr/local/etc/maia-mailguard/maia.conf
+cp maia.conf /usr/local/etc/maia-mailguard/maia.conf 
 cp maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
 cp ${OS}/etc/maiad.rc /usr/local/etc/rc.d/maiad
 
@@ -96,7 +96,7 @@ cp ${OS}/etc/maiad.rc /usr/local/etc/rc.d/maiad
 pkg install -y arc arj lha lzop nomarch rar unrar \
  unarj zoo unzoo cabextract ripole rpm2cpio
 
-# clamav anti virus
+# clamav anti virus 
 pkg install -y clamav
 echo "updating clam AV database..."
 freshclam
@@ -206,24 +206,81 @@ fi
 
 cp -a /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
-echo
-echo "reloading http server"
-apachectl restart
+
+# enable the maia related services in /etc/rc.conf
+#
+
+echo "Enabling automatic startup of maia services..."
+
+TGT=/etc/rc.conf
+cp -a $TGT ${TGT}-save-$$
+
+ITEMS="apache24_enable
+php_fpm_enable
+maiad_enable
+clamav_clamd_enable
+clamav_freshclam_enable
+mysql_enable
+postfix_enable"
+
+for item in $ITEMS
+do
+    grep $item $TGT || echo "$item=yes" >> $TGT
+done
 
 # call postfix setup script
 postfix-setup.sh
 
+# make sure postfix is set up for maia
 has_pf_cfg=`grep "maia_config" /usr/local/etc/postfix/master.cf | wc -l`
 if [ $has_pf_cfg == '0' ]; then
     cp -a /usr/local/etc/postfix/master.cf /usr/local/etc/postfix/master.cf-save-$$
-    cat master.cf-append >> /usr/local/etc/postfix/master.cf
+    echo "#
+# begin_maia_config
+#
+maia    unix    -       -       n       -       2       lmtp
+    -o lmtp_data_done_timeout=1200
+    -o lmtp_send_xforward_command=yes
+#
+127.0.0.1:10025 inet n -        n       -       -       smtpd
+    -o content_filter=
+    -o smtpd_delay_reject=no
+    -o smtpd_client_restrictions=permit_mynetworks,reject
+    -o smtpd_helo_restrictions=
+    -o smtpd_sender_restrictions=
+    -o smtpd_recipient_restrictions=permit_mynetworks,reject
+    -o smtpd_data_restrictions=reject_unauth_pipelining
+    -o smtpd_end_of_data_restrictions=
+    -o smtpd_restriction_classes=
+    -o mynetworks=127.0.0.0/8
+    -o smtpd_error_sleep_time=0
+    -o smtpd_soft_error_limit=1001
+    -o smtpd_hard_error_limit=1000
+    -o smtpd_client_connection_count_limit=0
+    -o smtpd_client_connection_rate_limit=0
+    -o receive_override_options=no_header_body_checks,no_unknown_recipient_checks,no_milters,no_address_mappings
+    -o local_header_rewrite_clients=
+    -o smtpd_milters=
+    -o local_recipient_maps=
+    -o relay_recipient_maps=
+#
+# end_maia_config
+#
+" >> /usr/local/etc/postfix/master.cf
 fi
+
+echo "starting/restarting services"
+for i in apache24 php_fpm postfix maiad clamav_clamd clamav_freshclam mysql
+do
+    present=`grep $i /etc/rc.conf | grep yes`
+    count=`echo $present| wc -l`
+    if [ $count -eq 1 ]; then
+        service $i restart
+    fi
+done
 
 echo "stage 2 complete"
 
-echo "Enabling automatic startup of maia services..."
-$(cd freebsd/scripts/apply-config; ./enable-services.sh)
-echo "Confirm the settings are correct in /erc/rc.conf"
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 
