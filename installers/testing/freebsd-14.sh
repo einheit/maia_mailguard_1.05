@@ -11,8 +11,10 @@ echo "if using postgresql or other DB, you'll need to manually"
 echo "edit the maia/maiad config files & the php config file"
 echo
 
+OS=`uname | tr [A-Z] [a-z]`
+
 # set path for the install
-PATH=`pwd`/freebsd/scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # get the info, write params to a file
@@ -69,14 +71,14 @@ fi
 mkdir -p /var/log/maia
 chown -R vscan:vscan /var/log/maia
 
-mkdir -p  /var/maiad/tmp
-mkdir -p  /var/maiad/db
-mkdir -p  /usr/local/share/maia-mailguard/scripts
-mkdir -p  /usr/local/etc/maia-mailguard/templates
+mkdir -p /var/maiad/tmp
+mkdir -p /var/maiad/db
+mkdir -p /usr/local/share/maia-mailguard/scripts
+mkdir -p /usr/local/etc/maia-mailguard/templates
 
-cp -r freebsd/maia_scripts/* /usr/local/share/maia-mailguard/scripts/
-cp -r freebsd/maia_templates/* /usr/local/etc/maia-mailguard/templates
-cp freebsd/sbin/maiad /usr/local/sbin
+cp -r ${OS}/maia_scripts/* /usr/local/share/maia-mailguard/scripts/
+cp -r ${OS}/maia_templates/* /usr/local/etc/maia-mailguard/templates
+cp ${OS}/sbin/maiad /usr/local/sbin
 
 chown -R root:wheel /usr/local/share/maia-mailguard/
 chown -R root:wheel /usr/local/etc/maia-mailguard/
@@ -88,11 +90,11 @@ chown -R vscan:vscan /var/maiad
 mkdir -p /usr/local/etc/maia-mailguard/
 cp maia.conf /usr/local/etc/maia-mailguard/maia.conf
 cp maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
-cp freebsd/etc/maiad.rc /usr/local/etc/rc.d/maiad
+cp ${OS}/etc/maiad.rc /usr/local/etc/rc.d/maiad
 
 # maiad helpers
 pkg install -y arc arj lha lzop nomarch rar unrar \
-  unarj zoo unzoo cabextract ripole rpm2cpio
+ unarj zoo unzoo cabextract ripole rpm2cpio
 
 # clamav anti virus
 pkg install -y clamav
@@ -160,7 +162,7 @@ ln -s /usr/local/share/smarty3-php83/ /usr/local/share/php/Smarty
 pear channel-update pear.php.net
 pear install Log-1.13.3
 
-freebsd/scripts/fixup-Mail_mimeDecode.sh
+fixup-Mail_mimeDecode.sh
 
 # htmlpurifier -
 tar -C /var -xf files/htmlpurifier-4.18.0.tar.gz
@@ -191,28 +193,36 @@ chown www:vscan /var/www/cache
 ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
 
 # set up php-fpm handler
-cp freebsd/etc/php.conf /usr/local/etc/apache24/Includes
+cp ${OS}/etc/php.conf /usr/local/etc/apache24/Includes
 
-perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
+has_php_cfg=`grep "maia_config" /usr/local/etc/apache24/httpd.conf | wc -l`
+if [ $has_php_cfg == '0' ]; then
+  perl -pi -e 'print "# maia_config requires the following two lines:\n" if  $. == 66' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "LoadModule proxy_module libexec/apache24/mod_proxy.so\n" if  $. == 67' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so\n" if  $. == 68' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e 'print "#\n" if  $. == 69' /usr/local/etc/apache24/httpd.conf
+  perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
+fi
 
-perl -pi -e 'print "LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so\n" if  $. == 67' /usr/local/etc/apache24/httpd.conf
-
-# enable index.php
-perl -pi -e s/'DirectoryIndex index.html'/'DirectoryIndex index.php index.html'/g /usr/local/etc/apache24/httpd.conf
-
-cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
+cp -a /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
 echo
 echo "reloading http server"
 apachectl restart
 
-echo "stage 2 complete"
-
 # call postfix setup script
 postfix-setup.sh
 
+has_pf_cfg=`grep "maia_config" /usr/local/etc/postfix/master.cf | wc -l`
+if [ $has_pf_cfg == '0' ]; then
+    cp -a /usr/local/etc/postfix/master.cf /usr/local/etc/postfix/master.cf-save-$$
+    cat master.cf-append >> /usr/local/etc/postfix/master.cf
+fi
+
+echo "stage 2 complete"
+
 echo "Enabling automatic startup of maia services..."
-$(cd freebsd/scripts/apply-config; enable-services.sh)
+$(cd freebsd/scripts/apply-config; ./enable-services.sh)
 echo "Confirm the settings are correct in /erc/rc.conf"
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`

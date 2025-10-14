@@ -11,8 +11,10 @@ echo "if using postgresql or other DB, you'll need to manually"
 echo "edit the maia/maiad config files & the php config file"
 echo
 
+OS=`uname | tr [A-Z] [a-z]`
+
 # set path for the install
-PATH=`pwd`/freebsd/scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # get the info, write params to a file
@@ -71,9 +73,9 @@ mkdir -p /var/maiad/db
 mkdir -p /usr/local/share/maia-mailguard/scripts
 mkdir -p /usr/local/etc/maia-mailguard/templates
 
-cp -r freebsd/maia_scripts/* /usr/local/share/maia-mailguard/scripts/
-cp -r freebsd/maia_templates/* /usr/local/etc/maia-mailguard/templates
-cp freebsd/sbin/maiad /usr/local/sbin
+cp -r ${OS}/maia_scripts/* /usr/local/share/maia-mailguard/scripts/
+cp -r ${OS}/maia_templates/* /usr/local/etc/maia-mailguard/templates
+cp ${OS}/sbin/maiad /usr/local/sbin
 
 chown -R root:wheel /usr/local/share/maia-mailguard/
 chown -R root:wheel /usr/local/etc/maia-mailguard/
@@ -85,11 +87,11 @@ chown -R vscan:vscan /var/maiad
 mkdir -p /usr/local/etc/maia-mailguard/
 cp maia.conf /usr/local/etc/maia-mailguard/maia.conf 
 cp maiad.conf /usr/local/etc/maia-mailguard/maiad.conf
-cp freebsd/etc/maiad.rc /usr/local/etc/rc.d/maiad
+cp ${OS}/etc/maiad.rc /usr/local/etc/rc.d/maiad
 
 # maiad helpers
-pkg install -y arc arj lha lzop nomarch rar unrar unarj zoo unzoo cabextract \
-  ripole rpm2cpio
+pkg install -y arc arj lha lzop nomarch rar unrar \
+ unarj zoo unzoo cabextract ripole rpm2cpio
 
 # clamav anti virus 
 pkg install -y clamav
@@ -156,7 +158,7 @@ ln -s /usr/local/share/smarty3-php83/ /usr/local/share/php/Smarty
 pear channel-update pear.php.net
 pear install Log-1.13.3
 
-freebsd/scripts/fixup-Mail_mimeDecode.sh
+fixup-Mail_mimeDecode.sh
 
 # htmlpurifier -
 tar -C /var -xf files/htmlpurifier-4.18.0.tar.gz
@@ -187,7 +189,7 @@ chown www:vscan /var/www/cache
 ln -s /usr/local/www/maia-mailguard /usr/local/www/apache24/data/
 
 # set up php-fpm handler
-cp freebsd/etc/php.conf /usr/local/etc/apache24/Includes
+cp ${OS}/etc/php.conf /usr/local/etc/apache24/Includes
 
 has_php_cfg=`grep "maia_config" /usr/local/etc/apache24/httpd.conf | wc -l`
 if [ $has_php_cfg == '0' ]; then
@@ -200,25 +202,81 @@ fi
 
 cp -a /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
-echo
-echo "reloading http server"
-apachectl restart
 
+# enable the maia related services in /etc/rc.conf
+#
+
+echo "Enabling automatic startup of maia services..."
+
+TGT=/etc/rc.conf
+cp -a $TGT ${TGT}-save-$$
+
+ITEMS="apache24_enable
+php_fpm_enable
+maiad_enable
+clamav_clamd_enable
+clamav_freshclam_enable
+mysql_enable
+postfix_enable"
+
+for item in $ITEMS
+do
+    grep $item $TGT || echo "$item=yes" >> $TGT
+done
 
 # call postfix setup script
 postfix-setup.sh
 
+# make sure postfix is set up for maia
 has_pf_cfg=`grep "maia_config" /usr/local/etc/postfix/master.cf | wc -l`
 if [ $has_pf_cfg == '0' ]; then
     cp -a /usr/local/etc/postfix/master.cf /usr/local/etc/postfix/master.cf-save-$$
-    cat master.cf-append >> /usr/local/etc/postfix/master.cf
+    echo "#
+# begin_maia_config
+#
+maia    unix    -       -       n       -       2       lmtp
+    -o lmtp_data_done_timeout=1200
+    -o lmtp_send_xforward_command=yes
+#
+127.0.0.1:10025 inet n -        n       -       -       smtpd
+    -o content_filter=
+    -o smtpd_delay_reject=no
+    -o smtpd_client_restrictions=permit_mynetworks,reject
+    -o smtpd_helo_restrictions=
+    -o smtpd_sender_restrictions=
+    -o smtpd_recipient_restrictions=permit_mynetworks,reject
+    -o smtpd_data_restrictions=reject_unauth_pipelining
+    -o smtpd_end_of_data_restrictions=
+    -o smtpd_restriction_classes=
+    -o mynetworks=127.0.0.0/8
+    -o smtpd_error_sleep_time=0
+    -o smtpd_soft_error_limit=1001
+    -o smtpd_hard_error_limit=1000
+    -o smtpd_client_connection_count_limit=0
+    -o smtpd_client_connection_rate_limit=0
+    -o receive_override_options=no_header_body_checks,no_unknown_recipient_checks,no_milters,no_address_mappings
+    -o local_header_rewrite_clients=
+    -o smtpd_milters=
+    -o local_recipient_maps=
+    -o relay_recipient_maps=
+#
+# end_maia_config
+#
+" >> /usr/local/etc/postfix/master.cf
 fi
+
+echo "starting/restarting services"
+for i in apache24 php_fpm postfix maiad clamav_clamd clamav_freshclam mysql
+do
+    present=`grep $i /etc/rc.conf | grep yes`
+    count=`echo $present| wc -l`
+    if [ $count -eq 1 ]; then
+        service $i restart
+    fi
+done
 
 echo "stage 2 complete"
 
-echo "Enabling automatic startup of maia services..."
-$(cd freebsd/scripts/apply-config; ./enable-services.sh)
-echo "Confirm the settings are correct in /erc/rc.conf"
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 

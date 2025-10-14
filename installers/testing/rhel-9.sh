@@ -24,7 +24,7 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read junk
 echo 
 
-OS='linux'
+OS=`uname | tr [A-Z] [a-z]`
 
 # set path for the install - 
 PATH=`pwd`/${OS}/scripts:$PATH
@@ -323,7 +323,7 @@ echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
 echo
 echo    "Note that if selinux is enabled, you may need to remediate a"
-echo    "number of selnux violations preventing maia components from running"
-echo    "the script "fix-selinux-errors.pl" can be run repeatedly until"
-echo    "all violations have been remediated"
+echo    "number of selinux violations preventing maia components from running."
+echo    "The script "fix-selinux-errors.pl" can be run repeatedly until"
+echo    "all violations have been remediated."
 

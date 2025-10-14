@@ -19,7 +19,7 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read
 echo 
 
-OS='linux'
+OS=`uname | tr [A-Z] [a-z]`
 
 # set path for the install - 
 PATH=`pwd`/${OS}/scripts:$PATH
@@ -48,7 +48,7 @@ apt update
 
 # set locale for apt 
 apt install -y locales
-cp contrib/locale.gen /etc
+cp ${OS}/contrib/locale.gen /etc
 /usr/sbin/locale-gen
 
 # make sure git is installed for fixes
@@ -140,7 +140,7 @@ apt install -y lzop pax lhasa rpm2cpio
 apt install -y unrar || apt install -y unrar-free || echo "unrar not found"
 
 # a handy tool for a quick check
-cp -a contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
@@ -157,7 +157,7 @@ mkdir -p /var/www/html/maia
 cp -r php/* /var/www/html/maia
 
 # enable services
-cp contrib/maiad.service /etc/systemd/system
+cp ${OS}/contrib/maiad.service /etc/systemd/system
 systemctl enable maiad
 
 DBINST=`grep DB_INSTALL installer.tmpl | wc -l`
@@ -191,8 +191,6 @@ echo "stage 1 install complete"
 #
 
 # set up and start clamd
-#cp /etc/clamav/clamd.conf /etc/clamav/clamd.conf_debian_orig-$$
-#cp contrib/clamd-debian-maia-tcp.conf /etc/clamav/clamd.conf 
 systemctl start clamav-daemon
 systemctl start clamav-freshclam
 

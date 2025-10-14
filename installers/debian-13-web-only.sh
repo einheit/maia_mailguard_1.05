@@ -17,7 +17,7 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read
 echo 
 
-OS='linux'
+OS=`uname | tr [A-Z] [a-z]`
 
 # set path for the install - 
 PATH=`pwd`/${OS}/scripts:$PATH
@@ -46,7 +46,7 @@ apt update
 
 # set locale for apt 
 apt install -y locales
-cp contrib/locale.gen /etc
+cp ${OS}/contrib/locale.gen /etc
 /usr/sbin/locale-gen
 
 # make sure git is installed for fixes

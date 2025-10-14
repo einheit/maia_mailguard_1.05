@@ -24,7 +24,7 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read junk
 echo 
 
-OS='linux'
+OS=`uname | tr [A-Z] [a-z]`
 
 # set path for the install - 
 PATH=`pwd`/${OS}/scripts:$PATH
@@ -110,8 +110,6 @@ yum install -y clamav-data
 yum install -y clamav-server
 
 mv /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
-cp contrib/el-scan.conf /etc/clamd.d/scan.conf
-cp contrib/el-clamd.service /etc/systemd/system/clamd.service
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -143,7 +141,7 @@ chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
-cp contrib/maiad.service /etc/systemd/system/
+cp ${OS}/contrib/maiad.service /etc/systemd/system/
 
 # maiad helpers
 yum install -y arc
@@ -153,7 +151,7 @@ yum install -y lzop
 yum install -y pax
 
 # a handy tool for a quick check
-cp -a contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
@@ -316,7 +314,7 @@ echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
 echo
 echo    "Note that if selinux is enabled, you may need to remediate a"
-echo    "number of selnux violations preventing maia components from running"
-echo    "the script "fix-selinux-errors.pl" can be run repeatedly until"
-echo    "all violations have been remediated"
+echo    "number of selinux violations preventing maia components from running."
+echo    "The script "fix-selinux-errors.pl" can be run repeatedly until"
+echo    "all violations have been remediated."
 

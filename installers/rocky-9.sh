@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# centos 10 installer
+# rocky 9 installer
 #
 
 echo 
-echo "This script is written for centos 10 using a mysql DB" 
+echo "This script is written for rocky 9 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
@@ -24,17 +24,17 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read junk
 echo 
 
+OS=`uname | tr [A-Z] [a-z]`
+
 # set path for the install - 
-PATH=`pwd`//scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # set selinux to warn mode
 setenforce 0
 
-echo "setting up basic dependencies..."
 # basic dependencies - 
-yum install -y curl wget make gcc sudo net-tools less which rsync rsyslog git
-yum -y install epel-release
+yum install -y curl wget make gcc sudo net-tools less which rsync git
 
 # get the info, write params to file
 get-info.sh
@@ -83,9 +83,13 @@ yum install -y perl-Net-CIDR-Lite
 yum install -y perl-LDAP
 yum install -y perl-Unix-Syslog
 yum install -y perl-Razor-Agent
-yum install -y perl-Template-Toolkit
+#yum install -y perl-Template-Toolkit
 yum install -y perl-CPAN 
-yum install -y perl-Digest-SHA1
+yum install -y perl-Geo-IP
+#yum install -y perl-forks
+#yum install -y perl-Data-UUID
+#yum install -y perl-Convert-TNEF
+#yum install -y perl-Digest-SHA1
 
 # needed for cpanm
 yum install -y perl-LWP-Protocol-https
@@ -96,12 +100,15 @@ yum install -y perl-LWP-Protocol-https
 yum install -y perl-App-cpanminus
 
 cpanm forks
+cpanm Geo-IP
 cpanm IP::Country::Fast
 cpanm Convert::TNEF
-cpanm IO::Socket::INET6
 cpanm Convert::UUlib
 cpanm Data::UUID
+cpanm IO::Stringy
+cpanm MIME::Parser
 cpanm Template
+
 
 yum install -y clamav 
 yum install -y clamav-update 
@@ -109,8 +116,7 @@ yum install -y clamav-data
 yum install -y clamav-server
 
 cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
-#cp contrib/el-scan.conf /etc/clamd.d/scan.conf
-#cp contrib/el-clamd.service /etc/systemd/system/clamd.service
+cp contrib/scan.conf-rocky-9 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -133,8 +139,8 @@ mkdir -p  /var/lib/maia/tmp
 mkdir -p  /var/lib/maia/db
 mkdir -p  /var/lib/maia/scripts
 mkdir -p  /var/lib/maia/templates
-cp files/maiad /var/lib/maia/
-cp -r maia_scripts/* /var/lib/maia/scripts/
+cp ${OS}/files/maiad /var/lib/maia/
+cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 chown -R maia:maia /var/lib/maia/db
 chown -R maia:virusgroup /var/lib/maia/tmp
@@ -142,17 +148,14 @@ chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
-cp contrib/maiad.service /etc/systemd/system/
+cp ${OS}/contrib/maiad.service /etc/systemd/system/
 
 # maiad helpers
 #yum install -y arc
-yum install -y arj
-yum install -y cpio
-yum install -y lzop
-yum install -y pax-utils
+yum install -y arj cabextract cpio lzop pax-utils unzoo
 
 # a handy tool for a quick check
-cp -a contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
@@ -164,7 +167,7 @@ cp -r php/* /var/www/html/maia
 
 # enable services
 systemctl enable maiad.service
-systemctl enable clamd.service
+systemctl enable clamd@scan.service
 systemctl enable freshclam.service
 
 # install mysql client to begin with - 
@@ -205,7 +208,7 @@ systemctl start maiad.service
 echo "running freshclam..."
 freshclam
 # start clamd
-systemctl start clamd.service
+systemctl start clamd@scan.service
 
 # load the spamassassin rulesets -
 #
@@ -225,11 +228,7 @@ yum install -y php-mysqlnd
 yum install -y php-bcmath
 yum install -y php-devel
 yum install -y php-pear
-
-# yum install -y php-Smarty
-# smarty missing from Centos 10; fall back to manual install
-tar -C /tmp -xzvf files/smarty-3.1.34.tar.gz
-mv /tmp/smarty-3.1.34/libs /usr/share/php/Smarty
+yum install -y php-Smarty
 
 echo
 echo "installing pear modules"
@@ -247,6 +246,8 @@ pear install Pager
 #pear install Image_Color
 #pear install Image_Canvas-0.3.5
 #pear install Image_Graph-0.8.0
+pear install Net_POP3
+pear install Net_IMAP
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -254,6 +255,8 @@ pear list
 # install html purifier separately -
 tar -C /var -xvf files/htmlpurifier-4.18.0.tar.gz
 ln -s /var/htmlpurifier-4.18.0 /var/htmlpurifier
+
+### checkpoint 3
 
 echo
 echo "preparing php directory"
@@ -277,7 +280,7 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+${OS}/scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
 
 echo "stage 2 complete"
 
@@ -315,8 +318,7 @@ echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
 echo
 echo	"Note that if selinux is enabled, you may need to remediate a"
-echo	"number of selnux violations preventing maia components from running"
-echo	"the script "fix-selinux-errors.pl" can be run repeatedly until"
-echo	"all violations have been remediated"
-
-
+echo	"number of selinux violations preventing maia components from running."
+echo	"The script "fix-selinux-errors.pl" can be run repeatedly until"
+echo	"all violations have been remediated."
+echo

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# rocky 9 installer
+# rocky 10 installer
 #
 
 echo 
-echo "This script is written for rocky 9 using a mysql DB" 
+echo "This script is written for rocky 10 using a mysql DB" 
 echo "If using postgresql or other DB, you'll need to manually"
 echo "edit configs in /etc/maia/ and ~www/maia/config.php"
 echo 
@@ -24,15 +24,17 @@ echo -n "<ENTER> to continue or CTRL-C to stop..."
 read junk
 echo 
 
+OS=`uname | tr [A-Z] [a-z]`
+
 # set path for the install - 
-PATH=`pwd`//scripts:$PATH
+PATH=`pwd`/${OS}/scripts:$PATH
 export PATH
 
 # set selinux to warn mode
 setenforce 0
 
 # basic dependencies - 
-yum install -y curl wget make gcc sudo net-tools less which rsync git
+yum install -y curl wget make gcc sudo net-tools less which rsync rsyslog git
 
 # get the info, write params to file
 get-info.sh
@@ -97,24 +99,25 @@ yum install -y perl-LWP-Protocol-https
 #
 yum install -y perl-App-cpanminus
 
-cpanm forks
-cpanm Geo-IP
-cpanm IP::Country::Fast
 cpanm Convert::TNEF
 cpanm Convert::UUlib
 cpanm Data::UUID
+cpanm Digest::SHA1
+cpanm forks
+cpanm Geo-IP
+cpanm IO::Socket::INET6
 cpanm IO::Stringy
+cpanm IP::Country::Fast
 cpanm MIME::Parser
 cpanm Template
 
-
+# maia antivirus 
 yum install -y clamav 
 yum install -y clamav-update 
 yum install -y clamav-data 
 yum install -y clamav-server
 
 cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
-cp contrib/scan.conf-rocky-9 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -137,8 +140,8 @@ mkdir -p  /var/lib/maia/tmp
 mkdir -p  /var/lib/maia/db
 mkdir -p  /var/lib/maia/scripts
 mkdir -p  /var/lib/maia/templates
-cp files/maiad /var/lib/maia/
-cp -r maia_scripts/* /var/lib/maia/scripts/
+cp ${OS}/files/maiad /var/lib/maia/
+cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 chown -R maia:maia /var/lib/maia/db
 chown -R maia:virusgroup /var/lib/maia/tmp
@@ -146,17 +149,14 @@ chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
-cp contrib/maiad.service /etc/systemd/system/
+cp ${OS}/contrib/maiad.service /etc/systemd/system/
 
 # maiad helpers
 #yum install -y arc
-yum install -y arj
-yum install -y cpio
-yum install -y lzop
-yum install -y pax-utils
+yum install -y arj cabextract cpio lzop pax-utils
 
 # a handy tool for a quick check
-cp -a contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
@@ -168,7 +168,7 @@ cp -r php/* /var/www/html/maia
 
 # enable services
 systemctl enable maiad.service
-systemctl enable clamd@scan.service
+systemctl enable clamd.service
 systemctl enable freshclam.service
 
 # install mysql client to begin with - 
@@ -209,11 +209,11 @@ systemctl start maiad.service
 echo "running freshclam..."
 freshclam
 # start clamd
-systemctl start clamd@scan.service
+systemctl start clamd.service
 
 # load the spamassassin rulesets -
 #
-cp files/*.cf /etc/mail/spamassassin/
+cp ${OS}/files/*.cf /etc/mail/spamassassin/
 # /var/lib/maia/scripts/load-sa-rules.pl
 
 echo
@@ -229,7 +229,10 @@ yum install -y php-mysqlnd
 yum install -y php-bcmath
 yum install -y php-devel
 yum install -y php-pear
-yum install -y php-Smarty
+# yum install -y php-Smarty
+# smarty missing from rocky 10; fall back to manual install
+tar -C /tmp -xzvf files/smarty-3.1.34.tar.gz
+mv /tmp/smarty-3.1.34/libs /usr/share/php/Smarty
 
 echo
 echo "installing pear modules"
@@ -247,6 +250,8 @@ pear install Pager
 #pear install Image_Color
 #pear install Image_Canvas-0.3.5
 #pear install Image_Graph-0.8.0
+pear install Net_POP3
+pear install Net_IMAP
 pear install Numbers_Roman
 pear install Numbers_Words-0.18.2
 pear list
@@ -279,7 +284,7 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+${OS}/scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
 
 echo "stage 2 complete"
 
@@ -316,6 +321,8 @@ echo
 echo	"You will also need to set up cron jobs to maintain your system"
 echo	"See docs/cronjob.txt for more info"
 echo
-echo	"Note that if selinux is enabled, you may need to remediate a"
-echo	"number of selnux violations preventing maia components from running"
-echo
+echo    "Note that if selinux is enabled, you may need to remediate a"
+echo    "number of selinux violations preventing maia components from running."
+echo    "The script "fix-selinux-errors.pl" can be run repeatedly until"
+echo    "all violations have been remediated."
+
