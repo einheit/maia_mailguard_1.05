@@ -123,7 +123,7 @@ mkdir -p /var/lib/maia/tmp
 mkdir -p /var/lib/maia/db
 mkdir -p /var/lib/maia/scripts
 mkdir -p /var/lib/maia/templates
-cp ${OS}/files/maiad /var/lib/maia/
+cp ${OS}/maiad /var/lib/maia/
 cp -r ${OS}/maia_scripts/* /var/lib/maia/scripts/
 cp -r maia_templates/* /var/lib/maia/templates/
 
