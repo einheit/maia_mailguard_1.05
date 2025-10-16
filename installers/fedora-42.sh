@@ -141,7 +141,7 @@ chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
-cp ${OS}/contrib/maiad.service /etc/systemd/system/
+cp ${OS}/extras/maiad.service /etc/systemd/system/
 
 # maiad helpers
 yum install -y arc
@@ -151,7 +151,7 @@ yum install -y lzop
 yum install -y pax
 
 # a handy tool for a quick check
-cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/extras/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 

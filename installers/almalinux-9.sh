@@ -116,7 +116,7 @@ yum install -y clamav-data
 yum install -y clamav-server
 
 cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
-cp ${OS}/contrib/scan.conf-rocky-9 /etc/clamd.d/scan.conf
+cp ${OS}/extras/scan.conf-rocky-9 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
@@ -148,14 +148,14 @@ chmod 2775 /var/lib/maia/tmp
 
 mkdir -p /etc/maia
 cp maia.conf maiad.conf /etc/maia/
-cp ${OS}/contrib/maiad.service /etc/systemd/system/
+cp ${OS}/extras/maiad.service /etc/systemd/system/
 
 # maiad helpers
 #yum install -y arc
 yum install -y arj cabextract cpio lzop pax-utils unzoo
 
 # a handy tool for a quick check
-cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/extras/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 

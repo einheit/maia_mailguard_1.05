@@ -46,7 +46,7 @@ apt update
 
 # set locale for apt 
 apt install -y locales
-cp ${OS}/contrib/locale.gen /etc
+cp ${OS}/extras/locale.gen /etc
 /usr/sbin/locale-gen
 
 # make sure git is installed for fixes

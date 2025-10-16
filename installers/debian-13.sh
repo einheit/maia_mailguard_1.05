@@ -48,7 +48,7 @@ apt update
 
 # set locale for apt 
 apt install -y locales
-cp ${OS}/contrib/locale.gen /etc
+cp ${OS}/extras/locale.gen /etc
 /usr/sbin/locale-gen
 
 # make sure git is installed for fixes
@@ -140,7 +140,7 @@ apt install -y lzop pax lhasa rpm2cpio
 apt install -y unrar || apt install -y unrar-free || echo "unrar not found"
 
 # a handy tool for a quick check
-cp -a ${OS}/contrib/check-maia-ports.sh /usr/local/bin/
+cp -a ${OS}/extras/check-maia-ports.sh /usr/local/bin/
 
 # configtest.pl should work now unless installing a local DB server
 
@@ -157,7 +157,7 @@ mkdir -p /var/www/html/maia
 cp -r php/* /var/www/html/maia
 
 # enable services
-cp ${OS}/contrib/maiad.service /etc/systemd/system
+cp ${OS}/extras/maiad.service /etc/systemd/system
 systemctl enable maiad
 
 DBINST=`grep DB_INSTALL installer.tmpl | wc -l`
