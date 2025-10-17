@@ -118,6 +118,7 @@ yum install -y clamav-data
 yum install -y clamav-server
 
 cp -a /etc/clamd.d/scan.conf /etc/clamd.d/scan.conf-`date +%F`
+cp -a ${OS}/extras/scan.conf-rhel-10 /etc/clamd.d/scan.conf
 
 yum install -y httpd httpd-tools
 systemctl enable httpd
