@@ -194,7 +194,7 @@ if [ $DB_INST -eq 1 ]; then
     echo "*** problem granting maia privileges - db needs attention ***"
     read
   fi
-  mysql maia < files/maia-mysql.sql 
+  mysql maia < files/maia-mysql-linux.sql 
   status=$?
   if [ $status -ne 0 ]; then
     echo "*** problem importing maia schema - db needs attention ***"
@@ -217,7 +217,7 @@ systemctl start clamd@scan.service
 
 # load the spamassassin rulesets -
 #
-cp ${OS}/files/*.cf /etc/mail/spamassassin/
+cp files/*.cf /etc/mail/spamassassin/
 # /var/lib/maia/scripts/load-sa-rules.pl
 
 echo

@@ -174,7 +174,7 @@
 	// under the default include path or in libs/Smarty/, but some distros such as Debian 
 	// tend to come up with other ideas.
 	// $smarty_path = "/usr/share/php/smarty/libs";
-	$smarty_path = "/usr/share/php/Smarty";
+	// $smarty_path = "/usr/share/php/Smarty";
 	
 	
 	

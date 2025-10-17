@@ -74,7 +74,7 @@ mkdir -p /usr/local/share/maia-mailguard/scripts
 mkdir -p /usr/local/etc/maia-mailguard/templates
 
 cp -r ${OS}/maia_scripts/* /usr/local/share/maia-mailguard/scripts/
-cp -r ${OS}/maia_templates/* /usr/local/etc/maia-mailguard/templates
+cp -r maia_templates/* /usr/local/etc/maia-mailguard/templates
 cp ${OS}/sbin/maiad /usr/local/sbin
 
 chown -R root:wheel /usr/local/share/maia-mailguard/
@@ -117,7 +117,7 @@ if [ $DB_INST -eq 1 ]; then
     echo "*** problem granting maia privileges - db needs attention ***"
     read
   fi
-  mysql maia < files/maia-mysql.sql
+  mysql maia < files/maia-mysql-freebsd.sql
   status=$?
   if [ $status -ne 0 ]; then
     echo "*** problem importing maia schema - db needs attention ***"
