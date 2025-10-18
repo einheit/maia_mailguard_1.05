@@ -79,10 +79,9 @@
     // LOG_ERR (3), LOG_CRIT (2), LOG_ALERT (1), LOG_EMERG (0)
 
     $loglevel = LOG_ERR;		// messages >= this level are sent to php log
-    
+
     $debug_popup = false;		// allow a debug popup to be shown?
     $debuglevel = LOG_ERR;		// messages >= this level are displayed in popup window
-
 
     // Language to use for text display (en, fr, ja, de, etc.).
     // Locale-specific language files should be installed
@@ -93,19 +92,17 @@
     // files" (http://www.renaissoft.com/maia/download.html).
     $default_display_language = "en";
 
-
     // Set your timezone here
-    date_default_timezone_set("America/Los_Angeles"); 
-
+    date_default_timezone_set("America/Los_Angeles");
 
     // Default character set is UTF-8 ... hardcoded but if you really have a good reason to change it
     // go ahead and try.
     // $html_charset = "UTF-8";
-    
-    // Default session timeout - since we can't always trust the php installation to 
+
+    // Default session timeout - since we can't always trust the php installation to
     // expire session cookies.  (in minutes)
     $default_session_timeout = 15;  // 15 minute default
-    
+
     // Compression support:  php can gzip the output which saves bandwidth
     // at the expense of more cpu time.  Uncomment this line to enable.
     // see http://us2.php.net/ob_gzhandler for more details
@@ -137,10 +134,10 @@
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES   => false, // Important for true prepared statements
     ];
- 
+
     // To improve html purifier performacer, set purifier_cache to a directory the web server can write to.
 
-    $purifier_cache = '/var/www/cache';
+    $purifier_cache = '/usr/local/www/maia-mailguard/cache';
     // $purifier_cache = '_OS_PURIFIER_CACHE_DIR_';
 
 // Default protection level
@@ -160,22 +157,20 @@
         'high'    => array ('N','N','N','N','N','N','N','N','N','N','N','N','N','-999','5','5')
         );
 
-	
-  // Chart font to use.  The location and availability of truetype fonts varies 
-  // from system to system.  if the font path is set up right, all you have to 
-  // do is specify the name of the font without the extension. Leaving it blank 
+  // Chart font to use.  The location and availability of truetype fonts varies
+  // from system to system.  if the font path is set up right, all you have to
+  // do is specify the name of the font without the extension. Leaving it blank
   // seems to pick a default font.
-	
+
 	$chart_font = '';
 	// $chart_font = 'coolveti';
-	
+
 	// Optional Smarty include path.  The usual location for Smarty template libs is in the "Smarty/" folder
-	// under the default include path or in libs/Smarty/, but some distros such as Debian 
+	// under the default include path or in libs/Smarty/, but some distros such as Debian
 	// tend to come up with other ideas.
 	// $smarty_path = "/usr/share/php/smarty/libs";
 	// $smarty_path = "/usr/local/share/php/Smarty";
-	
-	
+
     // The format your mail server uses to rewrite your e-mail address
     // when it receives it from your MTA-RX.  Some mail servers handle
     // virtual domains by requiring your MTA-RX to mangle the e-mail
@@ -209,11 +204,9 @@
     //
     $address_rewriting_type = 0;
 
-
     // If $address_rewriting_type is not 0, this routing domain will
     // be used as the "domain" portion of a user@domain address.
     $routing_domain = "";
-
 
     // Select an authentication method from one of the following:
     //
@@ -225,10 +218,9 @@
     //    "internal" - use Maia's internal SQL database to authenticate
     $auth_method = "internal";
 
-
     // *** AUTHENTICATING VIA POP3 ***
     //
-    // POP3 support is provided by the Net_POP3 PEAR module 
+    // POP3 support is provided by the Net_POP3 PEAR module
     // http://pear.php.net/package/Net_POP3
     // If you need ssl support, set the port to 995 and add "ssl://" to the hostname
 
@@ -263,12 +255,12 @@
     // Password to query the LDAP server (this is NOT the same
     // as the password of the user being authenticated!).
     $auth_ldap_password = "password";
-    
+
     // Use TLS after connecting?  Allowed values = "true" and "false";
     // Note, TLS is only supported in ldap version 3, so set the version appropriately!
     // $auth_ldap_use_tls = "true";
     $auth_ldap_use_tls = "false";
-    
+
     // Set your ldap version (default is 2)
     $auth_ldap_version = 2;
 
@@ -287,13 +279,11 @@
     // Attribute string that describes the name of the LDAP field that will
     // return the user's e-mail address.
     $auth_ldap_attribute = "mailroutingaddress";
-    
 
     // Determines whether the LDAP library automatically follows
     // referrals returned by LDAP servers or not.
     // Active directory seems to need 0 (default is 1)
     $auth_ldap_opt_referrals = 1;
-
 
     // *** AUTHENTICATING VIA MICROSOFT EXCHANGE SERVER ***
     //
@@ -319,7 +309,6 @@
     //    %%NTDOMAIN%% - user-supplied NT domain, or $auth_exchange_nt_domain
     //    %%USER%%     - user name
     $auth_exchange_params = "{hostname:port/imap/norsh/notls/%%NTDOMAIN%%/%%USER%%}INBOX";
-
 
     // *** AUTHENTICATING VIA SQL ***
     //
@@ -352,23 +341,20 @@
     //   "crypt"     - crypt() hash
     $auth_sql_password_type = "plaintext";
 
-
     // *** AUTHENTICATING VIA MAIA'S INTERNAL DATABASE ***
     //
     // Authenticating against Maia's internal database allows
     // you to auto-issue random passwords to new users, either
     // automatically when mail arrives for those users, or
     // manually from the User Administration page.
-    
+
     // *** AUTHENTICATING VIA EXTERNAL MECHANISM ***
     //
-    // Authenticate with your own external program by setting 
+    // Authenticate with your own external program by setting
     // $auth_external to the full path of your program.
-    // This program must accept a username and password on the command line, 
+    // This program must accept a username and password on the command line,
     // and return 0 if the login is accepted.
-    
+
     $auth_external = "/bin/false";  // "/bin/false" will reject all logins!
                                     // "/bin/true"  will accept all logins!
-    
-
 ?>
