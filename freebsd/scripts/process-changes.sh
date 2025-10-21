@@ -1,10 +1,12 @@
 #!/bin/sh
 
+OS=`uname | tr [A-Z] [a-z]`
+
 /bin/rm -f maia.conf maiad.conf config.php
 
-cp freebsd/cfg_template/maia.conf.tmpl maia.conf 
-cp freebsd/cfg_template/maiad.conf.tmpl maiad.conf 
-cp freebsd/cfg_template/config.php.tmpl config.php
+cp ${OS}/cfg_template/maia.conf.tmpl maia.conf 
+cp ${OS}/cfg_template/maiad.conf.tmpl maiad.conf 
+cp ${OS}/cfg_template/config.php.tmpl config.php
 
 # modify the working copies of the config files in place
 HOST=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`

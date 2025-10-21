@@ -1,6 +1,6 @@
 #!/bin/bash -xv
 
-OS='linux'
+OS=`uname | tr [A-Z] [a-z]`
 
 /bin/rm -f maia.conf maiad.conf config.php
 

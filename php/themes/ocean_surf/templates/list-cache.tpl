@@ -93,12 +93,9 @@
 {/if}
 <td class="{$header_class}" align="center">
 <a href="list-cache.php{$msid}cache_type={$cache_type}&amp;sort={$sortby.subject}">{$lang.text_subject}</a></td>
- <td class="{$header_class}" align="center"><input type=radio name="CheckAllSpam" value="All Spam" onClick="if (this.checked) AllSpam(); return false;" {if $def_rb\
- == 'spam'}checked{/if}>{$lang.text_spam}</td>
-<td class="{$header_class}" align="center"> <input type=radio name="CheckAllHam" value="All Ham" onClick="if (this.checked) AllHam(); return false;" {if $def_rb ==\
- 'ham'}checked{/if}>{$lang.text_ham}</td>
-<td class="{$header_class}" align="center"> <input type=radio name="CheckAllDelete" value="All Delete" onClick="if (this.checked) AllDelete(); return false;" {if $\
-def_rb == 'delete'}checked{/if}>{$lang.text_delete}</td>
+ <td class="{$header_class}" align="center"><input type=radio name="CheckAllSpam" value="All Spam" onClick="if (this.checked) AllSpam(); return false;" {if $def_rb == 'spam'}checked{/if}>{$lang.text_spam}</td>
+<td class="{$header_class}" align="center"> <input type=radio name="CheckAllHam" value="All Ham" onClick="if (this.checked) AllHam(); return false;" {if $def_rb == 'ham'}checked{/if}>{$lang.text_ham}</td>
+<td class="{$header_class}" align="center"> <input type=radio name="CheckAllDelete" value="All Delete" onClick="if (this.checked) AllDelete(); return false;" {if $def_rb == 'delete'}checked{/if}>{$lang.text_delete}</td>
 </tr>
 {section name=hamloop loop=$row}
 {strip}
@@ -127,13 +124,11 @@ def_rb == 'delete'}checked{/if}>{$lang.text_delete}</td>
 <span id="recipient{$row[hamloop].id}" class="HelpTipAnchor">{foreach from=$row[hamloop].recipient_email item=recip_to}
                 {$recip_to|mb_truncate:$truncate_email:"...":'UTF-8':true}<br>
                 {/foreach}</span>
-<span id="tip_recipient{$row[hamloop].id}" class="HelpTip">{foreach from=$row[hamloop].recipient_email item=recip_to}{$recip_to|escape:'UTF-8'}<br>{/foreach}</span\
->
+<span id="tip_recipient{$row[hamloop].id}" class="HelpTip">{foreach from=$row[hamloop].recipient_email item=recip_to}{$recip_to|escape:'UTF-8'}<br>{/foreach}</span>
 </td>
 {/if}
 <td align="left">
-<a id="link_{$row[hamloop].id}" class="thickbox HelpTipAnchor" href="view.php{$msid}id={$row[hamloop].id}&amp;cache_type={$cache_type}&amp;height=350&amp;width=700\
-">
+<a id="link_{$row[hamloop].id}" class="thickbox HelpTipAnchor" href="view.php{$msid}id={$row[hamloop].id}&amp;cache_type={$cache_type}&amp;height=350&amp;width=700">
 {$row[hamloop].subject|mb_truncate:$truncate_subject:"...":'UTF-8':true}
 </a><span id="tip_link_{$row[hamloop].id}" class="HelpTip">{$row[hamloop].subject}</span></td>
 
