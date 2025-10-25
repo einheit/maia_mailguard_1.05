@@ -72,14 +72,14 @@
      * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
      * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      *
-     *
-     *
-     * core.php is to become home of all functions that need to be loaded for every page.
-     *
-     * First, set up some constants to describe our environment
-     *   Thanks to Andrew Moore on stackoverflow.com
      */
 
+     /* core.php is to become home of all functions that need to be loaded for every page.
+     */
+
+      /* First, set up some constants to describe our environment
+         Thanks to Andrew Moore on stackoverflow.com
+      */
       define('ABSPATH', str_replace('\\', '/', dirname(__FILE__)) . '/');
 
       $tempPath1 = explode('/', str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])));
@@ -92,8 +92,7 @@ for ($i = count($tempPath2); $i < count($tempPath1); $i++) {
 
       $urladdr = $_SERVER['HTTP_HOST'] . implode('/', $tempPath3);
 
-      // if ($urladdr[strlen($urladdr) - 1]== '/')
-if ($urladdr[strlen($urladdr) - 1]== '/') {
+if ($urladdr[strlen($urladdr) - 1] === '/') {
     define('URLADDR', 'http://' . $urladdr);
 } else {
     define('URLADDR', 'http://' . $urladdr . '/');

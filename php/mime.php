@@ -102,7 +102,6 @@ function display_parts($structure)
     switch ($primary) {
 
     case "multipart":
-        // if (!array_key_exists('parts', $structure)) {
         if (!array_key_exists('parts', (array)$structure)) {
             $ret = "[" . $lang['text_invalid'] . "]<br>";
                   break;

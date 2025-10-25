@@ -139,13 +139,15 @@ function is_primary_email($email)
 
     $email_id = 0;
     $sth = $dbh->prepare("SELECT users.id FROM users left join maia_users ON users.maia_user_id=maia_users.id WHERE maia_users.primary_email_id <> users.id and users.email = ?");
+    $res = $sth->execute(array($email));
+    if (PEAR::isError($sth)) {
+         die($sth->getMessage());
+    }
 
-    $sth->execute(array($email));
-
-//    if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
     if ($row = $sth->fetch()) {
         $email_id = $row["id"];
     }
+
     return $email_id == 0 ? true : false;
 }
 
@@ -167,18 +169,23 @@ if (isset($_GET["token"])
                     "AND token=?";
 
           $sth = $dbh->prepare($select);
+          $res = $sth->execute(array($euid,$token));
+        if (PEAR::isError($sth)) {
+            die($sth->getMessage());
+        }
 
-	    // if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-	    if ($row = $sth->fetch()) {
+        if ($row = $sth->fetch()) {
             $select = "SELECT data FROM maia_tokens " .
                       "WHERE data=? " .
                       "AND token=? " .
                       "AND token_system='digest'" ;
 
             $sth = $dbh->prepare($select);
-            $sth->execute(array($maia_user_id,$user_token));
-
-	    if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $res = $sth->execute(array($maia_user_id,$user_token));
+            if (PEAR::isError($sth)) {
+                die($sth->getMessage());
+            }
+            if ($row = $sth->fetch()) {
                 $uid = $maia_user_id;
                 $authenticated = true;
             } else {
@@ -193,10 +200,11 @@ if (isset($_GET["token"])
                  "AND token=? " .
                  "AND token_system='digest'" ;
         $sth = $dbh->prepare($select);
-
-        $sth->execute(array($maia_user_id,$token));
-
-        if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+        $res = $sth->execute(array($maia_user_id,$token));
+        if (PEAR::isError($sth)) {
+            die($sth->getMessage());
+        }
+        if ($row = $sth->fetch()) {
             $uid = $maia_user_id;
             $authenticated = true;
         } else {
@@ -295,8 +303,7 @@ if ($authenticated === true) {
     $sid = "";
 }
 
-   // if (PEAR::isError($authenticated)) {
-if ((new PEAR)->isError($authenticated)) {
+if (PEAR::isError($authenticated)) {
     $message = $authenticated->getMessage();
 }
    

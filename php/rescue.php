@@ -127,9 +127,13 @@ case "ham":  //Ok, this isn't really "releasing", but the logic is the same.
             "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
-
-    $res = $sth->execute(array($token, $euid));
-
+    if (PEAR::isError($sth)) {
+            die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
+          $res = $sth->execute(array($token, $euid));
+    if (PEAR::isError($res)) {
+        die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
     while ($row = $sth->fetch())
           {
         $mail_id = $row["id"];
@@ -156,19 +160,23 @@ case "spam":
             "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
-
-    $res = $sth->execute(array($token, $euid));
-
+    if (PEAR::isError($sth)) {
+            die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
+          $res = $sth->execute(array($token, $euid));
+    if (PEAR::isError($res)) {
+        die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
     while ($row = $sth->fetch())
           {
-        $mail_id = $row["id"];
-        $sender  = $row["sender_email"];
+              $mail_id = $row["id"];
+              $sender  = $row["sender_email"];
         if (array_key_exists('wblist', $_GET)) {
             $message .= $lang[add_address_to_wb_list($euid, $sender, "W")];
             $message .= "<br>";
         }
-        rescue_item($euid, $mail_id);
-        $rescued++;
+              rescue_item($euid, $mail_id);
+              $rescued++;
     }
           update_mail_stats($euid, "suspected_spam");
     if ($rescued > 0) {
@@ -185,9 +193,13 @@ case "virus":
              "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
              "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
-
-    $res = $sth->execute(array($token, $euid));
-
+    if (PEAR::isError($sth)) {
+            die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
+         $res = $sth->execute(array($token, $euid));
+    if (PEAR::isError($res)) {
+        die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
     while ($row = $sth->fetch())
          {
         $mail_id = $row["id"];
@@ -214,9 +226,13 @@ case "attachment":
              "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
              "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
-
-    $res = $sth->execute(array($token, $euid));
-
+    if (PEAR::isError($sth)) {
+            die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
+         $res = $sth->execute(array($token, $euid));
+    if (PEAR::isError($res)) {
+        die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
     while ($row = $sth->fetch())
          {
         $mail_id = $row["id"];
@@ -242,9 +258,13 @@ case "header":
              "AND  SUBSTRING(maia_mail_recipients.token FROM 1 FOR 7) <> 'expired' " .
              "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
-    
-    $res = $sth->execute(array($token, $euid));
-    
+    if (PEAR::isError($sth)) {
+            die($sth->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
+         $res = $sth->execute(array($token, $euid));
+    if (PEAR::isError($res)) {
+        die($res->getMessage() . ": " . $dbh->last_query . " [" . $token . "] [" . $euid . "]");
+    }
     while ($row = $sth->fetch())
          {
         $mail_id = $row["id"];

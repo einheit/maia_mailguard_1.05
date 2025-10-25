@@ -130,7 +130,6 @@ if ($_GET["report_ham"]) {
               "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-
     while ($row = $sth->fetch())
     {
 
@@ -177,7 +176,6 @@ if ($_GET["report_virus"]) {
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-
     while ($row = $sth->fetch())
     {
             $mail_id = $row["id"];
@@ -199,7 +197,6 @@ if ($_GET["report_attachment"]) {
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
     $res = $sth->execute(array($cutoff_date, $euid));
-
     while ($row = $sth->fetch())
     {
             $mail_id = $row["id"];
@@ -220,10 +217,11 @@ if ($_GET["report_header"]) {
             "AND maia_mail_recipients.type = 'B' " .
             "AND maia_mail_recipients.recipient_id = ?";
     $sth = $dbh->prepare($select);
+
     try {
         $res = $sth->execute(array($cutoff_date, $euid));
-    } catch (PDOException $e) {
-        die("update failed: " . $e->getMessage());
+    }	catch (PDOException $e) {
+	die("update failed: " . $e->getMessage());
     }
 
     while ($row = $sth->fetch())
