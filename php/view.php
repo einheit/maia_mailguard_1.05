@@ -81,7 +81,7 @@
     require_once "mime.php";
     require_once "Mail/mimeDecode.php";  // PEAR::Mail::mimeDecode.php
 if (extension_loaded('mcrypt')) {
-//    include_once "encrypt.php";
+    include_once "encrypt.php";
 }
     $display_language = get_display_language($euid);
     require_once "./locale/$display_language/display.php";
