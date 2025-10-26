@@ -102,6 +102,7 @@ yum install -y perl-App-cpanminus
 cpanm IP::Country::Fast
 cpanm IO::Socket::INET6
 cpanm IP::Country::Fast
+cpanm Crypt::Blowfish
 
 
 yum install -y clamav 
@@ -277,6 +278,7 @@ systemctl restart httpd
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
 fixup-Mail_mimeDecode.sh /usr/share/pear/Mail/
+supply-mcrypt.sh /usr/share/pear
 
 echo "stage 2 complete"
 

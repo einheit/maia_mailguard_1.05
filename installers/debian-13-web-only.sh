@@ -145,6 +145,7 @@ apachectl restart
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
 fixup-Mail_mimeDecode.sh
+supply-mcrypt.sh
 
 host=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`
 

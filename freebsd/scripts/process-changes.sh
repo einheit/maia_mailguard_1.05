@@ -38,5 +38,7 @@ do
  inline-edit.sh __DBNAME__  $dbname $i
  echo "editing PASSWORD/${passwd}"
  inline-edit.sh '__PASSWORD__'  $passwd $i
+ echo "editing Cache Directory"
+ inline-edit.sh '_OS_PURIFIER_CACHE_DIR_' '/var/www/cache' $i
 done
 

@@ -103,6 +103,7 @@ cpanm Digest::SHA1
 cpanm IP::Country::Fast
 cpanm LWP
 cpanm Net::LDAP::LDIF
+cpanm Crypt::Blowfish
 #cpanm Razor2::Client::Agent
 
 

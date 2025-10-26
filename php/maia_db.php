@@ -78,9 +78,10 @@
     // require_once "MDB2.php";     // Pear::DB
     require_once "mailtools.php";
     require_once "smtp.php";
+    /*
 if (extension_loaded('mcrypt')) {
-    include_once "encrypt.php";
 }
+*/
 
 
 if (! isset($maia_sql_connect_options)) {

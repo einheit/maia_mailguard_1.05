@@ -34,6 +34,7 @@ read junk
 pkg update
 pkg install -y git
 pkg install -y postfix
+pkg install -y wget
 
 # find out what we need to change
 if [ $DBG != "0" ]; then
@@ -163,6 +164,7 @@ pear channel-update pear.php.net
 pear install Log-1.13.3
 
 fixup-Mail_mimeDecode.sh
+supply-mcrypt.sh /usr/local/share/pear
 
 # htmlpurifier -
 tar -C /var -xf files/htmlpurifier-4.18.0.tar.gz

@@ -103,6 +103,7 @@ cpanm Digest::SHA1
 cpanm IP::Country::Fast
 cpanm LWP
 cpanm Net::LDAP::LDIF
+cpanm Crypt::Blowfish
 #cpanm Razor2::Client::Agent
 
 
@@ -267,6 +268,7 @@ apachectl restart
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
 fixup-Mail_mimeDecode.sh
+supply-mcrypt.sh
 
 echo "stage 2 complete"
 

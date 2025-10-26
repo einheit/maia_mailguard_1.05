@@ -110,6 +110,8 @@ cpanm IO::Stringy
 cpanm IP::Country::Fast
 cpanm MIME::Parser
 cpanm Template
+cpanm Crypt::Blowfish
+
 
 # maia antivirus 
 yum install -y clamav 
@@ -285,7 +287,9 @@ systemctl restart httpd
 
 # fix up Mail_mimeDecode
 echo "fixing up Mail_mimedecode"
-${OS}/scripts/fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+fixup-Mail_mimeDecode.sh /usr/share/pear/Mail
+supply-mcrypt.sh /usr/share/pear
+
 
 echo "stage 2 complete"
 

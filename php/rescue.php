@@ -106,7 +106,7 @@ if (array_key_exists('token', $_GET)
     require_once "authcheck.php";
     require_once "smtp.php";
     require_once "mailtools.php";
-    require_once "encrypt.php";
+//    require_once "encrypt.php";
     $display_language = get_display_language($euid);
     require_once "./locale/$display_language/smtp.php";
     require_once "./locale/$display_language/db.php";

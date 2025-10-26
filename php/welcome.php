@@ -113,7 +113,7 @@ if (isset($_POST['delete_all_items'])) {
 
     $sth->execute(array($euid, $maxitemid));
 
-    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+    while ($row = $sth->fetch()) {
          array_push($del_list, $row["mail_id"]);
     }
        delete_mail_reference($euid, $del_list);
