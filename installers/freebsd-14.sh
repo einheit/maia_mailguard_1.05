@@ -185,7 +185,8 @@ chown -R vscan:www /usr/local/www/maia-mailguard/themes/*/compiled
 cp config.php /usr/local/www/maia-mailguard
 mkdir -p /var/www/cache
 chmod 775 /var/www/cache
-chown www:vscan /var/www/cache
+chown www:www /var/www/cache
+ln -s /var/www/cache /usr/local/www/maia-mailguard/cache
 
 #
 # configure apache for maia

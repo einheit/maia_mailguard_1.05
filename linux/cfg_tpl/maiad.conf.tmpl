@@ -83,14 +83,15 @@ $X_HEADER_LINE = "Maia Mailguard 1.0.5";
 #   * The domain portion of your email addresses
 #   * Typically 'yourdomain.tld'
 
-$mydomain = 'mainphrame.net';
+$mydomain = '__DOMAIN__';
 
 
 # Hostname ($myhostname)
 #   * Used to identify this host in Received: headers
 #   * Must be a fully-qualified domain name!
 
-$myhostname = 'maiatest3.mainphrame.net';
+$myhostname = '__HOST__.__DOMAIN__';
+
 
 
 ###########################################################################
@@ -191,7 +192,7 @@ $LOGFILE = "/var/log/maia/maiad.log";
 #   * dbuser is the name of your Maia database user, typically 'maia'
 #   * dbpass is the Maia database user's password
 
-@lookup_sql_dsn = ( ['DBI:mysql:maia:mysql1:3306', 'maia', 'amazing'] );
+@lookup_sql_dsn = ( ['DBI:mysql:__DBNAME__:__DBHOST__:3306', 'maia', '__PASSWORD__'] );
 
 
 # BerkeleyDB/libdb ($enable_db)
