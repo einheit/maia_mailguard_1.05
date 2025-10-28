@@ -1,4 +1,8 @@
-Update, Oct 6th 2025 - Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
+Note - there are some issues with the Maia 1.05 web interface due to stricter php behavior.
+These bugs all have workarounds, but for a completely smooth experience, we recommend using 
+a Maia 1.04a machine (e.g. Debian 11) for maia portal access.
+
+Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 
 * Alma Linux 9,10
 * Centos 10
