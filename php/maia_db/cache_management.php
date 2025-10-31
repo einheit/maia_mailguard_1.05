@@ -6,8 +6,8 @@
 function delete_mail($mail_ids)
 {
     global $dbh;
-    if (count($mail_ids) < 1) { // not sure if this  is possible, but
-        return;                  // we should not do anything if the list is empty
+    if (empty($mail_ids)) {	// not sure if this  is possible, but
+        return;			// we should not do anything if the list is empty
     }
 
     // Delete any references to recipients 

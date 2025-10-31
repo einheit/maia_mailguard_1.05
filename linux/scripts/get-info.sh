@@ -1,5 +1,4 @@
 #!/usr/bin/env bash 
-# 
 
 mydbpass=""
 needsmarthost=0
