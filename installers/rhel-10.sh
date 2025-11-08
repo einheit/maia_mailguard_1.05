@@ -232,6 +232,7 @@ yum install -y php-process
 yum install -y php-xml
 yum install -y php-mbstring
 yum install -y php-mysqlnd
+yum install -y php-pgsql
 yum install -y php-bcmath
 yum install -y php-devel
 yum install -y php-pear

@@ -210,6 +210,7 @@ echo "installing php modules"
 echo
 apt install -y libapache2-mod-php
 apt install -y php-mysql
+apt install -y php-pgsql
 apt install -y php-mbstring
 apt install -y php-bcmath
 apt install -y php-gd
