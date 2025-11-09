@@ -1,0 +1,16 @@
+add-extra-php-repo.sh	- run this script to add repo for php-imap and other php modules
+alter-maia-db.sh	- run this script if maia DB isn't set up for utf8mb4
+check-maia-ports.sh	- check the ports relevant to maia
+clamd-notes		- an older note on clamd stability issues
+create-maia-db.sh	- the sql to create the maia database
+exim			- contributed exim configs
+fix-selinux-alerts.pl	- a utility to automate fixing the selinux errors that hinder maia
+locale.gen		- generate locales
+maiad.service		- contributed maiad systemd unit
+master.cf-append	- this is appended to master.cf to enable maia ports (10024,10025)
+master.cf-smtps		- append this to master.cf to enable smtps (465)
+port-check.txt		- notes on checking maia related ports
+scan.conf-rhel-10	- contributed clamd scan config for rhel10
+scan.conf-rhel-9	- contributed clamd scan config for rhel9
+scan.conf-rocky-9	- contributed clamd scan config for rocky10
+using-razor.txt		- contributed notes on using razor

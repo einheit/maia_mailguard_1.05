@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DBG=0
+DBG=1
 
 PASSWD='password'
 PWCHANGE=0
