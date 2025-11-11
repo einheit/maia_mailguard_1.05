@@ -1,0 +1,32 @@
+#!/bin/sh
+
+DBG=1
+
+PASSWD='password'
+PWCHANGE=0
+
+NEWPW=`grep MAIAPASS installer.tmpl | awk -F\= '{ print $2 }'`
+[ ${NEWPW}X != "X" ] && PWCHANGE=1
+
+[ $PWCHANGE -eq 1 ] && export PASSWD=$NEWPW
+
+export PASSWD PWCHANGE
+if [ $DBG -ne 0 ]; then
+  echo "PWCHANGE = $PWCHANGE"
+  echo "PASSWORD = $PASSWD"
+  fi
+
+# is a mysql root password set?
+RPRAW=`grep ROOTPASS installer.tmpl | wc -l`
+NEEDRP=`eval echo $RPRAW`
+
+export $DBUSER=`grep DBUSER installer.tmpl | awk -F\= '{ print $2 }'`
+
+if [ $NEEDRP -gt 0 ]; then
+  export rootpw=`grep ROOTPASS installer.tmpl | awk -F\= '{ print $2 }'`
+   echo "granting privileges to $DBUSER"
+   grants-with-pw
+else 
+   echo "granting privileges to $DBUSER (NP)"
+   grants-sans-pw
+fi

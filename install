@@ -5,6 +5,16 @@ DEF=0
 
 # get os
 
+OS=`uname | tr [A-Z] [a-z]`
+
+if [ $OS == 'openbsd' ]; then
+  echo "copy & paste the following command to begin the install:"
+  echo
+  echo " sh installers/${OS}.sh | tee install.log 2>&1"
+  echo
+  exit 0
+fi
+
 if [ -r /etc/os-release ]; then
   . /etc/os-release
 #  echo "OS: " $ID
