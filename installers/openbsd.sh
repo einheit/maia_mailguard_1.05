@@ -6,12 +6,13 @@
 DBG=0
 
 echo
-echo "This installer in progress was unable to produce"
-echo "a working install of Maia Mailguard on OpenBSD"
+echo "This installer is a work in progress and has been unable
+echo "to produce echo a working install of Mailguard on OpenBSD"
 echo
-echo "We don't feel this platform is suited to this role"
+echo "We don't feel this platform is suited to this role, as"
+echo "there are a number of problematic issues"
 echo
-echo "However, volunteers are welcome to try..."
+echo "However, volunteers are welcome to try their hand..."
 echo
 
 exit

@@ -1,6 +1,9 @@
-Note - there are some issues with the Maia 1.05 web interface due to stricter php behavior.
-These bugs all have workarounds, but for a completely smooth experience, we recommend using 
-a Maia 1.04a machine (e.g. Debian 11) for maia portal access.
+Update 11/11/2025 -
+
+Since fixing the missing crypt support, we have not seen any errors when releasing a message
+marked as spam, or reporting a message marked as ham, from the digest email.
+
+With that, we're going to do a 1.0 release
 
 Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 
