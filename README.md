@@ -1,9 +1,8 @@
-Update 11/11/2025 -
+Maia Mailguard is a sophisticated system designed not only to deliver and route your e-mail, but to scan it for viruses and filter out unwanted UBE (Unsolicited Bulk E-mail), coloquially known as "spam". 
 
-Since fixing the missing crypt support, we have not seen any errors when releasing a message
-marked as spam, or reporting a message marked as ham, from the digest email.
+Maia Mailguard allows you to control the way the mail server processes your mail. A per-user web portal allows review of cached messages, and setting of protection levels, whitelisting and other parameters.
 
-With that, we're going to do a 1.0 release
+That said, users are not required to use the web interface, and many choose not to, as all messages can be confirmed or reported in the optional email digest messages.
 
 Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 
