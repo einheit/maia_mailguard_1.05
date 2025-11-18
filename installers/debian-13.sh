@@ -168,19 +168,23 @@ DB_INST=`expr $DBINST`
 if [ $DB_INST -eq 1 ]; then
   echo "creating maia database..."
   # suppress dialog boxes during mysql install -
-  apt install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mariadb-server
-  systemctl start mysql
-  mysqladmin create maia
+  apt install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"  \
+  mariadb-server && \
+  sleep 1 && \
+  systemctl start mysql && \
+  sleep 1 && \
+  mysqladmin create maia && \
+  sleep 1 && \
   maia-grants.sh
   status=$?
   if [ $status -ne 0 ]; then
-    echo "*** problem granting maia privileges - db needs attention ***"
+    echo "*** problem granting maia privileges - you will need to set up the DB ***"
     read
   fi
   mysql maia < files/maia-mysql-linux.sql
   status=$?
   if [ $status -ne 0 ]; then
-    echo "*** problem importing maia schema - db needs attention ***"
+    echo "*** problem importing maia schema - you will need to set up the DB ***"
     read
   fi
 fi
@@ -216,6 +220,8 @@ apt install -y php-bcmath
 apt install -y php-gd
 apt install -y php-xml
 apt install -y php-pear
+
+add-extra-php-repo.sh
 
 apt install -y smarty3
 ln -s /usr/share/php/smarty3/ /usr/share/php/Smarty
@@ -301,6 +307,13 @@ echo    "maia will send your login credentials to the email addess you"
 echo    "supplied in the internal-init form. Use those credentials to"
 echo    "log into the url below (note the "super=register" arg)"
 echo    " http://${host}/maia/login.php?super=register"
+echo
+echo	"There have been reports of the admin having to log in with"
+echo 	"super=register more than once before the admin option appears"
+echo	"in their welcome page"
+echo
+echo	"You could achieve the same thing by setting the user_level to S in" 
+echo	"the maia_users table for the admin user"
 echo
 echo    "You will also need to set up cron jobs to maintain your system"
 echo    "See docs/cronjob.txt for more info"

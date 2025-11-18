@@ -1,4 +1,3 @@
-add-extra-php-repo.sh	- run this script to add repo for php-imap and other php modules
 alter-maia-db.sh	- run this script if maia DB isn't set up for utf8mb4
 check-maia-ports.sh	- check the ports relevant to maia
 clamd-notes		- an older note on clamd stability issues
