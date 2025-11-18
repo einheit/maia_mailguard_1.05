@@ -221,7 +221,7 @@ apt install -y php-gd
 apt install -y php-xml
 apt install -y php-pear
 
-add-extra-php-repo.sh
+add-php-imap.sh
 
 apt install -y smarty3
 ln -s /usr/share/php/smarty3/ /usr/share/php/Smarty
@@ -312,7 +312,7 @@ echo	"There have been reports of the admin having to log in with"
 echo 	"super=register more than once before the admin option appears"
 echo	"in their welcome page"
 echo
-echo	"You could achieve the same thing by setting the user_level to S in" 
+echo	"You can achieve the same thing by setting the user_level to S in" 
 echo	"the maia_users table for the admin user"
 echo
 echo    "You will also need to set up cron jobs to maintain your system"
