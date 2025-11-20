@@ -639,6 +639,16 @@ if (!function_exists("gd_info")) {
 }
     print_row("gd graphics library", $result, $status);
 
+    // mcrypt check
+    if (extension_loaded('mcrypt')) {
+        $result = "mcrypt version " . phpversion('mcrypt');
+        $status = OK;
+    } else {
+        $result = "mcrypt support missing.";
+        $status = ERROR;
+    }
+
+    print_row("mcrypt", $result, $status);
 
     print("</table></div>\n");
 
