@@ -1,5 +1,5 @@
 #!/bin/sh
-# add the repo and install the package
+# add the repo and install the packages
 
 apt-get update
 apt-get -y install lsb-release ca-certificates curl
@@ -8,5 +8,11 @@ dpkg -i /tmp/debsuryorg-archive-keyring.deb
 sh -c 'echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
 apt-get update
 
+# needed for imap support
 apt install -y php8.4-imap
-
+# needed for crypt functions
+apt install -y php-phpseclib3
+apt install -y php8.4-mcrypt
+# more crypt functions
+apt install -y php-constant-time
+apt install -y php-random-compat

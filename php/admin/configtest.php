@@ -75,9 +75,6 @@
      */
 
     
-
-
-
 function find_path($path_list, $file)
 {
     $match = "";
@@ -206,6 +203,7 @@ if (ini_get('register_globals')) {
     $status = OK;
 }
     print_row("register_globals", $result, $status);
+
 
 
     // SMARTY
@@ -397,43 +395,6 @@ function strip_tailing_slash($path)
     return rtrim($path, '/');
 }
 
-/*
-//Database Version
-    if (isset($maia_sql_dsn)) {
-      if (preg_match('/^mysqli/', $maia_sql_dsn)) {
-          $db_version = mysqli_get_server_info($test_dbh->connection);
-          $status = OK;
-          $result = "No minimum specified yet... Installed: " . $db_version;
-      } elseif (preg_match('/^mysql/', $maia_sql_dsn)) {
-          $db_version = mysql_get_server_info($test_dbh->connection);
-          $status = OK;
-          $result = "No minimum specified yet... Installed: " . $db_version;
-      } elseif (preg_match('/^pgsql/', $maia_sql_dsn)) {
-        if (function_exists("pg_version")) {
-          $pg_version_result = pg_version($test_dbh->connection);
-          $db_version = $pg_version_result['server'] ;
-          if ($db_version >= "8.0" ) {
-            $status = OK;
-            $result = "Database version: " . $db_version;
-          } else {
-            $status = ERROR;
-            $result = "Postgresql >= 8.0 required.";
-          }
-        } else {
-          $status = WARN;
-          $result = "Cannot determine database version.  We recommend Postgresql > 8.0; Please verify this before continuing.";
-        }
-      } else {
-          $status = ERROR;
-          $result = "Unsupported database";
-      }
-    } else {
-      $status = ERROR;
-      $result = "Cannot determine database version. Please check the maia_sql_dsn setting in the config file.";
-    }
-    print_row("Database Version", $result, $status);
-*/
-
     // PEAR::Pager
 if ($have_pear) {
     if (!in_array("pager", $pear_list)) {
@@ -565,64 +526,6 @@ if ($have_pear) {
     $status = WARN;
 }
     print_row("PEAR::Log", $result, $status);
-
-/*    // PEAR::Image_Color
-if ($have_pear) {
-    if (!in_array("image_color", $pear_list)) {
-        $result = "Not installed.  Optional package, required only if you wish " .
-                  "to enable the graphical chart features.";
-        $status = WARN;
-    } else {
-        $info = $pear_reg->packageInfo("Image_Color");
-        $result = is_array($info["version"])?$info["version"]["release"]:$info["version"];
-        $status = OK;
-    }
-} else {
-    $result ="Requires PEAR";
-    $status = WARN;
-}
-    print_row("PEAR::Image_Color", $result, $status);
-
-    // PEAR::Image_Canvas
-if ($have_pear) {
-    if (!in_array("image_canvas", $pear_list)) {
-        $result = "Not installed.  Optional package, required only if you wish " .
-                  "to enable the graphical chart features.";
-        $status = WARN;
-    } else {
-        $info = $pear_reg->packageInfo("Image_Canvas");
-        $result = is_array($info["version"])?$info["version"]["release"]:$info["version"];
-        $status = OK;
-    }
-} else {
-    $result ="Requires PEAR";
-    $status = WARN;
-}
-    print_row("PEAR::Image_Canvas", $result, $status);
-
-    // PEAR::Image_Graph
-if ($have_pear) {
-    if (!in_array("image_graph", $pear_list)) {
-        $result = "Not installed.  Optional package, required only if you wish " .
-                  "to enable the graphical chart features.";
-        $status = WARN;
-    } else {
-        $info = $pear_reg->packageInfo("Image_Graph");
-        $version = is_array($info["version"])?$info["version"]["release"]:$info["version"];
-        if ($version <= "0.7.2") {
-            $status = WARN;
-            $result = "Found version: ${version} - Image_Graph >= 0.7.2 recommended, but there is a bug in 0.7.2 that requires a small patch.  See <a href=\"http://www.maiamailguard.org/maia/ticket/326\">http://www.maiamailguard.org/maia/ticket/326</a> for more details and the patch.";
-        } else {  // $version > "0.7.2") 
-            $status = OK;
-            $result = $version;
-        }
-    }
-} else {
-    $result ="Requires PEAR";
-    $status = WARN;
-}
-    print_row("PEAR::Image_Graph", $result, $status);
-*/
 
     // PEAR::Numbers_Roman
 if ($have_pear) {

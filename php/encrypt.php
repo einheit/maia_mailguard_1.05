@@ -74,7 +74,7 @@
      *
      */
 
-    require_once "phpseclib/mcrypt_compat/mcrypt.php";
+    // require_once "phpseclib/mcrypt_compat/mcrypt.php";
 
     $algorithm = MCRYPT_BLOWFISH;    // Blowfish
     $block_mode = MCRYPT_MODE_CBC;   // Chained-Block Checksum

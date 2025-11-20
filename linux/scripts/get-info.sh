@@ -78,8 +78,8 @@ else
 fi
 
 echo
-echo "settings correct? hit <ENTER> to continue, CTRL-C to abort"
-read junk
+#echo "settings correct? hit <ENTER> to continue, CTRL-C to abort"
+#read junk
 
 #
 # final confirmation -
