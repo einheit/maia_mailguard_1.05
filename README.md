@@ -2,7 +2,7 @@ Maia Mailguard is a sophisticated system designed not only to deliver and route 
 
 Maia Mailguard allows you to control the way the mail server processes your mail. A per-user web portal allows review of cached messages, and setting of protection levels, whitelisting and other parameters.
 
-That said, users are not required to use the web interface, and many choose not to, as all messages can be confirmed or reported in the optional email digest messages.
+That said, users are not required to use the web interface, and many choose not to, as all messages can be confirmed or reported in the email digest messages (which are also optional BTW).
 
 Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 
