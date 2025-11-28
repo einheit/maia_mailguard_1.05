@@ -49,14 +49,21 @@ if [ $DBG != "0" ]l; then
   read junk
 fi
 
-pkg install -y p5-Template-Toolkit p5-Archive-Zip p5-BerkeleyDB p5-Convert-TNEF \
-  p5-Convert-UUlib p5-Crypt-OpenSSL-RSA p5-DBI p5-DBD-mysql p5-DBD-pg \
-  p5-Data-Dumper-Concise p5-Data-UUID p5-DateTime p5-Digest-SHA1 p5-GeoIP2 \
-  p5-IO-Multiplex p5-IO-Socket-INET6 p5-IO-Socket-SSL p5-IP-Country \
-  p5-LWP-Protocol-https p5-Locale-gettext p5-MIME-Base64 p5-MIME-Tools p5-Mail-DKIM \
-  p5-Mail-SPF p5-NetAddr-IP p5-Net-SSLeay p5-Net-Server p5-NetAddr-IP \
-  p5-Net-CIDR-Lite p5-Net-DNS p5-forks p5-Unix-Syslog p5-Text-CSV spamassassin \
-  razor-agents
+pkg install -y p5-Template-Toolkit p5-Archive-Zip \
+  p5-BerkeleyDB p5-Convert-TNEF p5-Convert-UUlib \
+  p5-Crypt-OpenSSL-RSA p5-DBI p5-DBD-mysql p5-DBD-Pg \
+  p5-Data-Dumper-Concise p5-Data-UUID p5-DateTime \
+  p5-Digest-SHA1 p5-GeoIP2 p5-IO-Multiplex \
+  p5-IO-Socket-INET6 p5-IO-Socket-SSL p5-IP-Country \
+  p5-LWP-Protocol-https p5-Locale-gettext \
+  p5-MIME-Base64 p5-MIME-Tools p5-Mail-DKIM p5-Mail-SPF \
+  p5-NetAddr-IP p5-Net-SSLeay p5-Net-Server p5-NetAddr-IP \
+  p5-Net-CIDR-Lite p5-Net-DNS p5-forks p5-Unix-Syslog \
+  p5-Text-CSV spamassassin razor-agents p5-App-cpanminus
+
+  # needed for maiadbtool
+  cpanm Net/LDAP/LDIF.pm
+
 
 # create vscan account 
 pw user add vscan -c "Scanning Virus Account" -d /var/maiad -m -s /bin/sh
@@ -76,6 +83,7 @@ mkdir -p /usr/local/etc/maia-mailguard/templates
 
 cp -r ${OS}/maia_scripts/* /usr/local/share/maia-mailguard/scripts/
 cp -r maia_templates/* /usr/local/etc/maia-mailguard/templates
+ln -s /usr/local/etc/maia-mailguard/templates  /usr/local/share/maia-mailguard/
 cp ${OS}/sbin/maiad /usr/local/sbin
 
 chown -R root:wheel /usr/local/share/maia-mailguard/
@@ -111,6 +119,7 @@ if [ $DB_INST -eq 1 ]; then
   pkg install -y mysql80-server
   echo 'mysql_enable="YES"' >> /etc/rc.conf
   service mysql-server start
+  sleep 30
   mysqladmin create maia
   maia-grants.sh
   status=$?
@@ -143,14 +152,15 @@ pkg install -y apache24
 mkdir -p /usr/local/www/maia-mailguard
 cp -r php/* /usr/local/www/maia-mailguard
 
-pkg install -y php83 php83-bcmath php83-ctype php83-gd php83-iconv php83-imap \
-  php83-mbstring php83-mysqli php83-pdo php83-pdo_mysql php83-pdo_pgsql \
-  php83-pdo_sqlite php83-pear php83-pear-Auth_SASL php83-pear-Mail \
-  php83-pear-Mail_Mime php83-pear-Mail_mimeDecode php83-pear-Math_BigInteger \
-  php83-pear-Net_IMAP php83-pear-Net_POP3 php83-pear-Net_SMTP php83-pear-Net_Socket \
-  php83-pear-Numbers_Roman php83-pear-Numbers_Words php83-pear-Pager \
-  php83-pecl-scrypt php83-pgsql php83-posix php83-session php83-simplexml \
-  php83-sockets php83-sqlite3 php83-tokenizer php83-xml php83-zlib smarty3-php83
+pkg install -y php83 php83-bcmath php83-ctype php83-gd php83-iconv \
+  php83-imap php83-mbstring php83-mysqli php83-pdo php83-pdo_mysql \
+  php83-pdo_pgsql php83-pdo_sqlite php83-pear php83-pear-Auth_SASL \
+  php83-pear-Mail php83-pear-Mail_Mime php83-pear-Mail_mimeDecode \
+  php83-pear-Math_BigInteger php83-pear-Net_IMAP php83-pear-Net_POP3 \
+  php83-pear-Net_SMTP php83-pear-Net_Socket php83-pear-Numbers_Roman \
+  php83-pear-Numbers_Words php83-pear-Pager php83-pecl-mcrypt \
+  php83-pgsql php83-posix php83-session php83-simplexml php83-sockets \
+  php83-sqlite3 php83-tokenizer php83-xml php83-zlib smarty3-php83
 
 # link Smarty
 ln -s /usr/local/share/smarty3-php83/ /usr/local/share/php/Smarty

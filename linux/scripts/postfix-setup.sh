@@ -17,7 +17,9 @@ fi
 
 postconf -e inet_interfaces=all
 postconf -e content_filter=maia:[127.0.0.1]:10024
+
 # need to add headers to the emails from maia
+# due to failure of pear mail to add message-id
 postconf -e always_add_missing_headers=yes
 
 #hostname=`grep HOST installer.tmpl | awk -F\= '{ print $2 }'`

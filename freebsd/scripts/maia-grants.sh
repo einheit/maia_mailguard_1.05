@@ -20,7 +20,7 @@ if [ $DBG -ne 0 ]; then
 RPRAW=`grep ROOTPASS installer.tmpl | wc -l`
 NEEDRP=`eval echo $RPRAW`
 
-export $DBUSER=`grep DBUSER installer.tmpl | awk -F\= '{ print $2 }'`
+export DBUSER=`grep DBUSER installer.tmpl | awk -F\= '{ print $2 }'`
 
 if [ $NEEDRP -gt 0 ]; then
   export rootpw=`grep ROOTPASS installer.tmpl | awk -F\= '{ print $2 }'`

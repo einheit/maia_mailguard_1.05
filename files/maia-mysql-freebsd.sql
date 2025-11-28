@@ -172,9 +172,9 @@ CREATE TABLE maia_config (
    ham_cache_expiry_period		int unsigned DEFAULT '5', -- days
    reminder_threshold_count		int unsigned DEFAULT '100', -- items
    reminder_threshold_size		int unsigned DEFAULT '500000', -- bytes
-   reminder_template_file		varchar(255) DEFAULT '/usr/local/share/maia-mailguard/templates/reminder.tpl',
+   reminder_template_file		varchar(255) DEFAULT '/usr/local/etc/maia-mailguard/templates/reminder.tpl',
    reminder_login_url			varchar(255),
-   newuser_template_file		varchar(255) DEFAULT '/usr/local/share/maia-mailguard/templates/newuser.tpl',
+   newuser_template_file		varchar(255) DEFAULT '/usr/local/etc/maia-mailguard/templates/newuser.tpl',
    smtp_server				varchar(255) DEFAULT 'localhost',
    smtp_port				int unsigned DEFAULT '10025',
    currency_label			varchar(15) DEFAULT '$',
