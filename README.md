@@ -15,6 +15,8 @@ Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 * Rocky Linux 9,10
 * Ubuntu 24.04
 
+* Arch (confirmed working with manual install - automated installer still in progress)
+
 
 ![maia login page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_login.png "maia login page")
 

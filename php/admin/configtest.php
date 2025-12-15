@@ -140,17 +140,15 @@ if(!@include_once "../config.php") {
     $smarty_base = "../themes"; // this assumes configtest.php is located in webroot/admin/
     $result = "";
 if (is_readable($smarty_base)) {
-    $dir = opendir($smarty_base); // open directory
-    while ($f = readdir($dir)) { // read one file name
-        if (!preg_match("/^..$/", $f) && $f!=='.' && $f!=='..' && is_dir($f)) {
-            if (is_writable($smarty_base . "/" . $f . "/compiled")) {
-                continue;
-            } else {
-                $status = ERROR;
-                $result .= "Cannot write to: " . $smarty_base . "/" . $f . "/compiled <br>\n";
-            }
-        }
+    $compiled_dirs = [ "desert_sand", "ocean_surf", "dgm" ];
+    foreach ($compiled_dirs as $compiled_dir) {
+      $compiled_themes = $smarty_base . "/" .  $compiled_dir . "/compiled";
+      if (!is_writable($compiled_themes)) {
+        $result = "Smarty compiled themes directory not writable: " . $compiled_themes . "\n";
+        $status = ERROR;
+      }
     }
+
 } else {
     $status = ERROR;
     $result = "Cannot read $smarty_base\n";
@@ -527,6 +525,7 @@ if ($have_pear) {
 }
     print_row("PEAR::Log", $result, $status);
 
+/*
     // PEAR::Numbers_Roman
 if ($have_pear) {
     if (!in_array("numbers_roman", $pear_list)) {
@@ -560,6 +559,7 @@ if ($have_pear) {
     $status = WARN;
 }
     print_row("PEAR::Numbers_Words", $result, $status);
+*/
 
     // html purifier
 if (@include_once '/var/htmlpurifier/library/HTMLPurifier.auto.php') {
@@ -594,7 +594,6 @@ if ($purifier_cache) {
     $status = WARN;
 }
     print_row("HTMLPurifier cache", $result, $status);
-
 
     // IMAP
 if (!function_exists("imap_open")) {
