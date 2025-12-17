@@ -1,0 +1,25 @@
+--- httpd.conf-orig     2025-12-04 06:59:20.000000000 -0800
++++ httpd.conf  2025-12-16 14:10:51.425286115 -0800
+@@ -133,11 +133,11 @@
+ LoadModule setenvif_module modules/mod_setenvif.so
+ LoadModule version_module modules/mod_version.so
+ #LoadModule remoteip_module modules/mod_remoteip.so
+-#LoadModule proxy_module modules/mod_proxy.so
++LoadModule proxy_module modules/mod_proxy.so
+ #LoadModule proxy_connect_module modules/mod_proxy_connect.so
+ #LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+ #LoadModule proxy_http_module modules/mod_proxy_http.so
+-#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
++LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
+ #LoadModule proxy_scgi_module modules/mod_proxy_scgi.so
+ #LoadModule proxy_uwsgi_module modules/mod_proxy_uwsgi.so
+ #LoadModule proxy_fdpass_module modules/mod_proxy_fdpass.so
+@@ -286,7 +286,7 @@
+ # is requested.
+ #
+ <IfModule dir_module>
+-    DirectoryIndex index.html
++    DirectoryIndex index.php index.html
+ </IfModule>
+ 
+ #

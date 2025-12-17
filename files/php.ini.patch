@@ -1,0 +1,76 @@
+--- /etc/php/php.ini	2025-12-16 10:26:57.000000000 -0800
++++ php.ini	2025-12-16 14:32:42.742574561 -0800
+@@ -195,7 +195,7 @@
+ ; Development Value: Off
+ ; Production Value: Off
+ ; https://php.net/short-open-tag
+-short_open_tag = Off
++short_open_tag = On
+ 
+ ; The number of significant digits displayed in floating point numbers.
+ ; https://php.net/precision
+@@ -732,7 +732,7 @@
+ ;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+ ; UNIX: "/path1:/path2"
+-;include_path = ".:/php/includes"
++include_path = ".:/php/includes:/usr/lib/php:/usr/lib/php/pear"
+ ;
+ ; Windows: "\path1;\path2"
+ ;include_path = ".;c:\php\includes"
+@@ -909,7 +909,7 @@
+ ; deprecated in a future PHP major version. So, when it is possible, please
+ ; move to the new ('extension=<ext>) syntax.
+ ;
+-;extension=bcmath
++extension=bcmath
+ ;extension=bz2
+ ;extension=calendar
+ extension=curl
+@@ -918,20 +918,20 @@
+ ;extension=exif
+ ;extension=ffi
+ ;extension=ftp
+-;extension=gd
+-;extension=gettext
++extension=gd
++extension=gettext
+ ;extension=gmp
+-;extension=iconv
++extension=iconv
+ ;extension=intl
+-;extension=ldap
+-;extension=mysqli
++extension=ldap
++extension=mysqli
+ ;extension=odbc
+-;extension=pdo_dblib
+-;extension=pdo_mysql
++extension=pdo_dblib
++extension=pdo_mysql
+ ;extension=pdo_odbc
+-;extension=pdo_pgsql
++extension=pdo_pgsql
+ ;extension=pdo_sqlite
+-;extension=pgsql
++extension=pgsql
+ ;extension=shmop
+ ;extension=snmp
+ ;extension=soap
+@@ -944,6 +944,7 @@
+ ;extension=tidy
+ ;extension=xsl
+ extension=zip
++extension=mcrypt.so
+ 
+ ;;;;;;;;;;;;;;;;;;;
+ ; Module Settings ;
+@@ -1576,7 +1577,7 @@
+ ; automatic encoding detection order.
+ ; "auto" detect order is changed according to mbstring.language
+ ; https://php.net/mbstring.detect-order
+-;mbstring.detect_order = auto
++mbstring.detect_order = auto
+ 
+ ; substitute_character used when character cannot be converted
+ ; one from another

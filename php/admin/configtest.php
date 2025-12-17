@@ -148,7 +148,6 @@ if (is_readable($smarty_base)) {
         $status = ERROR;
       }
     }
-
 } else {
     $status = ERROR;
     $result = "Cannot read $smarty_base\n";
@@ -208,9 +207,9 @@ if (ini_get('register_globals')) {
 if (isset($smarty_path)) {
     if (!($smarty_dir = find_path(array($smarty_path), "Smarty.class.php"))) {
         $result = "Can't find Smarty.class.php in location specified in config.php: ( \$smarty_path = \"$smarty_path\";.  )" .
-                  "The Smarty templating engine is required. " .
-                  "See <a href=\"http://www.smarty.net/\">this page</a> " .
-                  "for more information about downloading and installing Smarty.";
+		"The <a href=\"http://www.smarty.net/\">Smarty</a> " .
+		"templating engine is required. " .
+		"If smarty is installed, update the location in config.php, around line 174";
         $status = ERROR;
     } else {
         $status = OK;
@@ -219,9 +218,9 @@ if (isset($smarty_path)) {
         
 } else {
     if (!($smarty_dir = find_path($path_list, "Smarty/Smarty.class.php"))) {
-        $result = "Not installed.  The Smarty templating engine is required. " .
-                  "See <a href=\"http://www.smarty.net/\">this page</a> " .
-                  "for more information about downloading and installing Smarty.";
+        $result = "The <a href=\"http://www.smarty.net/\">Smarty</a> " .
+		"templating engine is required. " .
+		"If smarty is installed, update the location in config.php, around line 174";
         $status = ERROR;
     } else {
         $status = OK;
@@ -594,6 +593,7 @@ if ($purifier_cache) {
     $status = WARN;
 }
     print_row("HTMLPurifier cache", $result, $status);
+
 
     // IMAP
 if (!function_exists("imap_open")) {

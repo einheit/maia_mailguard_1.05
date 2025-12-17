@@ -21,7 +21,12 @@ if [ -r /etc/os-release ]; then
   VER=`echo $VERSION | awk '{print $1 }' | awk -F\. '{ print $1 }'`
 #  echo "Version: " $VER
 
-    if [ -f installers/${ID}-${VER}.sh ]; then
+    if [ -f installers/${ID}.sh ]; then
+	echo "copy & paste the following command to begin the install:"
+	echo
+	echo " sh installers/${ID}.sh | tee install.log 2>&1"
+	echo
+    elif [ -f installers/${ID}-${VER}.sh ]; then
 	echo "copy & paste the following command to begin the install:"
 	echo
 	echo " sh installers/${ID}-${VER}.sh | tee install.log 2>&1"
