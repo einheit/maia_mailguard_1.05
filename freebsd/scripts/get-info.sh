@@ -34,8 +34,11 @@ read dbuser
   
 # get the maia password
 echo
+stty -echo
 echo -n "Enter the maia db password: "
 read mydbpass
+stty echo
+echo
 echo
 
 #
@@ -78,10 +81,6 @@ else
   echo "no SMTP smarthost set"
 fi
 
-echo
-echo "settings correct? hit <ENTER> to continue, CTRL-C to abort"
-read junk
-
 #
 # final confirmation -
 #
@@ -106,6 +105,6 @@ echo
 echo "If there are any incorrect parameters, open another terminal,"
 echo "edit installer.tmpl and hit enter to continue"
 echo
-echo read -p "Continue?" junk
+read -p "Continue?" junk
 read
 

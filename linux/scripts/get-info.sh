@@ -33,8 +33,10 @@ read dbuser
   
 # get the maia password
 echo
+stty -echo
 echo -n "Enter the maia db password: "
 read mydbpass
+stty echo
 echo
 
 #
@@ -78,8 +80,6 @@ else
 fi
 
 echo
-#echo "settings correct? hit <ENTER> to continue, CTRL-C to abort"
-#read junk
 
 #
 # final confirmation -

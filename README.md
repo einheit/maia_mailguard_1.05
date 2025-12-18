@@ -7,6 +7,7 @@ That said, users are not required to use the web interface, and many choose not 
 Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 
 * Alma Linux 9,10
+* Arch 2025.12.01
 * Centos 10
 * Debian 11,12,13
 * Fedora 42
@@ -14,9 +15,6 @@ Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 * RHEL 9,10
 * Rocky Linux 9,10
 * Ubuntu 24.04
-
-* Arch (confirmed working with manual install - automated installer still in progress)
-
 
 ![maia login page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_login.png "maia login page")
 
