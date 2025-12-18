@@ -16,6 +16,16 @@ Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 * Rocky Linux 9,10
 * Ubuntu 24.04
 
+To install Maia as superuser:
+ 
+ $ git clone https://github.com/einheit/maia_mailguard_1.05.git
+
+ $ cd maia_mailguard_1.05
+
+ $ ./install
+
+ ...and follow the prompts
+
 ![maia login page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_login.png "maia login page")
 
 ![maia welcome page](https://github.com/einheit/maia-screenshots/blob/master/maia_105_welcome.png "maia welcome page")
