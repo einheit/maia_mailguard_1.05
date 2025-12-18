@@ -11,7 +11,7 @@ Maia Mailguard 1.0.5 has been confirmed working on the following platforms:
 * Centos 10
 * Debian 11,12,13
 * Fedora 42
-* FreeBSD 14.3 and 15.0-STABLE
+* FreeBSD 14.3 and 15.0-RELEASE
 * RHEL 9,10
 * Rocky Linux 9,10
 * Ubuntu 24.04
