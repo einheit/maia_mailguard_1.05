@@ -11,7 +11,7 @@ echo "if using postgresql or other DB, you'll need to manually"
 echo "edit the maia/maiad config files & the php config file"
 echo
 
-OS=`uname | tr [A-Z] [a-z]`
+OS=`uname | tr '[A-Z]' '[a-z]'`
 
 # set path for the install
 PATH=`pwd`/${OS}/scripts:$PATH
