@@ -701,7 +701,7 @@ if (isset($_POST["upone"])
     $rids = $_POST['revoke_id'];
 
     foreach($rids as $key => $rid) {
-        $sth = $dbh->perpare("DELETE FROM maia_domain_admins WHERE domain_id = ? AND admin_id = ?");
+        $sth = $dbh->prepare("DELETE FROM maia_domain_admins WHERE domain_id = ? AND admin_id = ?");
         $sth->execute(array($domain_id, $rid));
 
         // If this administrator doesn't control any remaining domains,

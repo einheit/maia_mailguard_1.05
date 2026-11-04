@@ -119,7 +119,7 @@ if (!$super) {
     // $sth = $dbh->query($select, array($uid));
     $sth = $dbh->prepare($select);
     //$sth = $dbh->prepare($select, array($uid));
-    $sth->execute($uid);
+    $sth->execute([$uid]);
     //$sth->execute();
   
     while ($row = $sth->fetch()) {
@@ -139,7 +139,7 @@ if (!$super) {
                   "OR maia_users.id = ?) " .
                   "ORDER BY users.email ASC";
         $sth = $dbh->prepare($select);
-        $sth->execute($uid);
+        $sth->execute([$uid]);
         
            
         while ($row = $sth->fetch()) {
@@ -160,7 +160,7 @@ if (!$super) {
                   "OR maia_users.id = ?) " .
                   "ORDER BY user_name ASC";
         $sth = $dbh->prepare($select);
-        $sth->execute($uid);
+        $sth->execute([$uid]);
 
         while ($row = $sth->fetch()) {
             if (is_a_domain_default_user($row["id"])) {
