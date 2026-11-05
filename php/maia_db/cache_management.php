@@ -44,13 +44,13 @@ function delete_mail_reference($user_id, $mail_ids)
     global $dbh;
     global $logger;
 
-    if (count($mail_ids) < 1) { // not sure if this  is possible, but
+    if (count([$mail_ids]) < 1) { // not sure if this  is possible, but
         return;                  // we should not do anything if the list is empty
     }
 
     // Delete a specific users' recipient reference to these mail messages.
     $delete = "DELETE FROM maia_mail_recipients WHERE recipient_id = ? AND mail_id IN (";
-    $delete .= '?' . str_repeat(',?', count($mail_ids) - 1);
+    $delete .= '?' . str_repeat(',?', count([$mail_ids]) - 1);
     $delete .= ")";
     $sth = $dbh->prepare($delete);
 
@@ -62,7 +62,7 @@ function delete_mail_reference($user_id, $mail_ids)
     "FROM      maia_mail " .
     "LEFT JOIN maia_mail_recipients " .
            "ON maia_mail.id = maia_mail_recipients.mail_id " .
-    "WHERE maia_mail.id IN (?" . str_repeat(',?', count($mail_ids) - 1) .") " .
+    "WHERE maia_mail.id IN (?" . str_repeat(',?', count([$mail_ids]) - 1) .") " .
       "AND mail_id IS NULL";
     $sth2 = $dbh->prepare($select);
 
