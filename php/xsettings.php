@@ -615,7 +615,7 @@ if (isset($_POST["upone"])
 
     $res = $sth->execute(array($user_id));
     
-    while ($row = $sth->fetch()) {
+    /* while ($row = $sth->fetch()) {
         $email_id = $row["id"];
         $address = $row["email"];
         if (isset($_POST["make_primary_" . $email_id])) {
@@ -623,6 +623,29 @@ if (isset($_POST["upone"])
             $res = $sth2->execute(array($email_id, $user_id));
 
             $message = sprintf($lang['text_new_primary_email'], $address);
+        }
+    }
+    $_SESSION['message'] = $message;
+    header("Location: settings.php{$msid}tab=0");
+    exit();
+     */
+     while ($row = $sth->fetch()) {
+        $email_id = $row["id"];
+        $address = $row["email"];
+        if (isset($_POST["make_primary_" . $email_id])) {
+            try {
+                $sth2 = $dbh->prepare("UPDATE maia_users SET primary_email_id = ? WHERE id = ?");
+                $res = $sth2->execute(array($email_id, $user_id));
+
+                $message = sprintf($lang['text_new_primary_email'], $address);
+            } catch (PDOException $e) {
+                if ($e->getCode() === '23000' && isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
+                    $message = sprintf("Error: %s is already set as the primary email address for another account.", htmlspecialchars($address));
+                } else {
+                    throw $e;
+                }
+            }
+            break;
         }
     }
     $_SESSION['message'] = $message;
