@@ -74,159 +74,400 @@
      *
      */
 
+require_once "core.php";
+require_once "authcheck.php";
+require_once "constants.php";
+require_once "maia_db.php";
 
-    require_once "core.php";
-    require_once "authcheck.php";
-    require_once "constants.php";
-    require_once "maia_db.php";
-    $display_language = get_display_language($euid);
-    require_once "./locale/$display_language/stats.php";
+$display_language = get_display_language($euid);
+require_once "./locale/$display_language/stats.php";
 
-if (isset($_GET["id"])) {
-    $id = trim($_GET["id"]);
-    if (($id != 0) && (!is_an_administrator($uid))) {
-        $id = $euid;
-    }
-} else {
-    $id = $euid;
-}
-    
-    require 'Image/Graph.php';
-    
-    
-    $chart_colors = get_chart_colors();
-    
-     
-if(!empty($_GET['thumb'])) {
-    $out = array(
-        'limit' => 7,
-        'width' => 400,
-        'height' => 200,
-        'center' => 100,
-        'margin_top' => 50,
-        'margin_bottom' => 20,
-        'margin_left' => 160,
-        'margin_right' => 30
+/*
+ * Gebruiker bepalen
+ */
+$id = (int)$euid;
+
+if (isset($_GET['id'])) {
+    $requestedId = filter_var(
+        $_GET['id'],
+        FILTER_VALIDATE_INT
     );
-} else {
-    $out = array(
-        'limit' => 25,
-        'width' => 700,
-        'height' => 500,
-        'center' => 250,
-        'margin_top' => 60,
-        'margin_bottom' => 30,
-        'margin_left' => 180,
-        'margin_right' => 30
-    );
-}
-    
-    // create the graph
-    $factory = new Image_Graph();
-    $Graph =& $factory->factory('graph', array(400, 300));
 
-    // add a TrueType font
-    $Font =& $Graph->addNew('ttf_font', $chart_font);
-    // set the font size to 11 pixels
-    $Font->setSize(8);
-    
-    $Graph->setFont($Font);
-    // create the plotareas
-   /* 
-    $Graph->add(
-        Image_Graph::vertical(
-            Image_Graph::factory('title', array('Mail Stats', 12)),
-            Image_Graph::horizontal(
-                $Plotarea = Image_Graph::factory('plotarea'),
-                $Legend = Image_Graph::factory('legend'),
-                60
-            ),
-            5
-        )
-    );
-   */ 
-
-    $Graph = new Image_Graph(400, 300);
-    // Create instances of the layout objects using the factory method.
-    $verticalLayout = $Graph->factory('layout', Image_Graph::LAYOUT_VERTICAL);
-    $horizontalLayout = $Graph->factory('layout', Image_Graph::LAYOUT_HORIZONTAL);
-
-    // Add the components to the horizontal layout first.
-    $horizontalLayout->add($Plotarea = Image_Graph::factory('plotarea'));
-    $horizontalLayout->add($Legend = Image_Graph::factory('legend'));
-    $horizontalLayout->setPadding(60);
-
-    // Now, add all the components to the vertical layout.
-    $verticalLayout->add(Image_Graph::factory('title', array('Mail Stats', 12)));
-    $verticalLayout->add($horizontalLayout);
-    $verticalLayout->setPadding(5);
-
-    // Add the final layout to the graph instance.
-    $Graph->add($verticalLayout);
-
-
-    $Legend->setPlotarea($Plotarea);
-    $Legend->setAlignment(IMAGE_GRAPH_ALIGN_VERTICAL);
-    
-    $Plotarea->hideAxis();
-
-    // create the dataset
-    $Dataset =& Image_Graph::factory('dataset');
-
-    if ($id == 0) {
-        $select = "SELECT SUM(total_suspected_ham_items) as sh, 
-                         SUM(total_ham_items) as h, 
-                         SUM(total_wl_items) as wl, 
-                         SUM(total_bl_items) as bl, 
-                         SUM(total_suspected_spam_items) as ss, 
-                         SUM(total_spam_items) as s, 
-                         SUM(total_fp_items) as fp, 
-                         SUM(total_fn_items) as fn, 
-                         SUM(total_virus_items) as v, 
-                         SUM(total_bad_header_items) as bh, 
-                         SUM(total_banned_file_items) as bf,
-                         SUM(total_oversized_items) as os
-                  FROM maia_stats";
-        $sth = $dbh->query($select);
-    } else {
-        $select = "SELECT total_suspected_ham_items as sh, total_ham_items as h, total_wl_items as wl, total_bl_items as bl, total_suspected_spam_items as ss, " .
-                     "total_spam_items as s, total_fp_items as fp, total_fn_items as fn, total_virus_items as v, total_bad_header_items as bh, total_banned_file_items as bf, " .
-                     "total_oversized_items as os " .
-              "FROM maia_stats " .
-              "WHERE user_id = $id";
-        $sth = $dbh->query($select);
-    }
-    $items = array();
-    if($row = $sth->fetch()) {
-        foreach ($row as $key => $value) {
-            // print_r($value);
-            if ($value != 0) {
-                $Dataset->addPoint($lang['chart_stats'][$key], $value, $key);
-                $items[] = $key;
-            }
+    if ($requestedId !== false && $requestedId >= 0) {
+        if (is_an_administrator($uid)) {
+            $id = $requestedId;
         }
     }
-    // create the 1st plot as smoothed area chart using the 1st dataset
-    $Plot =& $Plotarea->addNew('Image_Graph_Plot_Pie', $Dataset);
+}
 
-    $Plot->Radius = 2;
-        
-    // set a line color
-    $Plot->setLineColor('gray');
-    
-    // set a standard fill style
-    $FillArray =& Image_Graph::factory('Image_Graph_Fill_Array');
-    $Plot->setFillStyle($FillArray);
-    for ($i = 0 ; $i < count($items); $i++) {
-        $FillArray->addColor($chart_colors[$items[$i]]);
+/*
+ * Kleuren uit bestaande configuratie
+ */
+$chart_colors = get_chart_colors();
+
+/*
+ * Afmetingen
+ */
+$thumb = !empty($_GET['thumb']);
+
+$width  = $thumb ? 400 : 700;
+$height = $thumb ? 200 : 500;
+
+/*
+ * Statistieken ophalen
+ */
+$fields = "
+    total_suspected_ham_items AS sh,
+    total_ham_items AS h,
+    total_wl_items AS wl,
+    total_bl_items AS bl,
+    total_suspected_spam_items AS ss,
+    total_spam_items AS s,
+    total_fp_items AS fp,
+    total_fn_items AS fn,
+    total_virus_items AS v,
+    total_bad_header_items AS bh,
+    total_banned_file_items AS bf,
+    total_oversized_items AS os
+";
+
+if ($id === 0) {
+    $sql = "
+        SELECT
+            SUM(total_suspected_ham_items) AS sh,
+            SUM(total_ham_items) AS h,
+            SUM(total_wl_items) AS wl,
+            SUM(total_bl_items) AS bl,
+            SUM(total_suspected_spam_items) AS ss,
+            SUM(total_spam_items) AS s,
+            SUM(total_fp_items) AS fp,
+            SUM(total_fn_items) AS fn,
+            SUM(total_virus_items) AS v,
+            SUM(total_bad_header_items) AS bh,
+            SUM(total_banned_file_items) AS bf,
+            SUM(total_oversized_items) AS os
+        FROM maia_stats
+    ";
+
+    $sth = $dbh->query($sql);
+} else {
+    $sql = "
+        SELECT $fields
+        FROM maia_stats
+        WHERE user_id = :id
+    ";
+
+    $sth = $dbh->prepare($sql);
+    $sth->execute(['id' => $id]);
+}
+
+$row = $sth->fetch(PDO::FETCH_ASSOC) ?: [];
+
+/*
+ * Statistieken verzamelen.
+ * Ook nulwaarden in de legenda tonen.
+ */
+$data = [];
+
+foreach ($row as $key => $value) {
+    $data[$key] = max(0, (float)$value);
+}
+
+$total = array_sum($data);
+
+/*
+ * Kleurconverter.
+ * Ondersteunt hexkleuren en veelgebruikte kleurnamen.
+ */
+function chartColor($image, $value)
+{
+    $names = [
+        'red'    => '#FF0000',
+        'green'  => '#008000',
+        'blue'   => '#0000FF',
+        'yellow' => '#FFFF00',
+        'orange' => '#FFA500',
+        'gray'   => '#808080',
+        'grey'   => '#808080',
+        'white'  => '#FFFFFF',
+        'black'  => '#000000',
+        'pink'   => '#FFC0CB',
+        'purple' => '#800080',
+        'cyan'   => '#00FFFF'
+    ];
+
+    $value = strtolower(trim((string)$value));
+
+    if (isset($names[$value])) {
+        $value = $names[$value];
     }
-    
 
+    $hex = ltrim($value, '#');
 
-    
-    $Plot->explode(10);
+    if (strlen($hex) === 3) {
+        $hex = $hex[0] . $hex[0]
+             . $hex[1] . $hex[1]
+             . $hex[2] . $hex[2];
+    }
 
-    // output the Graph
-    $Graph->done();
-    ?>
+    if (!preg_match('/^[0-9a-f]{6}$/', $hex)) {
+        $hex = '999999';
+    }
 
+    return imagecolorallocate(
+        $image,
+        hexdec(substr($hex, 0, 2)),
+        hexdec(substr($hex, 2, 2)),
+        hexdec(substr($hex, 4, 2))
+    );
+}
+
+/*
+ * Tekst tekenen.
+ * Gebruik TrueType indien beschikbaar.
+ */
+function chartText(
+    $image,
+    $size,
+    $x,
+    $y,
+    $color,
+    $text,
+    $font
+) {
+    if (is_string($font) && is_file($font)) {
+        imagettftext(
+            $image,
+            $size,
+            0,
+            (int)$x,
+            (int)$y,
+            $color,
+            $font,
+            (string)$text
+        );
+    } else {
+        imagestring(
+            $image,
+            2,
+            (int)$x,
+            (int)$y - 10,
+            (string)$text,
+            $color
+        );
+    }
+}
+
+/*
+ * Afbeelding aanmaken
+ */
+$image = imagecreatetruecolor($width, $height);
+imageantialias($image, true);
+
+$white = imagecolorallocate($image, 255, 255, 255);
+$black = imagecolorallocate($image, 30, 30, 30);
+$gray  = imagecolorallocate($image, 130, 130, 130);
+
+imagefill($image, 0, 0, $white);
+
+$font = $chart_font ?? '';
+
+/*
+ * Titel
+ */
+chartText(
+    $image,
+    $thumb ? 9 : 12,
+    15,
+    25,
+    $black,
+    'Mail Stats',
+    $font
+);
+
+/*
+ * Cirkel tekenen
+ */
+if ($total > 0) {
+
+    if ($thumb) {
+        $diameter = 140;
+        $centerX = 95;
+        $centerY = 112;
+    } else {
+        $diameter = 330;
+        $centerX = 230;
+        $centerY = 260;
+    }
+
+    /*
+     * Begin bovenaan (12 uur).
+     * Gebruik een cumulatieve hoek zodat alle
+     * segmenten exact op elkaar aansluiten.
+     */
+    $startAngle = 270.0;
+    $cumulative = 0.0;
+
+    $positive = array_filter(
+        $data,
+        static fn($value) => $value > 0
+    );
+
+    $lastKey = array_key_last($positive);
+
+    foreach ($positive as $key => $value) {
+
+        $cumulative += $value;
+
+        $endAngle = ($key === $lastKey)
+            ? 630.0
+            : 270.0 + ($cumulative / $total) * 360.0;
+
+        $color = chartColor(
+            $image,
+            $chart_colors[$key] ?? '#999999'
+        );
+
+        /*
+         * GD accepteert gehele graden.
+         * Zeer kleine segmenten kunnen daardoor
+         * minder dan één pixel breed zijn.
+         */
+        $start = (int)round($startAngle);
+        $end   = (int)round($endAngle);
+
+        if ($end > $start) {
+            imagefilledarc(
+                $image,
+                $centerX,
+                $centerY,
+                $diameter,
+                $diameter,
+                $start,
+                $end,
+                $color,
+                IMG_ARC_PIE
+            );
+        }
+
+        $startAngle = $endAngle;
+    }
+
+    /*
+     * Dunne buitenrand
+     */
+    imageellipse(
+        $image,
+        $centerX,
+        $centerY,
+        $diameter,
+        $diameter,
+        $gray
+    );
+}
+
+/*
+ * Legenda
+ */
+if ($thumb) {
+    $legendX = 190;
+    $legendY = 40;
+    $lineHeight = 13;
+    $fontSize = 6;
+    $boxSize = 8;
+} else {
+    $legendX = 430;
+    $legendY = 90;
+    $lineHeight = 25;
+    $fontSize = 9;
+    $boxSize = 12;
+}
+
+$i = 0;
+
+foreach ($data as $key => $value) {
+
+    $y = $legendY + ($i * $lineHeight);
+
+    $color = chartColor(
+        $image,
+        $chart_colors[$key] ?? '#999999'
+    );
+
+    /*
+     * Kleurvakje
+     */
+    imagefilledrectangle(
+        $image,
+        $legendX,
+        $y,
+        $legendX + $boxSize,
+        $y + $boxSize,
+        $color
+    );
+
+    imagerectangle(
+        $image,
+        $legendX,
+        $y,
+        $legendX + $boxSize,
+        $y + $boxSize,
+        $gray
+    );
+
+    /*
+     * Percentage
+     */
+    $percentage = $total > 0
+        ? ($value / $total) * 100
+        : 0;
+
+    $label = $lang['chart_stats'][$key] ?? $key;
+
+    $text = sprintf(
+        '%s (%.1f%%)',
+        $label,
+        $percentage
+    );
+
+    /*
+     * Tekst
+     */
+    chartText(
+        $image,
+        $fontSize,
+        $legendX + $boxSize + 8,
+        $y + $boxSize,
+        $black,
+        $text,
+        $font
+    );
+
+    $i++;
+}
+
+/*
+ * Geen gegevens
+ */
+if ($total <= 0) {
+    chartText(
+        $image,
+        10,
+        30,
+        80,
+        $black,
+        'Geen statistieken beschikbaar',
+        $font
+    );
+}
+
+/*
+ * PNG naar browser
+ */
+header('Content-Type: image/png');
+header('Cache-Control: no-store, no-cache, must-revalidate');
+
+imagepng($image);
+imagedestroy($image);
+
+?>

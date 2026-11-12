@@ -80,7 +80,7 @@
     $lang['text_logged_out'] =  "U bent succesvol uitgelogd.";
 
     // Links
-    $lang['link_login'] =  "Aanloggen";
+    $lang['link_login'] =  "Inloggen";
 
     // About
         $lang['about'] = "Een Virus en Spam Beheeroplossing voor e-mail";

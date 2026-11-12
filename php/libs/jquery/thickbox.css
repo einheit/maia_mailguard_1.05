@@ -161,3 +161,14 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
     margin-top:1px;
     _margin-bottom:1px;
 }
+
+/* Maia responsive ThickBox refinements */
+#TB_window {
+    box-sizing: content-box; /* preserve ThickBox 3.1 JavaScript width calculations */
+}
+#TB_ajaxContent {
+    overflow: auto;
+}
+#TB_iframeContent {
+    display: block;
+}
