@@ -74,16 +74,16 @@
      */
 
     // Page subtitle
-    $lang['banner_subtitle'] =  "Aanloggen";
+    $lang['banner_subtitle'] =  "Inloggen";
 
     // Input labels
     $lang['label_username'] =  "Gebruikersnaam:";
-    $lang['label_email'] =  "E-mail Adres:";
+    $lang['label_email'] =  "E-mailadres:";
     $lang['label_password'] =  "Wachtwoord:";
     $lang['label_nt_domain'] =  "Domein:";
 
     // Buttons
-    $lang['button_login'] =  "Aanloggen";
+    $lang['button_login'] =  "Inloggen";
 
     // About
         $lang['about'] = "Een Virus en Spam Beheeroplossing voor e-mail";
