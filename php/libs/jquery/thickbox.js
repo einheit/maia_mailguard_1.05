@@ -130,6 +130,7 @@ function tb_show(caption, url, imageGroup)
                 }
                 // End Resizing
             
+                tb_htmlPopup = false;
                 TB_WIDTH = imageWidth + 30;
                 TB_HEIGHT = imageHeight + 60;
                 $("#TB_window").append("<a href='' id='TB_ImageOff' title='Close'><img id='TB_Image' src='"+url+"' width='"+imageWidth+"' height='"+imageHeight+"' alt='"+caption+"'/></a>" + "<div id='TB_caption'>"+caption+"<div id='TB_secondLine'>" + TB_imageCount + TB_PrevHTML + TB_NextHTML + "</div></div><div id='TB_closeWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key</div>");         
@@ -193,8 +194,12 @@ function tb_show(caption, url, imageGroup)
             var queryString = url.replace(/^[^\?]+\??/,'');
             var params = tb_parseQuery(queryString);
 
-            TB_WIDTH = (params['width']*1) + 30 || 630; //defaults to 630 if no paramaters were added to URL
-            TB_HEIGHT = (params['height']*1) + 40 || 440; //defaults to 440 if no paramaters were added to URL
+            // Responsive HTML popup: use 90% of viewport width and 85% of height.
+            // Image popups retain their original sizing logic.
+            var tbViewport = tb_getPageSize();
+            TB_WIDTH = Math.floor(tbViewport[0] * 0.90);
+            TB_HEIGHT = Math.floor(tbViewport[1] * 0.85);
+            tb_htmlPopup = true;
             ajaxContentW = TB_WIDTH - 30;
             ajaxContentH = TB_HEIGHT - 45;
             
@@ -295,8 +300,23 @@ function tb_remove()
     }
     document.onkeydown = "";
     document.onkeyup = "";
+    tb_htmlPopup = false;
     return false;
 }
+
+// Keep HTML popups responsive when the browser window is resized.
+var tb_htmlPopup = false;
+$(window).resize(function () {
+    if (!tb_htmlPopup || !document.getElementById('TB_window')) { return; }
+    var viewport = tb_getPageSize();
+    TB_WIDTH = Math.floor(viewport[0] * 0.90);
+    TB_HEIGHT = Math.floor(viewport[1] * 0.85);
+    var contentWidth = TB_WIDTH - 30;
+    var contentHeight = TB_HEIGHT - 45;
+    $('#TB_ajaxContent').css({width: contentWidth + 'px', height: contentHeight + 'px'});
+    $('#TB_iframeContent').css({width: (contentWidth + 29) + 'px', height: (contentHeight + 17) + 'px'});
+    tb_position();
+});
 
 function tb_position()
 {
