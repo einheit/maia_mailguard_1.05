@@ -163,7 +163,7 @@ function auth_imap($user, $pass)
         $auth_imap_port = 143;
     }
         
-    // require_once ("Net/IMAP.php");
+    require_once ("Net/IMAP.php");
     $mbox = new Net_IMAP($auth_imap_host, $auth_imap_port);
         
     // if (PEAR::isError($mbox)) {

@@ -300,7 +300,7 @@ if ($have_mysql) {
     }
 }
 elseif ($have_psql) {
-    if (extension_loaded('pdo_psql')) {
+    if (extension_loaded('pdo_pgsql')) {
         $result = "PDO Postgres support present.";
         $status = OK;
     } else {

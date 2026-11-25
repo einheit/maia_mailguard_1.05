@@ -236,7 +236,7 @@ EOQ;
 function get_system_wb_rows($dbh)
 {
     $select =<<<EOQ
-      SELECT mailaddr.email, mailaddr.id, wblist.wb
+      SELECT mailaddr.email, mailaddr.id, wblist.wb, maia_users.user_name
           FROM mailaddr LEFT JOIN wblist ON  mailaddr.id = wblist.sid 
           LEFT JOIN maia_users ON wblist.rid=maia_users.id
           WHERE maia_users.user_name='@.'
