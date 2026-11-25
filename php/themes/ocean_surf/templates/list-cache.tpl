@@ -116,15 +116,15 @@
 </td>
 
 <td align="center">
-<span id="sender{$row[hamloop].id}" class="HelpTipAnchor">{$row[hamloop].sender_email|mb_truncate:$truncate_email:"...":'UTF-8':true}</span>
-<span id="tip_sender{$row[hamloop].id}" class="HelpTip">{$row[hamloop].sender_email|escape:"javascript"}</span>
+<span id="sender{$row[hamloop].id}" class="HelpTipAnchor">{$row[hamloop].sender_email|mb_truncate:$truncate_email:"...":'UTF-8':true|escape:'html':'UTF-8'}</span>
+<span id="tip_sender{$row[hamloop].id}" class="HelpTip">{$row[hamloop].sender_email|escape:'html':'UTF-8'}</span>
 </td>
 {if $need_to}
 <td align="center">
 <span id="recipient{$row[hamloop].id}" class="HelpTipAnchor">{foreach from=$row[hamloop].recipient_email item=recip_to}
-                {$recip_to|mb_truncate:$truncate_email:"...":'UTF-8':true}<br>
+                {$recip_to|mb_truncate:$truncate_email:"...":'UTF-8':true|escape:'html':'UTF-8'}<br>
                 {/foreach}</span>
-<span id="tip_recipient{$row[hamloop].id}" class="HelpTip">{foreach from=$row[hamloop].recipient_email item=recip_to}{$recip_to|escape:'UTF-8'}<br>{/foreach}</span>
+<span id="tip_recipient{$row[hamloop].id}" class="HelpTip">{foreach from=$row[hamloop].recipient_email item=recip_to}{$recip_to|escape:'html':'UTF-8'}<br>{/foreach}</span>
 </td>
 {/if}
 <td align="left">
