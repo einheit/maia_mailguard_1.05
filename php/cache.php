@@ -538,7 +538,7 @@ class MessageCache
                         if(!isset($rows[$count]['file'])) {
                             $rows[$count]['file'] = "";
                         }
-                        $rows[$count]['file'] .= $bname . "<br>";
+                        $rows[$count]['file'] .= htmlspecialchars($bname, ENT_QUOTES, 'UTF-8') . "<br>";
                     }
                 } elseif ($this->type == 'virus') {
                     $vnames=$this->get_virus_names($row['id']);

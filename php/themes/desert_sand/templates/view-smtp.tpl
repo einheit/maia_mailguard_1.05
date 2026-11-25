@@ -5,7 +5,7 @@
 <tbody>
   <tr>
     <td class="mailheader">{$lang.text_smtp_sender}:</font></td>
-    <td><span>{$sender_email}</span><br><a class="wblist_link" href="#" onclick="javascript:wblistAction($(this).siblings('span').text(),'addblock'); return false;">{$lang.link_blacklist}</a> | <a class="wblist_link" href="#" onclick="javascript:wblistAction($(this).siblings('span').text(),'addallow'); return false;">{$lang.link_whitelist}</a></td>
+    <td><span>{$sender_email|escape:'html':'UTF-8'}</span><br><a class="wblist_link" href="#" onclick="javascript:wblistAction($(this).siblings('span').text(),'addblock'); return false;">{$lang.link_blacklist}</a> | <a class="wblist_link" href="#" onclick="javascript:wblistAction($(this).siblings('span').text(),'addallow'); return false;">{$lang.link_whitelist}</a></td>
   </tr>
 </table>
 </div>
