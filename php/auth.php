@@ -122,9 +122,13 @@ function auth_pop3($user, $pass)
         $auth_pop3_port = 110;
     }
         
-    // require_once ("Net/POP3.php");
-    // $mbox = new Net_POP3();
-    $mbox = new POP3();
+    require_once ("Net/POP3.php");
+    $mbox = new Net_POP3();
+    if (PHP_MAJOR_VERSION >= 8) {
+        // Net_POP3 only has a PHP 4 style constructor, which PHP 8 no
+        // longer runs. Without it the object has no socket to connect with.
+        $mbox->Net_POP3();
+    }
         
     $result = $mbox->connect($auth_pop3_host, $auth_pop3_port);
     // if (PEAR::isError($mbox)) {
